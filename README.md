@@ -3,7 +3,7 @@
 A lightweight and scalable alternative to [react-native-modal](https://github.com/react-native-modal/react-native-modal), built with react-native-reanimated and react-native-gesture-handler. Based on React Native's vanilla Modal component, this library is designed for smooth animations, flexibility, and minimal footprint.
 
 <p align="center">
-<img src="/.github/images/example.gif" height="500" />
+<img src="/.github/images/example.gif" width="300" alt="React Native Reanimated Modal Demo" />
 </p>
 
 
