@@ -43,7 +43,19 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "modal",
+    "popup",
+    "overlay",
+    "reanimated",
+    "gesture-handler",
+    "animation",
+    "swipe",
+    "fade",
+    "slide",
+    "typescript",
+    "performant",
+    "lightweight"
   ],
   "repository": {
     "type": "git",
