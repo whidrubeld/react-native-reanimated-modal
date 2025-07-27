@@ -425,7 +425,7 @@ export const Modal: React.FC<ModalProps> = ({
 
   if (coverScreen && modalVisible) {
     return (
-      <View style={[styles.absolute, style]}>
+      <View style={[styles.absolute, styles.root, style]}>
         {renderBackdrop()}
         {renderContent()}
       </View>
