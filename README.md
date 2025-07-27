@@ -2,7 +2,12 @@
 
 A lightweight and scalable alternative to [react-native-modal](https://github.com/react-native-modal/react-native-modal), built with react-native-reanimated and react-native-gesture-handler. Based on React Native's vanilla Modal component, this library is designed for smooth animations, flexibility, and minimal footprint.
 
-## ✨ Benefits
+<p align="center">
+<img src="/.github/images/example.gif" height="500" />
+</p>
+
+
+## ✨ Features
 
 - **🚀 Performance**: Built with react-native-reanimated for 60fps animations that run on the UI thread
 - **🎨 Smooth Animations**: Supports both fade and slide animations with customizable durations
@@ -41,11 +46,26 @@ This library depends on the following peer dependencies:
 
 > **Note**: Make sure to follow the installation guides for both libraries, as they require additional platform-specific setup steps.
 
+### Important Setup
+
+Make sure to wrap your root App component with `gestureHandlerRootHOC` for gesture handling to work properly:
+
+```tsx
+import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
+
+const App = () => {
+  // Your app content
+};
+
+export default gestureHandlerRootHOC(App);
+```
+
 ## 🚀 Basic Usage
 
 ```tsx
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
+import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 import { Modal } from 'react-native-reanimated-modal';
 
 const App = () => {
@@ -82,6 +102,8 @@ const App = () => {
     </View>
   );
 };
+
+export default gestureHandlerRootHOC(App);
 ```
 
 ## 📖 API Documentation
@@ -115,7 +137,7 @@ const App = () => {
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `swipeDirection` | `SwipeDirection \| SwipeDirection[]` | `'down'` | Direction(s) to enable swipe-to-dismiss |
+| `swipeDirection` | `SwipeDirection \| SwipeDirection[]` | `'down'` | Direction(s) to enable swipe-to-dismiss. When array is provided, the first element determines the initial slide-in direction |
 | `swipeThreshold` | `number` | `100` | Distance in pixels to trigger dismiss |
 | `swipeEnabled` | `boolean` | `true` | Whether swipe gestures are enabled |
 
@@ -202,13 +224,15 @@ const MultiModalExample = () => {
   isVisible={isVisible}
   animation="slide"
   animationDuration={500}
-  swipeDirection={['down', 'right']}
+  swipeDirection={['down', 'right']} // Modal slides in from bottom, can be dismissed by swiping down or right
   swipeThreshold={150}
   onBackdropPress={() => setIsVisible(false)}
 >
   <YourContent />
 </Modal>
 ```
+
+> **Note**: When using an array for `swipeDirection`, the first element (`'down'` in this example) determines the initial slide-in animation direction, while all elements in the array define the available swipe-to-dismiss directions.
 
 ### Full Screen Modal
 
