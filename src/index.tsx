@@ -355,6 +355,7 @@ export const Modal: React.FC<ModalProps> = ({
     if (animation === 'fade') {
       return {
         opacity: progress.value,
+        transform: [{ translateX: 0 }, { translateY: 0 }],
       };
     } else {
       // slide
@@ -387,9 +388,7 @@ export const Modal: React.FC<ModalProps> = ({
 
   const renderContent = () => {
     const content = (
-      <Animated.View
-        style={[contentContainerStyle, contentAnimatedStyle, style]}
-      >
+      <Animated.View style={[contentContainerStyle, contentAnimatedStyle]}>
         {children}
       </Animated.View>
     );
