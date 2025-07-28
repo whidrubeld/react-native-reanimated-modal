@@ -1,4 +1,5 @@
 import { render, fireEvent, within } from '@testing-library/react-native';
+import { Text } from 'react-native';
 import { Modal } from '../index';
 
 describe('Modal', () => {
@@ -47,5 +48,5 @@ describe('Modal', () => {
 });
 
 function TestContent() {
-  return <>{'Test Modal Content'}</>;
+  return <Text>Test Modal Content</Text>;
 }

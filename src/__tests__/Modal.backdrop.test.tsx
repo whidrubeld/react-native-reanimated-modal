@@ -1,4 +1,5 @@
 import { render, fireEvent } from '@testing-library/react-native';
+import { Text } from 'react-native';
 import { Modal } from '../index';
 
 describe('Modal backdrop', () => {
@@ -32,5 +33,5 @@ describe('Modal backdrop', () => {
 });
 
 function TestContent() {
-  return <>{'Test Modal Content'}</>;
+  return <Text>Test Modal Content</Text>;
 }
