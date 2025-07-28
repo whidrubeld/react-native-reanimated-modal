@@ -1,6 +1,6 @@
 {
   "name": "react-native-reanimated-modal",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A lightweight and performant modal component. Designed for smooth animations, flexibility, and minimal footprint.",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
