@@ -72,14 +72,14 @@ import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 import { Modal } from 'react-native-reanimated-modal';
 
 const App = () => {
-  const [visiblt, setVisible] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Button title="Show Modal" onPress={() => setVisible(true)} />
 
       <Modal
-        visible={setVisible}
+        visible={visible}
         swipeDirection="down"
         onHide={() => setVisible(false)}
       >
