@@ -109,9 +109,9 @@ You can pass custom testID props to key elements for easier testing:
 
 | Prop              | Type     | Default             | Description                                 |
 |-------------------|----------|---------------------|---------------------------------------------|
-| `backdropTestID`  | string   | 'modal-backdrop'    | testID for the backdrop Pressable            |
-| `contentTestID`   | string   | 'modal-content'     | testID for the modal content (Animated.View) |
-| `containerTestID` | string   | 'modal-container'   | testID for the root container View           |
+| `backdropTestID`  | `string`   | `'modal-backdrop'`    | testID for the backdrop Pressable            |
+| `contentTestID`   | `string`   | `'modal-content'`     | testID for the modal content (Animated.View) |
+| `containerTestID` | `string`   | `'modal-container'`   | testID for the root container View           |
 
 These props are optional and help you write robust e2e/unit tests.
 
