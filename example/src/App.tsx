@@ -29,17 +29,17 @@ const App = () => {
         title="⬆️ Bottom Half example"
         onPress={() => setBottomHalfVisible(true)}
       />
-      <BasicModal isVisible={isBasicVisible} setVisible={setBasicVisible} />
+      <BasicModal visible={isBasicVisible} setVisible={setBasicVisible} />
       <MultipleModal
-        isVisible={isMultipleVisible}
+        visible={isMultipleVisible}
         setVisible={setMultipleVisible}
       />
       <FullscreenModal
-        isVisible={isFullscreenVisible}
+        visible={isFullscreenVisible}
         setVisible={setFullscreenVisible}
       />
       <BottomHalfModal
-        isVisible={isBottomHalfVisible}
+        visible={isBottomHalfVisible}
         setVisible={setBottomHalfVisible}
       />
     </View>

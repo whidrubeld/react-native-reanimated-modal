@@ -72,16 +72,16 @@ import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 import { Modal } from 'react-native-reanimated-modal';
 
 const App = () => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [visiblt, setVisible] = useState(false);
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Button title="Show Modal" onPress={() => setIsVisible(true)} />
+      <Button title="Show Modal" onPress={() => setVisible(true)} />
 
       <Modal
-        isVisible={isVisible}
+        visible={setVisible}
         swipeDirection="down"
-        onHide={() => setIsVisible(false)}
+        onHide={() => setVisible(false)}
       >
         <View style={{
           backgroundColor: 'white',
@@ -90,7 +90,7 @@ const App = () => {
           margin: 20
         }}>
           <Text>Hello from Modal!</Text>
-          <Button title="Close" onPress={() => setIsVisible(false)} />
+          <Button title="Close" onPress={() => setVisible(false)} />
         </View>
       </Modal>
     </View>
@@ -106,7 +106,7 @@ export default gestureHandlerRootHOC(App);
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `isVisible` | `boolean` | `false` | Controls the visibility of the modal |
+| `visible` | `boolean` | `false` | Controls the visibility of the modal |
 | `children` | `React.ReactNode` | - | Content to render inside the modal |
 | `style` | `StyleProp<ViewStyle>` | - | Style for the modal container |
 | `contentContainerStyle` | `StyleProp<ViewStyle>` | - | Style for the content wrapper |
@@ -188,7 +188,7 @@ const MultiModalExample = () => {
   return withOverlay(
     <>
       <Modal
-        isVisible={firstModalVisible}
+        visible={firstModalVisible}
         coverScreen // Important: excludes native Modal usage
         onBackdropPress={() => setFirstModalVisible(false)}
       >
@@ -196,7 +196,7 @@ const MultiModalExample = () => {
       </Modal>
 
       <Modal
-        isVisible={secondModalVisible}
+        visible={secondModalVisible}
         coverScreen // Important: excludes native Modal usage
         onBackdropPress={() => setSecondModalVisible(false)}
       >
@@ -215,12 +215,12 @@ const MultiModalExample = () => {
 
 ```tsx
 <Modal
-  isVisible={isVisible}
+  visible={visible}
   animation="slide"
   animationDuration={500}
   swipeDirection={['down', 'right']} // Modal slides in from bottom, can be dismissed by swiping down or right
   swipeThreshold={150}
-  onBackdropPress={() => setIsVisible(false)}
+  onBackdropPress={() => setVisible(false)}
 >
   <YourContent />
 </Modal>
@@ -232,7 +232,7 @@ const MultiModalExample = () => {
 
 ```tsx
 <Modal
-  isVisible={isVisible}
+  visible={visible}
   contentContainerStyle={{ flex: 1 }}
 >
   <YourFullScreenContent />

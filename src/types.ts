@@ -16,7 +16,7 @@ export interface ModalProps
       | 'navigationBarTranslucent'
       | 'statusBarTranslucent'
     > {
-  isVisible: boolean;
+  visible: boolean;
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;

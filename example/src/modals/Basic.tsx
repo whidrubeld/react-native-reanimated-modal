@@ -3,15 +3,15 @@ import { Modal } from 'react-native-reanimated-modal';
 import styles from './styles';
 
 export default function BasicModal({
-  isVisible,
+  visible,
   setVisible,
 }: {
-  isVisible: boolean;
+  visible: boolean;
   setVisible: (visible: boolean) => void;
 }) {
   return (
     <Modal
-      isVisible={isVisible}
+      visible={visible}
       animation="fade"
       swipeDirection={['down', 'left', 'right', 'up']}
       onHide={() => setVisible(false)}

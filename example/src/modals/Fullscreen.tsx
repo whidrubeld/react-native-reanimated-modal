@@ -1,17 +1,18 @@
+/* eslint-disable react-native/no-inline-styles */
 import { Button, Text, View } from 'react-native';
 import { Modal } from 'react-native-reanimated-modal';
 import styles from './styles';
 
 export default function FullscreenModal({
-  isVisible,
+  visible,
   setVisible,
 }: {
-  isVisible: boolean;
+  visible: boolean;
   setVisible: (visible: boolean) => void;
 }) {
   return (
     <Modal
-      isVisible={isVisible}
+      visible={visible}
       onHide={() => setVisible(false)}
       contentContainerStyle={{ flex: 1 }}
     >

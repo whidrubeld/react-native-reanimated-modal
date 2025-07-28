@@ -1,21 +1,22 @@
+/* eslint-disable react-native/no-inline-styles */
 import { useState } from 'react';
 import { Button, Text, View } from 'react-native';
 import { Modal } from 'react-native-reanimated-modal';
 import styles from './styles';
 
 export default function MultipleModal({
-  isVisible,
+  visible,
   setVisible,
 }: {
-  isVisible: boolean;
+  visible: boolean;
   setVisible: (visible: boolean) => void;
 }) {
-  const [isSecondaryVisible, setSecondaryVisible] = useState(false);
+  const [secondaryVisible, setSecondaryVisible] = useState(false);
 
   return (
     <>
       <Modal
-        isVisible={isVisible}
+        visible={visible}
         coverScreen
         swipeDirection={['up', 'down', 'left', 'right']}
         onHide={() => setVisible(false)}
@@ -36,7 +37,7 @@ export default function MultipleModal({
         </View>
       </Modal>
       <Modal
-        isVisible={isSecondaryVisible}
+        visible={secondaryVisible}
         coverScreen
         swipeDirection={['left', 'down', 'right', 'up']}
         onHide={() => setSecondaryVisible(false)}

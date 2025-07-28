@@ -1,19 +1,20 @@
+/* eslint-disable react-native/no-inline-styles */
 import { Button, Text, useWindowDimensions, View } from 'react-native';
 import { Modal } from 'react-native-reanimated-modal';
 import styles from './styles';
 
 export default function BottomHalfModal({
-  isVisible,
+  visible,
   setVisible,
 }: {
-  isVisible: boolean;
+  visible: boolean;
   setVisible: (visible: boolean) => void;
 }) {
   const { height } = useWindowDimensions();
 
   return (
     <Modal
-      isVisible={isVisible}
+      visible={visible}
       swipeDirection="down"
       style={{ justifyContent: 'flex-end' }}
       swipeThreshold={150}

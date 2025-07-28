@@ -25,7 +25,7 @@ const DEFAULT_SWIPE_THRESHOLD = 100;
 export * from './types';
 
 export const Modal: React.FC<ModalProps> = ({
-  isVisible = false,
+  visible = false,
   children,
   style,
   contentContainerStyle,
@@ -288,15 +288,15 @@ export const Modal: React.FC<ModalProps> = ({
       }
     });
 
-  // Open/close on isVisible changes
+  // Open/close on visible changes
   useEffect(() => {
     if (isClosingViaSwipe.value) return;
-    if (isVisible && !modalVisible) {
+    if (visible && !modalVisible) {
       openModal();
-    } else if (!isVisible && modalVisible) {
+    } else if (!visible && modalVisible) {
       closeModal();
     }
-  }, [isVisible, modalVisible, openModal, closeModal, isClosingViaSwipe]);
+  }, [visible, modalVisible, openModal, closeModal, isClosingViaSwipe]);
 
   // Detect changes in the animation prop while modal is open
   useEffect(() => {
@@ -314,7 +314,7 @@ export const Modal: React.FC<ModalProps> = ({
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       () => {
-        if (isVisible) {
+        if (visible) {
           handleClose();
           return true;
         }
@@ -322,7 +322,7 @@ export const Modal: React.FC<ModalProps> = ({
       }
     );
     return () => backHandler.remove();
-  }, [isVisible, handleClose]);
+  }, [visible, handleClose]);
 
   // Backdrop animation
   const backdropAnimatedStyle = useAnimatedStyle(() => {
