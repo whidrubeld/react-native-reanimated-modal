@@ -21,6 +21,11 @@ export interface ModalProps
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
 
+  // Test IDs
+  backdropTestID?: string;
+  contentTestID?: string;
+  containerTestID?: string;
+
   // Animation type
   animation?: ModalAnimation;
   animationDuration?: number;

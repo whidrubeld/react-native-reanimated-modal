@@ -53,6 +53,10 @@ export const Modal: React.FC<ModalProps> = ({
   onOrientationChange,
   statusBarTranslucent,
   supportedOrientations,
+  // testIDs
+  backdropTestID = 'modal-backdrop',
+  contentTestID = 'modal-content',
+  containerTestID = 'modal-container',
 }) => {
   const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
 
@@ -390,7 +394,10 @@ export const Modal: React.FC<ModalProps> = ({
 
   const renderContent = () => {
     const content = (
-      <Animated.View style={[contentContainerStyle, contentAnimatedStyle]}>
+      <Animated.View
+        testID={contentTestID}
+        style={[contentContainerStyle, contentAnimatedStyle]}
+      >
         {children}
       </Animated.View>
     );
@@ -404,6 +411,7 @@ export const Modal: React.FC<ModalProps> = ({
     if (!hasBackdrop) return null;
     return (
       <Pressable
+        testID={backdropTestID}
         style={styles.absolute}
         onPress={
           onBackdropPress
@@ -426,7 +434,10 @@ export const Modal: React.FC<ModalProps> = ({
 
   if (coverScreen && modalVisible) {
     return (
-      <View style={[styles.absolute, styles.root, style]}>
+      <View
+        testID={containerTestID}
+        style={[styles.absolute, styles.root, style]}
+      >
         {renderBackdrop()}
         {renderContent()}
       </View>
@@ -445,7 +456,7 @@ export const Modal: React.FC<ModalProps> = ({
       visible={modalVisible}
       onRequestClose={handleClose}
     >
-      <View style={[styles.root, style]}>
+      <View testID={containerTestID} style={[styles.root, style]}>
         {renderBackdrop()}
         {renderContent()}
       </View>
