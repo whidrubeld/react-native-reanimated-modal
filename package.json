@@ -113,6 +113,9 @@
     "modulePathIgnorePatterns": [
       "<rootDir>/example/node_modules",
       "<rootDir>/lib/"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/setupTests.js"
     ]
   },
   "commitlint": {
