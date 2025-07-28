@@ -1,23 +1,27 @@
-import { render, fireEvent } from '@testing-library/react-native';
+import { render, fireEvent, within } from '@testing-library/react-native';
 import { Modal } from '../index';
 
 describe('Modal', () => {
   it('does not render content when visible is false', () => {
-    const { queryByText } = render(
+    const { queryByTestId } = render(
       <Modal visible={false}>
         <TestContent />
       </Modal>
     );
-    expect(queryByText('Test Modal Content')).toBeNull();
+    // Контент не должен быть в дереве
+    expect(queryByTestId('modal-content')).toBeNull();
   });
 
   it('renders children when visible is true', () => {
-    const { getByText } = render(
+    const { getByTestId } = render(
       <Modal visible={true}>
         <TestContent />
       </Modal>
     );
-    expect(getByText('Test Modal Content')).toBeTruthy();
+    // Проверяем, что текст есть внутри modal-content
+    expect(
+      within(getByTestId('modal-content')).getByText('Test Modal Content')
+    ).toBeTruthy();
   });
 
   it('calls onBackdropPress when backdrop is pressed', () => {

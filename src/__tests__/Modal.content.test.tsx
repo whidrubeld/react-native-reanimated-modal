@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react-native';
+import { render, within } from '@testing-library/react-native';
 import { Modal } from '../index';
 
 describe('Modal content', () => {
@@ -8,7 +8,12 @@ describe('Modal content', () => {
         <TestContent />
       </Modal>
     );
-    expect(getByTestId('custom-content-test-id')).toBeTruthy();
+    // Проверяем, что текст есть внутри кастомного contentTestID
+    expect(
+      within(getByTestId('custom-content-test-id')).getByText(
+        'Test Modal Content'
+      )
+    ).toBeTruthy();
   });
 });
 
