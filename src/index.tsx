@@ -22,6 +22,8 @@ import type { ModalProps, SwipeDirection } from './types';
 const DEFAULT_ANIMATION_DURATION = 300;
 const DEFAULT_SWIPE_THRESHOLD = 100;
 
+export * from './types';
+
 export const Modal: React.FC<ModalProps> = ({
   isVisible = false,
   children,
