@@ -67,28 +67,21 @@ export default gestureHandlerRootHOC(App);
 
 ```tsx
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, Button } from 'react-native';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 import { Modal } from 'react-native-reanimated-modal';
 
 const App = () => {
   const [isVisible, setIsVisible] = useState(false);
 
-  const toggleModal = () => {
-    setIsVisible(!isVisible);
-  };
-
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <TouchableOpacity onPress={toggleModal}>
-        <Text>Show Modal</Text>
-      </TouchableOpacity>
+      <Button title="Show Modal" onPress={() => setIsVisible(true)} />
 
       <Modal
         isVisible={isVisible}
-        onBackdropPress={toggleModal}
-        animation="slide"
         swipeDirection="down"
+        onHide={() => setIsVisible(false)}
       >
         <View style={{
           backgroundColor: 'white',
@@ -97,9 +90,7 @@ const App = () => {
           margin: 20
         }}>
           <Text>Hello from Modal!</Text>
-          <TouchableOpacity onPress={toggleModal}>
-            <Text>Close Modal</Text>
-          </TouchableOpacity>
+          <Button title="Close" onPress={() => setIsVisible(false)} />
         </View>
       </Modal>
     </View>
