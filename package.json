@@ -116,6 +116,9 @@
     ],
     "setupFilesAfterEnv": [
       "<rootDir>/setupTests.js"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!(react-native-reanimated|react-native-gesture-handler)/)"
     ]
   },
   "commitlint": {
