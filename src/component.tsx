@@ -99,9 +99,6 @@ export const Modal: FC<ModalProps> = ({
     animationMode.value = AnimationMode.None;
   }, [progress, offsetX, offsetY, activeSwipeDirection, animationMode]);
 
-  // Complete swipe-close
-  // Корректно закрываем только через анимацию
-
   // Open with animation
   const handleOpen = useCallback(() => {
     if (animationMode.value !== AnimationMode.None) return;
