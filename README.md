@@ -120,6 +120,7 @@ These props are optional and help you write robust e2e/unit tests.
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `visible` | `boolean` | `false` | Controls the visibility of the modal |
+| `closable` | `boolean` | `true` | Whether the modal can be closed by user actions (backdrop press, swipe, hardware back). |
 | `children` | `React.ReactNode` | - | Content to render inside the modal |
 | `style` | `StyleProp<ViewStyle>` | - | Style for the modal container |
 | `contentContainerStyle` | `StyleProp<ViewStyle>` | - | Style for the content wrapper |
@@ -147,6 +148,13 @@ These props are optional and help you write robust e2e/unit tests.
 | `swipeDirection` | `SwipeDirection \| SwipeDirection[]` | `'down'` | Direction(s) to enable swipe-to-dismiss. When array is provided, the first element determines the initial slide-in direction |
 | `swipeThreshold` | `number` | `100` | Distance in pixels to trigger dismiss |
 | `swipeEnabled` | `boolean` | `true` | Whether swipe gestures are enabled |
+
+#### Bounce Props
+
+| Prop                     | Type           | Default                                    | Description                                                                                                                                                      |
+| ------------------------ | -------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bounceSpringConfig`     | `SpringConfig` | `{ stiffness: 200, dampingRatio: 0.5, duration: 7e2 }` | Spring config for bounce-back animation after failed swipe. Accepts the same shape as Reanimated's spring config.|
+| `bounceOpacityThreshold` | `number`       | `0.05` | Threshold for backdrop opacity correction during bounce. If difference between target and current opacity is less than this value, opacity is snapped to target. |
 
 #### Other Props
 
