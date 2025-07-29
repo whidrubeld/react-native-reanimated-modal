@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type FC,
-} from 'react';
+import { useCallback, useEffect, useMemo, useState, type FC } from 'react';
 import {
   BackHandler,
   Modal as RNModal,
@@ -26,6 +19,13 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import type { ModalProps, SwipeDirection } from './types';
+import { styles } from './styles';
+import {
+  DEFAULT_ANIMATION_DURATION,
+  DEFAULT_BOUNCE_OPACITY_THRESHOLD,
+  DEFAULT_BOUNCE_SPRING_CONFIG,
+  DEFAULT_SWIPE_THRESHOLD,
+} from './constants';
 
 enum AnimationMode {
   None = 'None',
@@ -34,13 +34,6 @@ enum AnimationMode {
   Bounce = 'Bounce',
   Close = 'Close',
 }
-import { styles } from './styles';
-import {
-  DEFAULT_ANIMATION_DURATION,
-  DEFAULT_BOUNCE_OPACITY_THRESHOLD,
-  DEFAULT_BOUNCE_SPRING_CONFIG,
-  DEFAULT_SWIPE_THRESHOLD,
-} from './constants';
 
 export const Modal: FC<ModalProps> = ({
   visible = false,
@@ -82,10 +75,6 @@ export const Modal: FC<ModalProps> = ({
 
   // Track the modal's actual visibility state
   const [modalVisible, setModalVisible] = useState(false);
-
-  // If the animation prop changes while the modal is open, we’ll need to reset
-  const prevAnimationRef = useRef(animation);
-  const prevAnimation = prevAnimationRef.current;
 
   // Shared values
   const progress = useSharedValue(0);
@@ -141,12 +130,10 @@ export const Modal: FC<ModalProps> = ({
     animationMode,
   ]);
 
-  const swipeAnimDone = useRef(0);
   const handleReset = useCallback(() => {
     animationMode.value = AnimationMode.None;
     setModalVisible(false);
     resetAnimationState();
-    swipeAnimDone.current = 0;
     if (onHide) runOnJS(onHide)();
   }, [onHide, resetAnimationState, animationMode]);
 
@@ -262,7 +249,7 @@ export const Modal: FC<ModalProps> = ({
               ? SCREEN_HEIGHT
               : 0;
 
-        swipeAnimDone.current = 0;
+        let counter = 0;
         offsetX.value = withTiming(
           finalX,
           {
@@ -270,8 +257,8 @@ export const Modal: FC<ModalProps> = ({
             easing: Easing.out(Easing.ease),
           },
           () => {
-            swipeAnimDone.current += 1;
-            if (swipeAnimDone.current === 2) {
+            counter += 1;
+            if (counter === 2) {
               runOnJS(handleReset)();
             }
           }
@@ -283,8 +270,8 @@ export const Modal: FC<ModalProps> = ({
             easing: Easing.out(Easing.ease),
           },
           () => {
-            swipeAnimDone.current += 1;
-            if (swipeAnimDone.current === 2) {
+            counter += 1;
+            if (counter === 2) {
               runOnJS(handleReset)();
             }
           }
@@ -335,17 +322,6 @@ export const Modal: FC<ModalProps> = ({
     },
     [visible, modalVisible, handleToggle]
   );
-
-  // Detect changes in the animation prop while modal is open
-  useEffect(() => {
-    if (modalVisible && prevAnimation !== animation) {
-      // If the modal is already open and we switch from slide <-> fade
-      // we reset and re-open with the new animation
-      resetAnimationState();
-      handleOpen();
-    }
-    prevAnimationRef.current = animation;
-  }, [animation, modalVisible, prevAnimation, resetAnimationState, handleOpen]);
 
   // Hardware back
   useEffect(() => {
