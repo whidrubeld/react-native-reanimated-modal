@@ -47,5 +47,4 @@ export interface ModalProps
   // Events
   onShow?: () => void;
   onHide?: () => void;
-  onRequestClose?: () => void;
 }

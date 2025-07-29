@@ -46,7 +46,6 @@ export const Modal: React.FC<ModalProps> = ({
   //
   onShow,
   onHide,
-  onRequestClose,
   //
   hardwareAccelerated,
   navigationBarTranslucent,
@@ -107,12 +106,6 @@ export const Modal: React.FC<ModalProps> = ({
     onHide?.();
     resetAnimationState();
   }, [onHide, resetAnimationState]);
-
-  // Close action
-  const handleClose = useCallback(() => {
-    if (onRequestClose) onRequestClose();
-    else completeSwipeClose();
-  }, [onRequestClose, completeSwipeClose]);
 
   // Open with animation
   const openModal = useCallback(() => {
@@ -265,7 +258,7 @@ export const Modal: React.FC<ModalProps> = ({
           finalY,
           { duration: animationDuration, easing: Easing.out(Easing.ease) },
           () => {
-            runOnJS(handleClose)();
+            runOnJS(completeSwipeClose)();
           }
         );
       } else {
@@ -319,14 +312,14 @@ export const Modal: React.FC<ModalProps> = ({
       'hardwareBackPress',
       () => {
         if (visible) {
-          handleClose();
+          completeSwipeClose();
           return true;
         }
         return false;
       }
     );
     return () => backHandler.remove();
-  }, [visible, handleClose]);
+  }, [visible, completeSwipeClose]);
 
   // Backdrop animation
   const backdropAnimatedStyle = useAnimatedStyle(() => {
@@ -413,13 +406,7 @@ export const Modal: React.FC<ModalProps> = ({
       <Pressable
         testID={backdropTestID}
         style={styles.absolute}
-        onPress={
-          onBackdropPress
-            ? onBackdropPress
-            : onRequestClose
-              ? onRequestClose
-              : closeModal
-        }
+        onPress={onBackdropPress ? onBackdropPress : closeModal}
       >
         <Animated.View
           style={[
@@ -454,7 +441,7 @@ export const Modal: React.FC<ModalProps> = ({
       // presentationStyle="overFullScreen"
       transparent
       visible={modalVisible}
-      onRequestClose={handleClose}
+      onRequestClose={completeSwipeClose}
     >
       <View testID={containerTestID} style={[styles.root, style]}>
         {renderBackdrop()}

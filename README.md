@@ -160,7 +160,6 @@ These props are optional and help you write robust e2e/unit tests.
 |------|------|-------------|
 | `onShow` | `() => void` | Called when modal appears |
 | `onHide` | `() => void` | Called when modal disappears |
-| `onRequestClose` | `() => void` | Called when modal requests to close (Android back button, etc.) |
 
 #### React Native Modal Props
 
