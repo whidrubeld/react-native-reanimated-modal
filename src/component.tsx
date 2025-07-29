@@ -22,12 +22,22 @@ import Animated, {
   useSharedValue,
   withTiming,
   withSpring,
+  useAnimatedReaction,
 } from 'react-native-reanimated';
 
 import type { ModalProps, SwipeDirection } from './types';
+
+enum AnimationMode {
+  None = 'None',
+  Open = 'Open',
+  Slide = 'Slide',
+  Bounce = 'Bounce',
+  Close = 'Close',
+}
 import { styles } from './styles';
 import {
   DEFAULT_ANIMATION_DURATION,
+  DEFAULT_SPRING_CONFIG,
   DEFAULT_SWIPE_THRESHOLD,
 } from './constants';
 
@@ -50,6 +60,7 @@ export const Modal: FC<ModalProps> = ({
   swipeThreshold = DEFAULT_SWIPE_THRESHOLD,
   swipeEnabled = true,
   //
+  springConfig = DEFAULT_SPRING_CONFIG,
   coverScreen = false,
   //
   onShow,
@@ -80,9 +91,7 @@ export const Modal: FC<ModalProps> = ({
   const offsetY = useSharedValue(0);
   const activeSwipeDirection = useSharedValue<SwipeDirection | null>(null);
 
-  const isAnimating = useSharedValue(false);
-  const isSwipeActive = useSharedValue(false);
-  const isClosingViaSwipe = useSharedValue(false);
+  const animationMode = useSharedValue(AnimationMode.None);
 
   // Directions
   const swipeDirections = useMemo(
@@ -96,39 +105,27 @@ export const Modal: FC<ModalProps> = ({
     offsetX.value = 0;
     offsetY.value = 0;
     activeSwipeDirection.value = null;
-    isSwipeActive.value = false;
-    isAnimating.value = false;
-    isClosingViaSwipe.value = false;
-  }, [
-    progress,
-    offsetX,
-    offsetY,
-    activeSwipeDirection,
-    isSwipeActive,
-    isAnimating,
-    isClosingViaSwipe,
-  ]);
+    animationMode.value = AnimationMode.None;
+  }, [progress, offsetX, offsetY, activeSwipeDirection, animationMode]);
 
   // Complete swipe-close
   // Корректно закрываем только через анимацию
 
   // Open with animation
   const handleOpen = useCallback(() => {
-    if (isAnimating.value) return;
+    if (animationMode.value !== AnimationMode.None) return;
     setModalVisible(true);
-    isAnimating.value = true;
+    animationMode.value = AnimationMode.Open;
 
     offsetX.value = 0;
     offsetY.value = 0;
     activeSwipeDirection.value = null;
-    isSwipeActive.value = false;
-    isClosingViaSwipe.value = false;
 
     progress.value = withTiming(
       1,
       { duration: animationDuration, easing: Easing.out(Easing.ease) },
       () => {
-        isAnimating.value = false;
+        animationMode.value = AnimationMode.None;
         if (onShow) runOnJS(onShow)();
       }
     );
@@ -136,28 +133,25 @@ export const Modal: FC<ModalProps> = ({
     animationDuration,
     progress,
     onShow,
-    isAnimating,
     offsetX,
     offsetY,
     activeSwipeDirection,
-    isSwipeActive,
-    isClosingViaSwipe,
+    animationMode,
   ]);
 
   const swipeAnimDone = useRef(0);
   const handleReset = useCallback(() => {
-    isAnimating.value = false;
+    animationMode.value = AnimationMode.None;
     setModalVisible(false);
     resetAnimationState();
     swipeAnimDone.current = 0;
     if (onHide) runOnJS(onHide)();
-  }, [isAnimating, onHide, resetAnimationState]);
+  }, [onHide, resetAnimationState, animationMode]);
 
   // Close with animation
   const handleClose = useCallback(() => {
-    if (isAnimating.value || isClosingViaSwipe.value || isSwipeActive.value)
-      return;
-    isAnimating.value = true;
+    if (animationMode.value !== AnimationMode.None) return;
+    animationMode.value = AnimationMode.Close;
 
     progress.value = withTiming(
       0,
@@ -166,14 +160,7 @@ export const Modal: FC<ModalProps> = ({
         runOnJS(handleReset)();
       }
     );
-  }, [
-    animationDuration,
-    progress,
-    isAnimating,
-    isClosingViaSwipe,
-    isSwipeActive,
-    handleReset,
-  ]);
+  }, [animationDuration, progress, animationMode, handleReset]);
 
   // Check if direction is allowed
   const isDirectionAllowed = (direction: SwipeDirection) => {
@@ -208,56 +195,58 @@ export const Modal: FC<ModalProps> = ({
   const panGesture = Gesture.Pan()
     .enabled(swipeEnabled && closable)
     .onBegin(() => {
-      if (isSwipeActive.value || isAnimating.value || isClosingViaSwipe.value)
-        return;
-      isSwipeActive.value = true;
-      activeSwipeDirection.value = null;
+      if (animationMode.value !== AnimationMode.None) return;
     })
     .onUpdate((event) => {
-      if (!isSwipeActive.value || isAnimating.value || isClosingViaSwipe.value)
-        return;
-
+      activeSwipeDirection.value = null;
       if (activeSwipeDirection.value == null) {
         if (Math.abs(event.translationX) > Math.abs(event.translationY)) {
           const dir = event.translationX > 0 ? 'right' : 'left';
           if (isDirectionAllowed(dir)) {
             activeSwipeDirection.value = dir;
+            animationMode.value = AnimationMode.Slide;
           }
         } else {
           const dir = event.translationY > 0 ? 'down' : 'up';
           if (isDirectionAllowed(dir)) {
             activeSwipeDirection.value = dir;
+            animationMode.value = AnimationMode.Slide;
           }
         }
       }
 
-      // Animate only one axis
-      if (activeSwipeDirection.value === 'left') {
-        offsetX.value = Math.min(0, event.translationX);
-        offsetY.value = 0;
-      } else if (activeSwipeDirection.value === 'right') {
-        offsetX.value = Math.max(0, event.translationX);
-        offsetY.value = 0;
-      } else if (activeSwipeDirection.value === 'up') {
-        offsetY.value = Math.min(0, event.translationY);
-        offsetX.value = 0;
-      } else if (activeSwipeDirection.value === 'down') {
-        offsetY.value = Math.max(0, event.translationY);
-        offsetX.value = 0;
+      switch (activeSwipeDirection.value) {
+        case 'left':
+          offsetX.value = Math.min(0, event.translationX);
+          offsetY.value = 0;
+          break;
+        case 'right':
+          offsetX.value = Math.max(0, event.translationX);
+          offsetY.value = 0;
+          break;
+        case 'up':
+          offsetY.value = Math.min(0, event.translationY);
+          offsetX.value = 0;
+          break;
+        case 'down':
+          offsetY.value = Math.max(0, event.translationY);
+          offsetX.value = 0;
+          break;
       }
     })
     .onEnd(() => {
-      if (!isSwipeActive.value || !activeSwipeDirection.value) {
-        isSwipeActive.value = false;
+      if (
+        animationMode.value !== AnimationMode.Slide ||
+        !activeSwipeDirection.value
+      ) {
+        animationMode.value = AnimationMode.None;
         return;
       }
 
       const swipeProg = calculateSwipeProgress(offsetX.value, offsetY.value);
       if (swipeProg >= 1) {
         // Close via swipe
-        isSwipeActive.value = false;
-        isClosingViaSwipe.value = true;
-
+        animationMode.value = AnimationMode.Close;
         const finalX =
           activeSwipeDirection.value === 'left'
             ? -SCREEN_WIDTH
@@ -271,7 +260,6 @@ export const Modal: FC<ModalProps> = ({
               ? SCREEN_HEIGHT
               : 0;
 
-        // Счётчик завершения обеих анимаций
         swipeAnimDone.current = 0;
         offsetX.value = withTiming(
           finalX,
@@ -301,34 +289,50 @@ export const Modal: FC<ModalProps> = ({
         );
       } else {
         // Bounce back
-        const springConfig = {
-          damping: 11,
-          stiffness: 100,
-          mass: 0.7,
-          restSpeedThreshold: 0.01,
-        };
-
-        if (
-          activeSwipeDirection.value === 'left' ||
-          activeSwipeDirection.value === 'right'
-        ) {
-          offsetX.value = withSpring(0, springConfig, () => {
-            isSwipeActive.value = false;
-          });
-        } else {
-          offsetY.value = withSpring(0, springConfig, () => {
-            isSwipeActive.value = false;
-          });
+        animationMode.value = AnimationMode.Bounce;
+        switch (activeSwipeDirection.value) {
+          case 'left':
+          case 'right':
+            offsetX.value = withSpring(0, springConfig, () => {
+              animationMode.value = AnimationMode.None;
+              activeSwipeDirection.value = null;
+            });
+            break;
+          case 'up':
+          case 'down':
+            offsetY.value = withSpring(0, springConfig, () => {
+              animationMode.value = AnimationMode.None;
+              activeSwipeDirection.value = null;
+            });
+            break;
         }
       }
     });
 
+  const handleToggle = useCallback(
+    (mode: AnimationMode, isVisible: boolean, isModalVisible: boolean) => {
+      if (mode !== AnimationMode.None) return;
+      if (isVisible && !isModalVisible) handleOpen();
+      else if (!isVisible && isModalVisible) handleClose();
+    },
+    [handleClose, handleOpen]
+  );
+
   // Open/close on visible changes
   useEffect(() => {
-    if (isClosingViaSwipe.value) return;
-    if (visible && !modalVisible) handleOpen();
-    else if (!visible && modalVisible) handleClose();
-  }, [visible, modalVisible, handleOpen, handleClose, isClosingViaSwipe]);
+    handleToggle(animationMode.value, visible, modalVisible);
+  }, [visible, modalVisible, handleToggle, animationMode]);
+
+  // Реакция на изменение isAnimating.value из анимаций (shared value)
+  useAnimatedReaction(
+    () => animationMode.value,
+    (anim, prev) => {
+      if (anim !== prev) {
+        runOnJS(handleToggle)(anim, visible, modalVisible);
+      }
+    },
+    [visible, modalVisible, handleToggle]
+  );
 
   // Detect changes in the animation prop while modal is open
   useEffect(() => {
@@ -360,10 +364,7 @@ export const Modal: FC<ModalProps> = ({
   // Backdrop animation
   const backdropAnimatedStyle = useAnimatedStyle(() => {
     let swipeFade = 0;
-    if (
-      (isSwipeActive.value || isClosingViaSwipe.value) &&
-      activeSwipeDirection.value
-    ) {
+    if (activeSwipeDirection.value) {
       let fullSwipeDistance = 1;
       let offset = 0;
       switch (activeSwipeDirection.value) {
@@ -380,7 +381,13 @@ export const Modal: FC<ModalProps> = ({
       }
       swipeFade = Math.min(1, Math.max(0, offset / fullSwipeDistance));
     }
-    const baseOpacity = backdropOpacity * (1 - swipeFade);
+    let baseOpacity = backdropOpacity * (1 - swipeFade);
+    if (
+      animationMode.value === AnimationMode.Bounce &&
+      backdropOpacity - baseOpacity <= 0.05
+    ) {
+      baseOpacity = backdropOpacity;
+    }
     return {
       opacity: interpolate(progress.value, [0, 1], [0, baseOpacity]),
     };
@@ -388,11 +395,7 @@ export const Modal: FC<ModalProps> = ({
 
   // Content animation
   const contentAnimatedStyle = useAnimatedStyle(() => {
-    // If swiping, always use offsets (slide)
-    if (
-      (isSwipeActive.value || isClosingViaSwipe.value) &&
-      activeSwipeDirection.value
-    ) {
+    if (activeSwipeDirection.value) {
       const baseOpacity = animation === 'fade' ? progress.value : 1;
       return {
         opacity: baseOpacity,
@@ -403,7 +406,7 @@ export const Modal: FC<ModalProps> = ({
       };
     }
 
-    // Otherwise respect the chosen animation
+    // Иначе — обычная анимация
     if (animation === 'fade') {
       return {
         opacity: progress.value,

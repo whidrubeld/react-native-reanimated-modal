@@ -4,6 +4,7 @@ import type {
   StyleProp,
   ViewStyle,
 } from 'react-native';
+import type { SpringConfig } from 'react-native-reanimated/lib/typescript/animation/springUtils';
 
 export type ModalAnimation = 'fade' | 'slide';
 export type SwipeDirection = 'up' | 'down' | 'left' | 'right';
@@ -43,6 +44,7 @@ export interface ModalProps
   swipeEnabled?: boolean;
 
   // Others
+  springConfig?: SpringConfig;
   coverScreen?: boolean; // If true, covers the entire screen
 
   // Events
