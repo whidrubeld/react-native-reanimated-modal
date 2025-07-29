@@ -144,10 +144,12 @@ export const Modal: FC<ModalProps> = ({
     isClosingViaSwipe,
   ]);
 
+  const swipeAnimDone = useRef(0);
   const handleReset = useCallback(() => {
     isAnimating.value = false;
     setModalVisible(false);
     resetAnimationState();
+    swipeAnimDone.current = 0;
     if (onHide) runOnJS(onHide)();
   }, [isAnimating, onHide, resetAnimationState]);
 
@@ -266,15 +268,32 @@ export const Modal: FC<ModalProps> = ({
               ? SCREEN_HEIGHT
               : 0;
 
-        offsetX.value = withTiming(finalX, {
-          duration: animationDuration,
-          easing: Easing.out(Easing.ease),
-        });
+        // Счётчик завершения обеих анимаций
+        swipeAnimDone.current = 0;
+        offsetX.value = withTiming(
+          finalX,
+          {
+            duration: animationDuration,
+            easing: Easing.out(Easing.ease),
+          },
+          () => {
+            swipeAnimDone.current += 1;
+            if (swipeAnimDone.current === 2) {
+              runOnJS(handleReset)();
+            }
+          }
+        );
         offsetY.value = withTiming(
           finalY,
-          { duration: animationDuration, easing: Easing.out(Easing.ease) },
+          {
+            duration: animationDuration,
+            easing: Easing.out(Easing.ease),
+          },
           () => {
-            runOnJS(handleReset)();
+            swipeAnimDone.current += 1;
+            if (swipeAnimDone.current === 2) {
+              runOnJS(handleReset)();
+            }
           }
         );
       } else {
@@ -337,11 +356,28 @@ export const Modal: FC<ModalProps> = ({
 
   // Backdrop animation
   const backdropAnimatedStyle = useAnimatedStyle(() => {
-    let localProgress = 0;
-    if (isSwipeActive.value || isClosingViaSwipe.value) {
-      localProgress = calculateSwipeProgress(offsetX.value, offsetY.value);
+    let swipeFade = 0;
+    if (
+      (isSwipeActive.value || isClosingViaSwipe.value) &&
+      activeSwipeDirection.value
+    ) {
+      let fullSwipeDistance = 1;
+      let offset = 0;
+      switch (activeSwipeDirection.value) {
+        case 'left':
+        case 'right':
+          fullSwipeDistance = SCREEN_WIDTH;
+          offset = Math.abs(offsetX.value);
+          break;
+        case 'up':
+        case 'down':
+          fullSwipeDistance = SCREEN_HEIGHT;
+          offset = Math.abs(offsetY.value);
+          break;
+      }
+      swipeFade = Math.min(1, Math.max(0, offset / fullSwipeDistance));
     }
-    const baseOpacity = backdropOpacity * (1 - localProgress);
+    const baseOpacity = backdropOpacity * (1 - swipeFade);
     return {
       opacity: interpolate(progress.value, [0, 1], [0, baseOpacity]),
     };
