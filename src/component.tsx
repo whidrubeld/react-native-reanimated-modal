@@ -206,7 +206,8 @@ export const Modal: FC<ModalProps> = ({
   const panGesture = Gesture.Pan()
     .enabled(swipeEnabled && closable)
     .onBegin(() => {
-      if (isAnimating.value || isClosingViaSwipe.value) return;
+      if (isSwipeActive.value || isAnimating.value || isClosingViaSwipe.value)
+        return;
       isSwipeActive.value = true;
       activeSwipeDirection.value = null;
     })
