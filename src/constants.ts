@@ -1,0 +1,2 @@
+export const DEFAULT_ANIMATION_DURATION = 3e2;
+export const DEFAULT_SWIPE_THRESHOLD = 1e2;
