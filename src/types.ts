@@ -43,8 +43,11 @@ export interface ModalProps
   swipeThreshold?: number; // in pixels
   swipeEnabled?: boolean;
 
+  // Bounce
+  bounceSpringConfig?: SpringConfig;
+  bounceOpacityThreshold?: number; // Opacity threshold for bounce effect
+
   // Others
-  springConfig?: SpringConfig;
   coverScreen?: boolean; // If true, covers the entire screen
 
   // Events

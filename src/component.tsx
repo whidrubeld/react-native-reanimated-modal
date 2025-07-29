@@ -37,7 +37,8 @@ enum AnimationMode {
 import { styles } from './styles';
 import {
   DEFAULT_ANIMATION_DURATION,
-  DEFAULT_SPRING_CONFIG,
+  DEFAULT_BOUNCE_OPACITY_THRESHOLD,
+  DEFAULT_BOUNCE_SPRING_CONFIG,
   DEFAULT_SWIPE_THRESHOLD,
 } from './constants';
 
@@ -60,7 +61,8 @@ export const Modal: FC<ModalProps> = ({
   swipeThreshold = DEFAULT_SWIPE_THRESHOLD,
   swipeEnabled = true,
   //
-  springConfig = DEFAULT_SPRING_CONFIG,
+  bounceSpringConfig = DEFAULT_BOUNCE_SPRING_CONFIG,
+  bounceOpacityThreshold = DEFAULT_BOUNCE_OPACITY_THRESHOLD,
   coverScreen = false,
   //
   onShow,
@@ -293,14 +295,14 @@ export const Modal: FC<ModalProps> = ({
         switch (activeSwipeDirection.value) {
           case 'left':
           case 'right':
-            offsetX.value = withSpring(0, springConfig, () => {
+            offsetX.value = withSpring(0, bounceSpringConfig, () => {
               animationMode.value = AnimationMode.None;
               activeSwipeDirection.value = null;
             });
             break;
           case 'up':
           case 'down':
-            offsetY.value = withSpring(0, springConfig, () => {
+            offsetY.value = withSpring(0, bounceSpringConfig, () => {
               animationMode.value = AnimationMode.None;
               activeSwipeDirection.value = null;
             });
@@ -384,7 +386,7 @@ export const Modal: FC<ModalProps> = ({
     let baseOpacity = backdropOpacity * (1 - swipeFade);
     if (
       animationMode.value === AnimationMode.Bounce &&
-      backdropOpacity - baseOpacity <= 0.05
+      backdropOpacity - baseOpacity <= bounceOpacityThreshold
     ) {
       baseOpacity = backdropOpacity;
     }
