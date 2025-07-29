@@ -155,7 +155,8 @@ export const Modal: FC<ModalProps> = ({
 
   // Close with animation
   const handleClose = useCallback(() => {
-    if (isAnimating.value || isClosingViaSwipe.value) return;
+    if (isAnimating.value || isClosingViaSwipe.value || isSwipeActive.value)
+      return;
     isAnimating.value = true;
 
     progress.value = withTiming(
@@ -170,6 +171,7 @@ export const Modal: FC<ModalProps> = ({
     progress,
     isAnimating,
     isClosingViaSwipe,
+    isSwipeActive,
     handleReset,
   ]);
 
