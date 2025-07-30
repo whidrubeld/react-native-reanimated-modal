@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useState, type FC } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type FC,
+  type JSX,
+} from 'react';
 import {
   BackHandler,
   Modal as RNModal,
@@ -27,6 +34,10 @@ import {
   DEFAULT_SWIPE_THRESHOLD,
 } from './constants';
 
+/**
+ * Animation state for the modal.
+ * @enum {string}
+ */
 enum AnimationMode {
   None = 'None',
   Open = 'Open',
@@ -35,6 +46,41 @@ enum AnimationMode {
   Close = 'Close',
 }
 
+/**
+ * Modal component with smooth, customizable animations and gesture support.
+ * Built on top of React Native's Modal, Reanimated, and Gesture Handler.
+ *
+ * @component
+ * @param {object} props - Modal props
+ * @param {boolean} [props.visible=false] - Controls the visibility of the modal.
+ * @param {boolean} [props.closable=true] - Whether the modal can be closed by user actions (backdrop press, swipe, hardware back).
+ * @param {React.ReactNode} props.children - Content to render inside the modal.
+ * @param {StyleProp<ViewStyle>} [props.style] - Style for the modal container.
+ * @param {StyleProp<ViewStyle>} [props.contentContainerStyle] - Style for the content wrapper.
+ * @param {'fade'|'slide'} [props.animation='slide'] - Animation type for modal appearance.
+ * @param {number} [props.animationDuration=300] - Duration of the open/close animation in milliseconds.
+ * @param {boolean} [props.hasBackdrop=true] - Whether to show a backdrop behind the modal.
+ * @param {string} [props.backdropColor='black'] - Color of the backdrop.
+ * @param {number} [props.backdropOpacity=0.7] - Opacity of the backdrop (0-1).
+ * @param {() => void} [props.onBackdropPress] - Callback when the backdrop is pressed.
+ * @param {SwipeDirection|SwipeDirection[]} [props.swipeDirection='down'] - Direction(s) to enable swipe-to-dismiss. If array, the first element determines the initial slide-in direction.
+ * @param {number} [props.swipeThreshold=100] - Distance in pixels to trigger dismiss by swipe.
+ * @param {boolean} [props.swipeEnabled=true] - Whether swipe gestures are enabled.
+ * @param {SpringConfig} [props.bounceSpringConfig] - Spring config for bounce-back animation after failed swipe. Accepts the same shape as Reanimated's spring config.
+ * @param {number} [props.bounceOpacityThreshold=0.05] - Threshold for backdrop opacity correction during bounce. If the difference between target and current opacity is less than this value, opacity is snapped to target.
+ * @param {boolean} [props.coverScreen=false] - If true, covers the entire screen without using native Modal.
+ * @param {() => void} [props.onShow] - Called when the modal appears.
+ * @param {() => void} [props.onHide] - Called when the modal disappears.
+ * @param {boolean} [props.hardwareAccelerated] - See React Native Modal docs.
+ * @param {boolean} [props.navigationBarTranslucent] - See React Native Modal docs.
+ * @param {() => void} [props.onOrientationChange] - See React Native Modal docs.
+ * @param {boolean} [props.statusBarTranslucent] - See React Native Modal docs.
+ * @param {string[]} [props.supportedOrientations] - See React Native Modal docs.
+ * @param {string} [props.backdropTestID='modal-backdrop'] - testID for the backdrop Pressable.
+ * @param {string} [props.contentTestID='modal-content'] - testID for the modal content (Animated.View).
+ * @param {string} [props.containerTestID='modal-container'] - testID for the root container View.
+ * @returns {JSX.Element}
+ */
 export const Modal: FC<ModalProps> = ({
   visible = false,
   closable = true,
@@ -73,10 +119,16 @@ export const Modal: FC<ModalProps> = ({
 }) => {
   const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
 
-  // Track the modal's actual visibility state
+  /**
+   * Tracks the modal's actual visibility state (native Modal open/close).
+   * @type {[boolean, Function]}
+   */
   const [modalVisible, setModalVisible] = useState(false);
 
-  // Shared values
+  /**
+   * Shared values for animation progress and gesture state.
+   * @type {Animated.SharedValue<number>}
+   */
   const progress = useSharedValue(0);
   const offsetX = useSharedValue(0);
   const offsetY = useSharedValue(0);
@@ -84,13 +136,19 @@ export const Modal: FC<ModalProps> = ({
 
   const animationMode = useSharedValue(AnimationMode.None);
 
-  // Directions
+  /**
+   * Allowed swipe directions for dismissing the modal.
+   * @type {SwipeDirection[]}
+   */
   const swipeDirections = useMemo(
     () => (Array.isArray(swipeDirection) ? swipeDirection : [swipeDirection]),
     [swipeDirection]
   );
 
-  // Reset all animation flags
+  /**
+   * Resets all animation and gesture state to initial values.
+   * @function
+   */
   const resetAnimationState = useCallback(() => {
     progress.value = 0;
     offsetX.value = 0;
@@ -99,8 +157,11 @@ export const Modal: FC<ModalProps> = ({
     animationMode.value = AnimationMode.None;
   }, [progress, offsetX, offsetY, activeSwipeDirection, animationMode]);
 
-  // Open with animation
-  const handleOpen = useCallback(() => {
+  /**
+   * Opens the modal with animation.
+   * @function
+   */
+  const handleOpen = useCallback<() => void>(() => {
     if (animationMode.value !== AnimationMode.None) return;
     setModalVisible(true);
     animationMode.value = AnimationMode.Open;
@@ -127,6 +188,10 @@ export const Modal: FC<ModalProps> = ({
     animationMode,
   ]);
 
+  /**
+   * Resets modal state and calls onHide after close animation.
+   * @function
+   */
   const handleReset = useCallback(() => {
     animationMode.value = AnimationMode.None;
     setModalVisible(false);
@@ -134,7 +199,10 @@ export const Modal: FC<ModalProps> = ({
     if (onHide) runOnJS(onHide)();
   }, [onHide, resetAnimationState, animationMode]);
 
-  // Close with animation
+  /**
+   * Closes the modal with animation.
+   * @function
+   */
   const handleClose = useCallback(() => {
     if (animationMode.value !== AnimationMode.None) return;
     animationMode.value = AnimationMode.Close;
@@ -148,13 +216,24 @@ export const Modal: FC<ModalProps> = ({
     );
   }, [animationDuration, progress, animationMode, handleReset]);
 
-  // Check if direction is allowed
-  const isDirectionAllowed = (direction: SwipeDirection) => {
+  /**
+   * Checks if a swipe direction is allowed for dismiss.
+   * @function
+   * @param {SwipeDirection} direction
+   * @returns {boolean}
+   */
+  const isDirectionAllowed = (direction: SwipeDirection): boolean => {
     'worklet';
     return swipeDirections.includes(direction);
   };
 
-  // Calculate swipe progress
+  /**
+   * Calculates swipe progress for gesture-based dismiss.
+   * @function
+   * @param {number} dx
+   * @param {number} dy
+   * @returns {number}
+   */
   const calculateSwipeProgress = (dx: number, dy: number): number => {
     'worklet';
     if (!activeSwipeDirection.value) return 0;
@@ -177,7 +256,9 @@ export const Modal: FC<ModalProps> = ({
     return Math.min(1, Math.max(0, dist / swipeThreshold));
   };
 
-  // Pan gesture
+  /**
+   * Pan gesture handler for swipe-to-dismiss.
+   */
   const panGesture = Gesture.Pan()
     .enabled(swipeEnabled && closable)
     .onBegin(() => {
@@ -295,6 +376,10 @@ export const Modal: FC<ModalProps> = ({
       }
     });
 
+  /**
+   * Handles modal open/close based on visibility and animation state.
+   * @function
+   */
   const handleToggle = useCallback(
     (mode: AnimationMode, isVisible: boolean, isModalVisible: boolean) => {
       if (mode !== AnimationMode.None) return;
@@ -304,10 +389,16 @@ export const Modal: FC<ModalProps> = ({
     [handleClose, handleOpen]
   );
 
+  /**
+   * Effect: open/close modal when visible prop changes.
+   */
   useEffect(() => {
     handleToggle(animationMode.value, visible, modalVisible);
   }, [visible, modalVisible, handleToggle, animationMode]);
 
+  /**
+   * Animated reaction: syncs animationMode changes with React state.
+   */
   useAnimatedReaction(
     () => animationMode.value,
     (anim, prev) => {
@@ -318,7 +409,9 @@ export const Modal: FC<ModalProps> = ({
     [visible, modalVisible, handleToggle]
   );
 
-  // Hardware back
+  /**
+   * Effect: handles hardware back button for Android.
+   */
   useEffect(() => {
     if (!closable) return;
     const backHandler = BackHandler.addEventListener(
@@ -334,7 +427,9 @@ export const Modal: FC<ModalProps> = ({
     return () => backHandler.remove();
   }, [visible, handleClose, closable]);
 
-  // Backdrop animation
+  /**
+   * Animated style for the backdrop (opacity, fade, bounce correction).
+   */
   const backdropAnimatedStyle = useAnimatedStyle(() => {
     let swipeFade = 0;
     if (activeSwipeDirection.value) {
@@ -366,7 +461,9 @@ export const Modal: FC<ModalProps> = ({
     };
   });
 
-  // Content animation
+  /**
+   * Animated style for the modal content (slide/fade/gesture transforms).
+   */
   const contentAnimatedStyle = useAnimatedStyle(() => {
     if (activeSwipeDirection.value) {
       const baseOpacity = animation === 'fade' ? progress.value : 1;
@@ -416,7 +513,11 @@ export const Modal: FC<ModalProps> = ({
     }
   });
 
-  const renderContent = () => {
+  /**
+   * Renders the modal content, optionally wrapped with gesture detector.
+   * @returns {JSX.Element}
+   */
+  const renderContent = (): JSX.Element | null => {
     const content = (
       <Animated.View
         testID={contentTestID}
@@ -431,7 +532,11 @@ export const Modal: FC<ModalProps> = ({
     return content;
   };
 
-  const renderBackdrop = () => {
+  /**
+   * Renders the backdrop component if enabled.
+   * @returns {JSX.Element|null}
+   */
+  const renderBackdrop = (): JSX.Element | null => {
     if (!hasBackdrop) return null;
     return (
       <Pressable
