@@ -263,9 +263,10 @@ export const Modal: FC<ModalProps> = ({
     .enabled(swipeEnabled && closable)
     .onBegin(() => {
       if (animationMode.value !== AnimationMode.None) return;
+      activeSwipeDirection.value = null; // Reset direction at the start of gesture
     })
     .onUpdate((event) => {
-      activeSwipeDirection.value = null;
+      // Only set direction once per gesture
       if (activeSwipeDirection.value == null) {
         if (Math.abs(event.translationX) > Math.abs(event.translationY)) {
           const dir = event.translationX > 0 ? 'right' : 'left';
@@ -282,6 +283,7 @@ export const Modal: FC<ModalProps> = ({
         }
       }
 
+      // Move only along the chosen direction
       switch (activeSwipeDirection.value) {
         case 'left':
           offsetX.value = Math.min(0, event.translationX);
