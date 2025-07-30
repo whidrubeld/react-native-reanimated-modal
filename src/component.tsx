@@ -568,6 +568,7 @@ export const Modal: FC<ModalProps> = ({
       <View
         testID={containerTestID}
         style={[styles.absolute, styles.root, style]}
+        pointerEvents="box-none"
       >
         {renderBackdrop()}
         {renderContent()}
@@ -587,7 +588,11 @@ export const Modal: FC<ModalProps> = ({
       visible={modalVisible}
       onRequestClose={handleClose}
     >
-      <View testID={containerTestID} style={[styles.root, style]}>
+      <View
+        testID={containerTestID}
+        style={[styles.root, style]}
+        pointerEvents="box-none"
+      >
         {renderBackdrop()}
         {renderContent()}
       </View>
