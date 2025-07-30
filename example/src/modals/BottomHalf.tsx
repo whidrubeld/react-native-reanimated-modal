@@ -27,11 +27,6 @@ export default function BottomHalfModal({
           paddingBottom: 8,
           alignItems: 'center',
           opacity: 0.5,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.15,
-          shadowRadius: 3,
-          elevation: 2,
         }}
       >
         <View
