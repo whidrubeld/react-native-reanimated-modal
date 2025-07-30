@@ -304,12 +304,10 @@ export const Modal: FC<ModalProps> = ({
     [handleClose, handleOpen]
   );
 
-  // Open/close on visible changes
   useEffect(() => {
     handleToggle(animationMode.value, visible, modalVisible);
   }, [visible, modalVisible, handleToggle, animationMode]);
 
-  // Реакция на изменение isAnimating.value из анимаций (shared value)
   useAnimatedReaction(
     () => animationMode.value,
     (anim, prev) => {
@@ -381,38 +379,40 @@ export const Modal: FC<ModalProps> = ({
       };
     }
 
-    // Иначе — обычная анимация
-    if (animation === 'fade') {
-      return {
-        opacity: progress.value,
-        transform: [{ translateX: 0 }, { translateY: 0 }],
-      };
-    } else {
-      // slide
-      const slideIn = (direction: SwipeDirection) => {
-        switch (direction) {
-          case 'up':
-            return { x: 0, y: -SCREEN_HEIGHT };
-          case 'down':
-            return { x: 0, y: SCREEN_HEIGHT };
-          case 'left':
-            return { x: -SCREEN_WIDTH, y: 0 };
-          case 'right':
-            return { x: SCREEN_WIDTH, y: 0 };
-        }
-      };
-      const entryPos = slideIn(swipeDirections[0] || 'down');
-      return {
-        opacity: 1,
-        transform: [
-          {
-            translateX: interpolate(progress.value, [0, 1], [entryPos.x, 0]),
-          },
-          {
-            translateY: interpolate(progress.value, [0, 1], [entryPos.y, 0]),
-          },
-        ],
-      };
+    switch (animation) {
+      case 'fade': {
+        return {
+          opacity: progress.value,
+          transform: [{ translateX: 0 }, { translateY: 0 }],
+        };
+      }
+      case 'slide':
+      default: {
+        const slideIn = (direction: SwipeDirection) => {
+          switch (direction) {
+            case 'up':
+              return { x: 0, y: -SCREEN_HEIGHT };
+            case 'down':
+              return { x: 0, y: SCREEN_HEIGHT };
+            case 'left':
+              return { x: -SCREEN_WIDTH, y: 0 };
+            case 'right':
+              return { x: SCREEN_WIDTH, y: 0 };
+          }
+        };
+        const entryPos = slideIn(swipeDirections[0] || 'down');
+        return {
+          opacity: 1,
+          transform: [
+            {
+              translateX: interpolate(progress.value, [0, 1], [entryPos.x, 0]),
+            },
+            {
+              translateY: interpolate(progress.value, [0, 1], [entryPos.y, 0]),
+            },
+          ],
+        };
+      }
     }
   });
 
