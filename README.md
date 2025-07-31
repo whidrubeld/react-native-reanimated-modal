@@ -33,7 +33,7 @@ A lightweight, scalable, flexible, and high-performance modal component.  Based 
 
 **📱 Scan & Play**
 
-<img src="https://github.com/WhidRubeld/react-native-reanimated-modal/blob/main/.github/images/expo-go-qr?raw=true" alt="Expo QR Code" width="200" height="200" />
+<img src="https://github.com/WhidRubeld/react-native-reanimated-modal/blob/main/.github/images/expo-go-qr.svg?raw=true" alt="Expo QR Code" width="200" height="200" />
 
 _Scan with your camera or Expo Go app_
 
