@@ -1,8 +1,6 @@
 [![downloads](https://img.shields.io/npm/dw/react-native-reanimated-modal.svg)](https://www.npmjs.com/package/react-native-reanimated-modal)
 [![npm](https://img.shields.io/npm/v/react-native-reanimated-modal.svg)](https://www.npmjs.com/package/react-native-reanimated-modal)
 
-# react-native-reanimated-modal
-
 A lightweight and scalable alternative to [react-native-modal](https://github.com/react-native-modal/react-native-modal), built with [react-native-reanimated](https://github.com/software-mansion/react-native-reanimated/) and [react-native-gesture-handler](https://github.com/software-mansion/react-native-gesture-handler). Based on React Native's vanilla Modal component, this library is designed for smooth animations, flexibility, and minimal footprint.
 
 <p align="center">
@@ -186,7 +184,7 @@ type SwipeDirection = 'up' | 'down' | 'left' | 'right';
 type ModalAnimation = 'fade' | 'slide';
 ```
 
-## 🔄 Multi-Modal Integration with React Navigation
+## 🔄 React Navigation Native Stack support
 
 When using multiple modals simultaneously with React Navigation Native Stack, you can leverage iOS's `FullWindowOverlay` for better layering:
 
