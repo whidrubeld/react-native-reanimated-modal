@@ -4,7 +4,7 @@ import {
   useMemo,
   useState,
   type FC,
-  type JSX,
+  type ReactNode,
 } from 'react';
 import {
   BackHandler,
@@ -63,6 +63,7 @@ enum AnimationMode {
  * @param {string} [props.backdropColor='black'] - Color of the backdrop.
  * @param {number} [props.backdropOpacity=0.7] - Opacity of the backdrop (0-1).
  * @param {() => void} [props.onBackdropPress] - Callback when the backdrop is pressed.
+ * @param {() => ReactNode} [props.renderBackdrop] - Custom backdrop renderer. If provided, it will be rendered instead of the default backdrop. Useful for BlurView, gradients, etc.
  * @param {SwipeDirection|SwipeDirection[]} [props.swipeDirection='down'] - Direction(s) to enable swipe-to-dismiss. If array, the first element determines the initial slide-in direction.
  * @param {number} [props.swipeThreshold=100] - Distance in pixels to trigger dismiss by swipe.
  * @param {boolean} [props.swipeEnabled=true] - Whether swipe gestures are enabled.
@@ -95,6 +96,7 @@ export const Modal: FC<ModalProps> = ({
   backdropColor = 'black',
   backdropOpacity = 0.7,
   onBackdropPress,
+  renderBackdrop,
   //
   swipeDirection = 'down',
   swipeThreshold = DEFAULT_SWIPE_THRESHOLD,
@@ -433,6 +435,7 @@ export const Modal: FC<ModalProps> = ({
    * Animated style for the backdrop (opacity, fade, bounce correction).
    */
   const backdropAnimatedStyle = useAnimatedStyle(() => {
+    const computedOpacity = !renderBackdrop ? backdropOpacity : 1;
     let swipeFade = 0;
     if (activeSwipeDirection.value) {
       let fullSwipeDistance = 1;
@@ -451,12 +454,12 @@ export const Modal: FC<ModalProps> = ({
       }
       swipeFade = Math.min(1, Math.max(0, offset / fullSwipeDistance));
     }
-    let baseOpacity = backdropOpacity * (1 - swipeFade);
+    let baseOpacity = computedOpacity * (1 - swipeFade);
     if (
       animationMode.value === AnimationMode.Bounce &&
-      backdropOpacity - baseOpacity <= bounceOpacityThreshold
+      computedOpacity - baseOpacity <= bounceOpacityThreshold
     ) {
-      baseOpacity = backdropOpacity;
+      baseOpacity = computedOpacity;
     }
     return {
       opacity: interpolate(progress.value, [0, 1], [0, baseOpacity]),
@@ -517,9 +520,9 @@ export const Modal: FC<ModalProps> = ({
 
   /**
    * Renders the modal content, optionally wrapped with gesture detector.
-   * @returns {JSX.Element}
+   * @returns {ReactNode}
    */
-  const renderContent = (): JSX.Element | null => {
+  const renderContent = (): ReactNode => {
     const content = (
       <Animated.View
         testID={contentTestID}
@@ -535,10 +538,10 @@ export const Modal: FC<ModalProps> = ({
   };
 
   /**
-   * Renders the backdrop component if enabled.
-   * @returns {JSX.Element|null}
+   * Renders the backdrop component if enabled or custom.
+   * @returns {ReactNode|null}
    */
-  const renderBackdrop = (): JSX.Element | null => {
+  const renderBackdropInternal = (): ReactNode | null => {
     if (!hasBackdrop) return null;
     return (
       <Pressable
@@ -555,10 +558,12 @@ export const Modal: FC<ModalProps> = ({
         <Animated.View
           style={[
             styles.absolute,
-            { backgroundColor: backdropColor },
+            !renderBackdrop && { backgroundColor: backdropColor },
             backdropAnimatedStyle,
           ]}
-        />
+        >
+          {renderBackdrop ? renderBackdrop() : null}
+        </Animated.View>
       </Pressable>
     );
   };
@@ -570,7 +575,7 @@ export const Modal: FC<ModalProps> = ({
         style={[styles.absolute, styles.root, style]}
         pointerEvents="box-none"
       >
-        {renderBackdrop()}
+        {renderBackdropInternal()}
         {renderContent()}
       </View>
     );
@@ -593,7 +598,7 @@ export const Modal: FC<ModalProps> = ({
         style={[styles.root, style]}
         pointerEvents="box-none"
       >
-        {renderBackdrop()}
+        {renderBackdropInternal()}
         {renderContent()}
       </View>
     </RNModal>

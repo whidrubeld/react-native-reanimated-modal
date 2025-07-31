@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type {
   ModalPropsAndroid,
   ModalPropsIOS,
@@ -19,7 +20,7 @@ export interface ModalProps
     > {
   visible: boolean;
   closable?: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
 
@@ -36,6 +37,7 @@ export interface ModalProps
   hasBackdrop?: boolean;
   backdropColor?: string;
   backdropOpacity?: number;
+  renderBackdrop?: () => ReactNode;
   onBackdropPress?: () => void;
 
   // Swipe
