@@ -1,5 +1,5 @@
 [![documentation](https://img.shields.io/badge/documentation-blue.svg)](https://whidrubeld.github.io/react-native-reanimated-modal/)
-![npm bundle size](https://img.shields.io/bundlephobia/min/react-native-reanimated-modal)
+[![npm bundle size](https://img.shields.io/bundlephobia/min/react-native-reanimated-modal)](https://www.npmjs.com/package/react-native-reanimated-modal)
 
 A lightweight, scalable, flexible, and high-performance modal component.  Based on the vanilla [Modal](https://reactnative.dev/docs/modal) component for maximum compatibility and native feel. Built with [react-native-reanimated](https://github.com/software-mansion/react-native-reanimated/) and [react-native-gesture-handler](https://github.com/software-mansion/react-native-gesture-handler).
 
