@@ -3,10 +3,7 @@
 
 A lightweight, scalable, flexible, and high-performance modal component.  Based on the vanilla [Modal](https://reactnative.dev/docs/modal) component for maximum compatibility and native feel. Built with [react-native-reanimated](https://github.com/software-mansion/react-native-reanimated/) and [react-native-gesture-handler](https://github.com/software-mansion/react-native-gesture-handler).
 
-<p align="center">
 <img src="https://github.com/WhidRubeld/react-native-reanimated-modal/blob/main/.github/images/example.gif?raw=true" width="300" alt="React Native Reanimated Modal Demo" />
-</p>
-
 
 ## ✨ Features
 
