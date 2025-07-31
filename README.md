@@ -1,5 +1,6 @@
+[![documentation](https://img.shields.io/badge/documentation-blue.svg)](https://whidrubeld.github.io/react-native-reanimated-modal/)
+![npm bundle size](https://img.shields.io/bundlephobia/min/react-native-reanimated-modal)
 [![downloads](https://img.shields.io/npm/dw/react-native-reanimated-modal.svg)](https://www.npmjs.com/package/react-native-reanimated-modal)
-[![npm](https://img.shields.io/npm/v/react-native-reanimated-modal.svg)](https://www.npmjs.com/package/react-native-reanimated-modal)
 
 A lightweight, scalable, flexible, and high-performance modal component.  Based on the vanilla [Modal](https://reactnative.dev/docs/modal) component for maximum compatibility and native feel. Built with [react-native-reanimated](https://github.com/software-mansion/react-native-reanimated/) and [react-native-gesture-handler](https://github.com/software-mansion/react-native-gesture-handler).
 
@@ -13,7 +14,7 @@ A lightweight, scalable, flexible, and high-performance modal component.  Based 
 - **🚀 Performance**: Built with react-native-reanimated for 60fps animations that run on the UI thread
 - **🎨 Smooth Animations**: Supports both fade and slide animations with customizable durations
 - **👆 Gesture Support**: Interactive swipe-to-dismiss in any direction (up, down, left, right)
-- **🪶 Lightweight**: Minimal dependencies and smaller bundle size compared to alternatives (**13KB**)
+- **🪶 Lightweight**: Minimal dependencies and smaller bundle size compared to alternatives
 - **📱 Native Feel**: Uses React Native's Modal component as foundation for platform consistency
 - **🔧 Flexible**: Highly customizable with extensive prop options
 - **📚 TypeScript**: Full TypeScript support out of the box
