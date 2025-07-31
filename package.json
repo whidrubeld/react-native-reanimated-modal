@@ -38,7 +38,8 @@
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "clean": "del-cli lib",
     "prepare": "bob build",
-    "release": "release-it --only-version"
+    "release": "release-it --only-version",
+    "docs": "typedoc"
   },
   "keywords": [
     "react-native",
@@ -96,6 +97,8 @@
     "react-native-reanimated": "~3.17.4",
     "react-test-renderer": "19.0.0",
     "release-it": "^17.10.0",
+    "typedoc": "^0.28.8",
+    "typedoc-github-theme": "^0.3.0",
     "typescript": "^5.8.3"
   },
   "peerDependencies": {
