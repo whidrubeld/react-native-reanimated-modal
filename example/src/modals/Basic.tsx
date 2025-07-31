@@ -1,6 +1,7 @@
 import { Button, Text, View } from 'react-native';
 import { Modal } from 'react-native-reanimated-modal';
-import styles from './styles';
+import { baseStyles } from './styles';
+import { StatusBar } from 'expo-status-bar';
 
 export default function BasicModal({
   visible,
@@ -16,13 +17,14 @@ export default function BasicModal({
       swipeDirection={['down', 'left', 'right', 'up']}
       onHide={() => setVisible(false)}
     >
-      <View style={styles.container}>
-        <Text style={styles.title}>Basic Modal</Text>
-        <Text style={styles.description}>
+      <StatusBar style="light" animated />
+      <View style={baseStyles.container}>
+        <Text style={baseStyles.title}>📋 Basic Modal</Text>
+        <Text style={baseStyles.description}>
           This is a basic modal example using react-native-reanimated-modal. You
           can customize it further as per your requirements.
         </Text>
-        <View style={styles.buttonGroup}>
+        <View style={baseStyles.buttonGroup}>
           <Button title="Close" onPress={() => setVisible(false)} />
         </View>
       </View>

@@ -1,8 +1,8 @@
-/* eslint-disable react-native/no-inline-styles */
 import { useState } from 'react';
 import { Button, Text, View } from 'react-native';
 import { Modal } from 'react-native-reanimated-modal';
-import styles from './styles';
+import { baseStyles } from './styles';
+import { StatusBar } from 'expo-status-bar';
 
 export default function MultipleModal({
   visible,
@@ -17,17 +17,18 @@ export default function MultipleModal({
     <>
       <Modal
         visible={visible}
-        coverScreen
+        coverScreen // need for multiple modals. RUN multiple modals not working correctly
         swipeDirection={['up', 'down', 'left', 'right']}
         onHide={() => setVisible(false)}
       >
-        <View style={styles.container}>
-          <Text style={styles.title}>Primary Modal</Text>
-          <Text style={styles.description}>
+        <StatusBar style="light" animated />
+        <View style={baseStyles.container}>
+          <Text style={baseStyles.title}>🔄 Primary Modal</Text>
+          <Text style={baseStyles.description}>
             This is the primary modal in a multi-modal setup. You can open a
             secondary modal on top of this one.
           </Text>
-          <View style={styles.buttonGroup}>
+          <View style={baseStyles.buttonGroup}>
             <Button
               title="Open secondary modal"
               onPress={() => setSecondaryVisible(true)}
@@ -38,17 +39,23 @@ export default function MultipleModal({
       </Modal>
       <Modal
         visible={secondaryVisible}
-        coverScreen
+        coverScreen // need for multiple modals. RUN multiple modals not working correctly
         swipeDirection={['left', 'down', 'right', 'up']}
         onHide={() => setSecondaryVisible(false)}
       >
-        <View style={[styles.container, { margin: 50 }]}>
-          <Text style={styles.title}>Secondary Modal</Text>
-          <Text style={styles.description}>
+        <View
+          style={[
+            baseStyles.container,
+            // eslint-disable-next-line react-native/no-inline-styles
+            { margin: 50 },
+          ]}
+        >
+          <Text style={baseStyles.title}>🔄 Secondary Modal</Text>
+          <Text style={baseStyles.description}>
             This is the secondary modal that appears on top of the primary
             modal. It demonstrates multi-modal functionality.
           </Text>
-          <View style={styles.buttonGroup}>
+          <View style={baseStyles.buttonGroup}>
             <Button title="Close" onPress={() => setSecondaryVisible(false)} />
           </View>
         </View>
