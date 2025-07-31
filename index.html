@@ -1,0 +1,316 @@
+<!DOCTYPE html><html class="default" lang="en" data-base="./"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>react-native-reanimated-modal - v1.0.1</title><meta name="description" content="Documentation for react-native-reanimated-modal"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script defer src="assets/main.js"></script><script async src="assets/icons.js" id="tsd-icons-script"></script><script async src="assets/search.js" id="tsd-search-script"></script><script async src="assets/navigation.js" id="tsd-nav-script"></script><link rel="stylesheet" href="assets/typedoc-github-style.css"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><a href="index.html" class="title">react-native-reanimated-modal - v1.0.1</a><div id="tsd-toolbar-links"></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/><ul role="listbox" id="tsd-search-results"></ul><div id="tsd-search-status" aria-live="polite" aria-atomic="true"><div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-menu"></use></svg></a></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><h1>react-native-reanimated-modal - v1.0.1</h1></div><div class="tsd-panel tsd-typography"><p><a href="https://www.npmjs.com/package/react-native-reanimated-modal"><img src="https://img.shields.io/npm/dw/react-native-reanimated-modal.svg" alt="downloads"></a>
+<a href="https://www.npmjs.com/package/react-native-reanimated-modal"><img src="https://img.shields.io/npm/v/react-native-reanimated-modal.svg" alt="npm"></a></p>
+<p>A lightweight, scalable, flexible, and high-performance modal component.  Based on the vanilla <a href="https://reactnative.dev/docs/modal">Modal</a> component for maximum compatibility and native feel. Built with <a href="https://github.com/software-mansion/react-native-reanimated/">react-native-reanimated</a> and <a href="https://github.com/software-mansion/react-native-gesture-handler">react-native-gesture-handler</a>.</p>
+<p align="center">
+<img src="https://github.com/WhidRubeld/react-native-reanimated-modal/blob/main/.github/images/example.gif?raw=true" width="300" alt="React Native Reanimated Modal Demo" />
+</p>
+<h2 id="✨-features" class="tsd-anchor-link">✨ Features<a href="#✨-features" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><ul>
+<li><strong>🚀 Performance</strong>: Built with react-native-reanimated for 60fps animations that run on the UI thread</li>
+<li><strong>🎨 Smooth Animations</strong>: Supports both fade and slide animations with customizable durations</li>
+<li><strong>👆 Gesture Support</strong>: Interactive swipe-to-dismiss in any direction (up, down, left, right)</li>
+<li><strong>🪶 Lightweight</strong>: Minimal dependencies and smaller bundle size compared to alternatives (<strong>13KB</strong>)</li>
+<li><strong>📱 Native Feel</strong>: Uses React Native's Modal component as foundation for platform consistency</li>
+<li><strong>🔧 Flexible</strong>: Highly customizable with extensive prop options</li>
+<li><strong>📚 TypeScript</strong>: Full TypeScript support out of the box</li>
+<li><strong>🔄 Multi-Modal</strong>: Easy integration with React Navigation and support for multiple overlays</li>
+</ul>
+<h2 id="🎮-example" class="tsd-anchor-link">🎮 Example<a href="#🎮-example" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><img src="https://github.com/WhidRubeld/react-native-reanimated-modal/blob/main/.github/images/expo-go-qr.svg?raw=true" alt="Expo QR Code" width="200" height="200" />
+<ol>
+<li>Install <a href="https://expo.dev/client">Expo Go</a> on your phone</li>
+<li>Scan the QR code with your camera</li>
+<li>Open the link in Expo Go</li>
+<li>Explore example app!</li>
+</ol>
+<p><strong>Or browse the code:</strong>: <a href="https://github.com/WhidRubeld/react-native-reanimated-modal/tree/main/example"><strong>📂 View Example Code →</strong></a></p>
+<h2 id="📦-installation" class="tsd-anchor-link">📦 Installation<a href="#📦-installation" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><pre><code class="sh"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">install</span><span class="hl-1"> </span><span class="hl-2">react-native-reanimated-modal</span>
+</code><button type="button">Copy</button></pre>
+
+<pre><code class="sh"><span class="hl-0">yarn</span><span class="hl-1"> </span><span class="hl-2">add</span><span class="hl-1"> </span><span class="hl-2">react-native-reanimated-modal</span>
+</code><button type="button">Copy</button></pre>
+
+<pre><code class="sh"><span class="hl-0">pnpm</span><span class="hl-1"> </span><span class="hl-2">add</span><span class="hl-1"> </span><span class="hl-2">react-native-reanimated-modal</span>
+</code><button type="button">Copy</button></pre>
+
+<pre><code class="sh"><span class="hl-0">bun</span><span class="hl-1"> </span><span class="hl-2">add</span><span class="hl-1"> </span><span class="hl-2">react-native-reanimated-modal</span>
+</code><button type="button">Copy</button></pre>
+
+<h3 id="required-dependencies" class="tsd-anchor-link">Required Dependencies<a href="#required-dependencies" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>This library depends on the following peer dependencies:</p>
+<ol>
+<li><strong><a href="https://github.com/software-mansion/react-native-reanimated">react-native-reanimated</a></strong> (&gt;= 3.0.0)</li>
+<li><strong><a href="https://github.com/software-mansion/react-native-gesture-handler">react-native-gesture-handler</a></strong> (&gt;= 2.0.0)</li>
+</ol>
+<blockquote>
+<p><strong>Note</strong>: Make sure to follow the installation guides for both libraries, as they require additional platform-specific setup steps.</p>
+</blockquote>
+<h3 id="important-setup" class="tsd-anchor-link">Important Setup<a href="#important-setup" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>Make sure to wrap your root App component with <code>gestureHandlerRootHOC</code> for gesture handling to work properly:</p>
+<pre><code class="tsx"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">gestureHandlerRootHOC</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;react-native-gesture-handler&#39;</span><span class="hl-1">;</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-0">App</span><span class="hl-1"> = () </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-6">// Your app content</span><br/><span class="hl-1">};</span><br/><br/><span class="hl-3">export</span><span class="hl-1"> </span><span class="hl-3">default</span><span class="hl-1"> </span><span class="hl-0">gestureHandlerRootHOC</span><span class="hl-1">(</span><span class="hl-4">App</span><span class="hl-1">);</span>
+</code><button type="button">Copy</button></pre>
+
+<h2 id="🚀-basic-usage" class="tsd-anchor-link">🚀 Basic Usage<a href="#🚀-basic-usage" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><pre><code class="tsx"><span class="hl-3">import</span><span class="hl-1"> </span><span class="hl-4">React</span><span class="hl-1">, { </span><span class="hl-4">useState</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;react&#39;</span><span class="hl-1">;</span><br/><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">View</span><span class="hl-1">, </span><span class="hl-4">Text</span><span class="hl-1">, </span><span class="hl-4">Button</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;react-native&#39;</span><span class="hl-1">;</span><br/><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">gestureHandlerRootHOC</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;react-native-gesture-handler&#39;</span><span class="hl-1">;</span><br/><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">Modal</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;react-native-reanimated-modal&#39;</span><span class="hl-1">;</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-0">App</span><span class="hl-1"> = () </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-5">const</span><span class="hl-1"> [</span><span class="hl-7">visible</span><span class="hl-1">, </span><span class="hl-7">setVisible</span><span class="hl-1">] = </span><span class="hl-0">useState</span><span class="hl-1">(</span><span class="hl-5">false</span><span class="hl-1">);</span><br/><br/><span class="hl-1">  </span><span class="hl-3">return</span><span class="hl-1"> (</span><br/><span class="hl-1">    </span><span class="hl-8">&lt;</span><span class="hl-9">View</span><span class="hl-1"> </span><span class="hl-10">style</span><span class="hl-1">=</span><span class="hl-5">{</span><span class="hl-11">{ </span><span class="hl-4">flex:</span><span class="hl-11"> </span><span class="hl-12">1</span><span class="hl-11">, </span><span class="hl-4">justifyContent:</span><span class="hl-11"> </span><span class="hl-2">&#39;center&#39;</span><span class="hl-11">, </span><span class="hl-4">alignItems:</span><span class="hl-11"> </span><span class="hl-2">&#39;center&#39;</span><span class="hl-11"> }</span><span class="hl-5">}</span><span class="hl-8">&gt;</span><br/><span class="hl-1">      </span><span class="hl-8">&lt;</span><span class="hl-9">Button</span><span class="hl-1"> </span><span class="hl-10">title</span><span class="hl-1">=</span><span class="hl-2">&quot;Show Modal&quot;</span><span class="hl-1"> </span><span class="hl-10">onPress</span><span class="hl-1">=</span><span class="hl-5">{</span><span class="hl-11">() </span><span class="hl-5">=&gt;</span><span class="hl-11"> </span><span class="hl-0">setVisible</span><span class="hl-11">(</span><span class="hl-5">true</span><span class="hl-11">)</span><span class="hl-5">}</span><span class="hl-1"> </span><span class="hl-8">/&gt;</span><br/><br/><span class="hl-1">      </span><span class="hl-8">&lt;</span><span class="hl-9">Modal</span><br/><span class="hl-1">        </span><span class="hl-10">visible</span><span class="hl-1">=</span><span class="hl-5">{</span><span class="hl-4">visible</span><span class="hl-5">}</span><br/><span class="hl-1">        </span><span class="hl-10">onHide</span><span class="hl-1">=</span><span class="hl-5">{</span><span class="hl-11">() </span><span class="hl-5">=&gt;</span><span class="hl-11"> </span><span class="hl-0">setVisible</span><span class="hl-11">(</span><span class="hl-5">false</span><span class="hl-11">)</span><span class="hl-5">}</span><br/><span class="hl-1">      </span><span class="hl-8">&gt;</span><br/><span class="hl-1">        </span><span class="hl-8">&lt;</span><span class="hl-9">View</span><span class="hl-1"> </span><span class="hl-10">style</span><span class="hl-1">=</span><span class="hl-5">{</span><span class="hl-11">{</span><br/><span class="hl-11">          </span><span class="hl-4">backgroundColor:</span><span class="hl-11"> </span><span class="hl-2">&#39;white&#39;</span><span class="hl-11">,</span><br/><span class="hl-11">          </span><span class="hl-4">padding:</span><span class="hl-11"> </span><span class="hl-12">20</span><span class="hl-11">,</span><br/><span class="hl-11">          </span><span class="hl-4">borderRadius:</span><span class="hl-11"> </span><span class="hl-12">10</span><span class="hl-11">,</span><br/><span class="hl-11">          </span><span class="hl-4">margin:</span><span class="hl-11"> </span><span class="hl-12">20</span><br/><span class="hl-11">        }</span><span class="hl-5">}</span><span class="hl-8">&gt;</span><br/><span class="hl-1">          </span><span class="hl-8">&lt;</span><span class="hl-9">Text</span><span class="hl-8">&gt;</span><span class="hl-1">Hello from Modal!</span><span class="hl-8">&lt;/</span><span class="hl-9">Text</span><span class="hl-8">&gt;</span><br/><span class="hl-1">          </span><span class="hl-8">&lt;</span><span class="hl-9">Button</span><span class="hl-1"> </span><span class="hl-10">title</span><span class="hl-1">=</span><span class="hl-2">&quot;Close&quot;</span><span class="hl-1"> </span><span class="hl-10">onPress</span><span class="hl-1">=</span><span class="hl-5">{</span><span class="hl-11">() </span><span class="hl-5">=&gt;</span><span class="hl-11"> </span><span class="hl-0">setVisible</span><span class="hl-11">(</span><span class="hl-5">false</span><span class="hl-11">)</span><span class="hl-5">}</span><span class="hl-1"> </span><span class="hl-8">/&gt;</span><br/><span class="hl-1">        </span><span class="hl-8">&lt;/</span><span class="hl-9">View</span><span class="hl-8">&gt;</span><br/><span class="hl-1">      </span><span class="hl-8">&lt;/</span><span class="hl-9">Modal</span><span class="hl-8">&gt;</span><br/><span class="hl-1">    </span><span class="hl-8">&lt;/</span><span class="hl-9">View</span><span class="hl-8">&gt;</span><br/><span class="hl-1">  );</span><br/><span class="hl-1">};</span><br/><br/><span class="hl-3">export</span><span class="hl-1"> </span><span class="hl-3">default</span><span class="hl-1"> </span><span class="hl-0">gestureHandlerRootHOC</span><span class="hl-1">(</span><span class="hl-4">App</span><span class="hl-1">);</span>
+</code><button type="button">Copy</button></pre>
+
+<h2 id="📖-api-documentation" class="tsd-anchor-link">📖 API Documentation<a href="#📖-api-documentation" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><h3 id="test-ids" class="tsd-anchor-link">Test IDs<a href="#test-ids" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>You can pass custom testID props to key elements for easier testing:</p>
+<table>
+<thead>
+<tr>
+<th>Prop</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>backdropTestID</code></td>
+<td><code>string</code></td>
+<td><code>'modal-backdrop'</code></td>
+<td>testID for the backdrop Pressable</td>
+</tr>
+<tr>
+<td><code>contentTestID</code></td>
+<td><code>string</code></td>
+<td><code>'modal-content'</code></td>
+<td>testID for the modal content (Animated.View)</td>
+</tr>
+<tr>
+<td><code>containerTestID</code></td>
+<td><code>string</code></td>
+<td><code>'modal-container'</code></td>
+<td>testID for the root container View</td>
+</tr>
+</tbody>
+</table>
+<p>These props are optional and help you write robust e2e/unit tests.</p>
+<h3 id="props" class="tsd-anchor-link">Props<a href="#props" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><table>
+<thead>
+<tr>
+<th>Prop</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>visible</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Controls the visibility of the modal</td>
+</tr>
+<tr>
+<td><code>closable</code></td>
+<td><code>boolean</code></td>
+<td><code>true</code></td>
+<td>Whether the modal can be closed by user actions (backdrop press, swipe, hardware back).</td>
+</tr>
+<tr>
+<td><code>children</code></td>
+<td><code>ReactNode</code></td>
+<td>-</td>
+<td>Content to render inside the modal</td>
+</tr>
+<tr>
+<td><code>style</code></td>
+<td><code>StyleProp&lt;ViewStyle&gt;</code></td>
+<td>-</td>
+<td>Style for the modal container</td>
+</tr>
+<tr>
+<td><code>contentContainerStyle</code></td>
+<td><code>StyleProp&lt;ViewStyle&gt;</code></td>
+<td>-</td>
+<td>Style for the content wrapper</td>
+</tr>
+<tr>
+<td><code>renderBackdrop</code></td>
+<td><code>() =&gt; ReactNode</code></td>
+<td>-</td>
+<td>Custom backdrop renderer. If provided, it will be rendered instead of the default backdrop. Useful for BlurView, gradients, etc.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="animation-props" class="tsd-anchor-link">Animation Props<a href="#animation-props" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><table>
+<thead>
+<tr>
+<th>Prop</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>animation</code></td>
+<td><code>'fade' | 'slide'</code></td>
+<td><code>'slide'</code></td>
+<td>Animation type for modal appearance</td>
+</tr>
+<tr>
+<td><code>animationDuration</code></td>
+<td><code>number</code></td>
+<td><code>300</code></td>
+<td>Duration of the animation in milliseconds</td>
+</tr>
+</tbody>
+</table>
+<h4 id="backdrop-props" class="tsd-anchor-link">Backdrop Props<a href="#backdrop-props" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><table>
+<thead>
+<tr>
+<th>Prop</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hasBackdrop</code></td>
+<td><code>boolean</code></td>
+<td><code>true</code></td>
+<td>Whether to show backdrop behind modal</td>
+</tr>
+<tr>
+<td><code>backdropColor</code></td>
+<td><code>string</code></td>
+<td><code>'black'</code></td>
+<td>Color of the backdrop</td>
+</tr>
+<tr>
+<td><code>backdropOpacity</code></td>
+<td><code>number</code></td>
+<td><code>0.7</code></td>
+<td>Opacity of the backdrop (0-1)</td>
+</tr>
+<tr>
+<td><code>onBackdropPress</code></td>
+<td><code>() =&gt; void</code></td>
+<td>-</td>
+<td>Callback when backdrop is pressed</td>
+</tr>
+</tbody>
+</table>
+<h4 id="swipe-props" class="tsd-anchor-link">Swipe Props<a href="#swipe-props" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><table>
+<thead>
+<tr>
+<th>Prop</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>swipeDirection</code></td>
+<td><code>SwipeDirection | SwipeDirection[]</code></td>
+<td><code>'down'</code></td>
+<td>Direction(s) to enable swipe-to-dismiss. When array is provided, the first element determines the initial slide-in direction</td>
+</tr>
+<tr>
+<td><code>swipeThreshold</code></td>
+<td><code>number</code></td>
+<td><code>100</code></td>
+<td>Distance in pixels to trigger dismiss</td>
+</tr>
+<tr>
+<td><code>swipeEnabled</code></td>
+<td><code>boolean</code></td>
+<td><code>true</code></td>
+<td>Whether swipe gestures are enabled</td>
+</tr>
+</tbody>
+</table>
+<h4 id="bounce-props" class="tsd-anchor-link">Bounce Props<a href="#bounce-props" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><table>
+<thead>
+<tr>
+<th>Prop</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bounceSpringConfig</code></td>
+<td><code>SpringConfig</code></td>
+<td><code>{ stiffness: 200, dampingRatio: 0.5, duration: 7e2 }</code></td>
+<td>Spring config for bounce-back animation after failed swipe. Accepts the same shape as Reanimated's spring config.</td>
+</tr>
+<tr>
+<td><code>bounceOpacityThreshold</code></td>
+<td><code>number</code></td>
+<td><code>0.05</code></td>
+<td>Threshold for backdrop opacity correction during bounce. If difference between target and current opacity is less than this value, opacity is snapped to target.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="other-props" class="tsd-anchor-link">Other Props<a href="#other-props" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><table>
+<thead>
+<tr>
+<th>Prop</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>coverScreen</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>If true, covers entire screen without using native Modal</td>
+</tr>
+</tbody>
+</table>
+<h4 id="event-props" class="tsd-anchor-link">Event Props<a href="#event-props" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><table>
+<thead>
+<tr>
+<th>Prop</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>onShow</code></td>
+<td><code>() =&gt; void</code></td>
+<td>Called when modal appears</td>
+</tr>
+<tr>
+<td><code>onHide</code></td>
+<td><code>() =&gt; void</code></td>
+<td>Called when modal disappears</td>
+</tr>
+</tbody>
+</table>
+<h4 id="react-native-modal-props" class="tsd-anchor-link">React Native Modal Props<a href="#react-native-modal-props" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><p>The component also accepts these props from React Native's Modal:</p>
+<ul>
+<li><code>hardwareAccelerated</code> (Android)</li>
+<li><code>navigationBarTranslucent</code> (Android)</li>
+<li><code>statusBarTranslucent</code> (Android)</li>
+<li><code>onOrientationChange</code> (iOS)</li>
+<li><code>supportedOrientations</code> (iOS)</li>
+</ul>
+<h3 id="types" class="tsd-anchor-link">Types<a href="#types" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><pre><code class="tsx"><span class="hl-5">type</span><span class="hl-1"> </span><span class="hl-9">SwipeDirection</span><span class="hl-1"> = </span><span class="hl-2">&#39;up&#39;</span><span class="hl-1"> | </span><span class="hl-2">&#39;down&#39;</span><span class="hl-1"> | </span><span class="hl-2">&#39;left&#39;</span><span class="hl-1"> | </span><span class="hl-2">&#39;right&#39;</span><span class="hl-1">;</span><br/><span class="hl-5">type</span><span class="hl-1"> </span><span class="hl-9">ModalAnimation</span><span class="hl-1"> = </span><span class="hl-2">&#39;fade&#39;</span><span class="hl-1"> | </span><span class="hl-2">&#39;slide&#39;</span><span class="hl-1">;</span>
+</code><button type="button">Copy</button></pre>
+
+<h2 id="🔄-react-navigation-support" class="tsd-anchor-link">🔄 React Navigation support<a href="#🔄-react-navigation-support" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>When using multiple modals simultaneously with <code>@react-navigation/native-stack</code>, you can leverage iOS's <code>FullWindowOverlay</code> for better layering:</p>
+<pre><code class="tsx"><span class="hl-3">import</span><span class="hl-1"> </span><span class="hl-4">React</span><span class="hl-1"> </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;react&#39;</span><span class="hl-1">;</span><br/><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">Platform</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;react-native&#39;</span><span class="hl-1">;</span><br/><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">FullWindowOverlay</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;react-native-screens&#39;</span><span class="hl-1">;</span><br/><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">Modal</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&#39;react-native-reanimated-modal&#39;</span><span class="hl-1">;</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-7">isIOS</span><span class="hl-1"> = </span><span class="hl-4">Platform</span><span class="hl-1">.</span><span class="hl-7">OS</span><span class="hl-1"> === </span><span class="hl-2">&#39;ios&#39;</span><span class="hl-1">;</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-0">withOverlay</span><span class="hl-1"> = (</span><span class="hl-4">element</span><span class="hl-1">: </span><span class="hl-9">React</span><span class="hl-1">.</span><span class="hl-9">ReactNode</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><br/><span class="hl-1">  </span><span class="hl-4">isIOS</span><span class="hl-1"> ? </span><span class="hl-8">&lt;</span><span class="hl-9">FullWindowOverlay</span><span class="hl-8">&gt;</span><span class="hl-5">{</span><span class="hl-4">element</span><span class="hl-5">}</span><span class="hl-8">&lt;/</span><span class="hl-9">FullWindowOverlay</span><span class="hl-8">&gt;</span><span class="hl-1"> : </span><span class="hl-4">element</span><span class="hl-1">;</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-0">MultiModalExample</span><span class="hl-1"> = () </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-5">const</span><span class="hl-1"> [</span><span class="hl-7">firstModalVisible</span><span class="hl-1">, </span><span class="hl-7">setFirstModalVisible</span><span class="hl-1">] = </span><span class="hl-0">useState</span><span class="hl-1">(</span><span class="hl-5">false</span><span class="hl-1">);</span><br/><span class="hl-1">  </span><span class="hl-5">const</span><span class="hl-1"> [</span><span class="hl-7">secondModalVisible</span><span class="hl-1">, </span><span class="hl-7">setSecondModalVisible</span><span class="hl-1">] = </span><span class="hl-0">useState</span><span class="hl-1">(</span><span class="hl-5">false</span><span class="hl-1">);</span><br/><br/><span class="hl-1">  </span><span class="hl-3">return</span><span class="hl-1"> </span><span class="hl-0">withOverlay</span><span class="hl-1">(</span><br/><span class="hl-1">    </span><span class="hl-8">&lt;&gt;</span><br/><span class="hl-1">      </span><span class="hl-8">&lt;</span><span class="hl-9">Modal</span><br/><span class="hl-1">        </span><span class="hl-10">visible</span><span class="hl-1">=</span><span class="hl-5">{</span><span class="hl-4">firstModalVisible</span><span class="hl-5">}</span><br/><span class="hl-1">        </span><span class="hl-10">coverScreen</span><span class="hl-1"> </span><span class="hl-6">// Important: excludes native Modal usage</span><br/><span class="hl-1">        </span><span class="hl-10">onBackdropPress</span><span class="hl-1">=</span><span class="hl-5">{</span><span class="hl-11">() </span><span class="hl-5">=&gt;</span><span class="hl-11"> </span><span class="hl-0">setFirstModalVisible</span><span class="hl-11">(</span><span class="hl-5">false</span><span class="hl-11">)</span><span class="hl-5">}</span><br/><span class="hl-1">      </span><span class="hl-8">&gt;</span><br/><span class="hl-1">        </span><span class="hl-5">{</span><span class="hl-6">/* First modal content */</span><span class="hl-5">}</span><br/><span class="hl-1">      </span><span class="hl-8">&lt;/</span><span class="hl-9">Modal</span><span class="hl-8">&gt;</span><br/><br/><span class="hl-1">      </span><span class="hl-8">&lt;</span><span class="hl-9">Modal</span><br/><span class="hl-1">        </span><span class="hl-10">visible</span><span class="hl-1">=</span><span class="hl-5">{</span><span class="hl-4">secondModalVisible</span><span class="hl-5">}</span><br/><span class="hl-1">        </span><span class="hl-10">coverScreen</span><span class="hl-1"> </span><span class="hl-6">// Important: excludes native Modal usage</span><br/><span class="hl-1">        </span><span class="hl-10">onBackdropPress</span><span class="hl-1">=</span><span class="hl-5">{</span><span class="hl-11">() </span><span class="hl-5">=&gt;</span><span class="hl-11"> </span><span class="hl-0">setSecondModalVisible</span><span class="hl-11">(</span><span class="hl-5">false</span><span class="hl-11">)</span><span class="hl-5">}</span><br/><span class="hl-1">      </span><span class="hl-8">&gt;</span><br/><span class="hl-1">        </span><span class="hl-5">{</span><span class="hl-6">/* Second modal content */</span><span class="hl-5">}</span><br/><span class="hl-1">      </span><span class="hl-8">&lt;/</span><span class="hl-9">Modal</span><span class="hl-8">&gt;</span><br/><span class="hl-1">    </span><span class="hl-8">&lt;/&gt;</span><br/><span class="hl-1">  );</span><br/><span class="hl-1">};</span>
+</code><button type="button">Copy</button></pre>
+
+<blockquote>
+<p><strong>Important</strong>: When using multiple modals with <code>FullWindowOverlay</code>, always set <code>coverScreen={true}</code> prop to exclude the usage of React Native's native Modal component and ensure proper layering.</p>
+</blockquote>
+<h2 id="🎨-advanced-examples" class="tsd-anchor-link">🎨 Advanced Examples<a href="#🎨-advanced-examples" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><h3 id="custom-animation-with-swipe-directions" class="tsd-anchor-link">Custom Animation with Swipe Directions<a href="#custom-animation-with-swipe-directions" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><pre><code class="tsx"><span class="hl-8">&lt;</span><span class="hl-9">Modal</span><br/><span class="hl-1">  </span><span class="hl-10">visible</span><span class="hl-1">=</span><span class="hl-5">{</span><span class="hl-4">visible</span><span class="hl-5">}</span><br/><span class="hl-1">  </span><span class="hl-10">animation</span><span class="hl-1">=</span><span class="hl-2">&quot;slide&quot;</span><br/><span class="hl-1">  </span><span class="hl-10">animationDuration</span><span class="hl-1">=</span><span class="hl-5">{</span><span class="hl-12">500</span><span class="hl-5">}</span><br/><span class="hl-1">  </span><span class="hl-10">swipeDirection</span><span class="hl-1">=</span><span class="hl-5">{</span><span class="hl-11">[</span><span class="hl-2">&#39;down&#39;</span><span class="hl-11">, </span><span class="hl-2">&#39;right&#39;</span><span class="hl-11">]</span><span class="hl-5">}</span><span class="hl-1"> </span><span class="hl-6">// Modal slides in from bottom, can be dismissed by swiping down or right</span><br/><span class="hl-1">  </span><span class="hl-10">swipeThreshold</span><span class="hl-1">=</span><span class="hl-5">{</span><span class="hl-12">150</span><span class="hl-5">}</span><br/><span class="hl-1">  </span><span class="hl-10">onBackdropPress</span><span class="hl-1">=</span><span class="hl-5">{</span><span class="hl-11">() </span><span class="hl-5">=&gt;</span><span class="hl-11"> </span><span class="hl-0">setVisible</span><span class="hl-11">(</span><span class="hl-5">false</span><span class="hl-11">)</span><span class="hl-5">}</span><br/><span class="hl-8">&gt;</span><br/><span class="hl-1">  </span><span class="hl-8">&lt;</span><span class="hl-9">YourContent</span><span class="hl-1"> </span><span class="hl-8">/&gt;</span><br/><span class="hl-8">&lt;/</span><span class="hl-9">Modal</span><span class="hl-8">&gt;</span>
+</code><button type="button">Copy</button></pre>
+
+<blockquote>
+<p><strong>Note</strong>: When using an array for <code>swipeDirection</code>, the first element (<code>'down'</code> in this example) determines the initial slide-in animation direction, while all elements in the array define the available swipe-to-dismiss directions.</p>
+</blockquote>
+<h3 id="full-screen-modal" class="tsd-anchor-link">Full Screen Modal<a href="#full-screen-modal" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><pre><code class="tsx"><span class="hl-8">&lt;</span><span class="hl-9">Modal</span><br/><span class="hl-1">  </span><span class="hl-10">visible</span><span class="hl-1">=</span><span class="hl-5">{</span><span class="hl-4">visible</span><span class="hl-5">}</span><br/><span class="hl-1">  </span><span class="hl-10">contentContainerStyle</span><span class="hl-1">=</span><span class="hl-5">{</span><span class="hl-11">{ </span><span class="hl-4">flex:</span><span class="hl-11"> </span><span class="hl-12">1</span><span class="hl-11"> }</span><span class="hl-5">}</span><br/><span class="hl-8">&gt;</span><br/><span class="hl-1">  </span><span class="hl-8">&lt;</span><span class="hl-9">YourFullScreenContent</span><span class="hl-1"> </span><span class="hl-8">/&gt;</span><br/><span class="hl-8">&lt;/</span><span class="hl-9">Modal</span><span class="hl-8">&gt;</span>
+</code><button type="button">Copy</button></pre>
+
+<h2 id="🤝-contributing" class="tsd-anchor-link">🤝 Contributing<a href="#🤝-contributing" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>See the <a href="media/CONTRIBUTING.md">contributing guide</a> to learn how to contribute to the repository and the development workflow.</p>
+<h2 id="📄-license" class="tsd-anchor-link">📄 License<a href="#📄-license" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>MIT</p>
+<hr>
+<p>Made with <a href="https://github.com/callstack/react-native-builder-bob">create-react-native-library</a></p>
+</div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#✨-features"><span>✨ <wbr/>Features</span></a><a href="#🎮-example"><span>🎮 <wbr/>Example</span></a><a href="#📦-installation"><span>📦 <wbr/>Installation</span></a><ul><li><a href="#required-dependencies"><span>Required <wbr/>Dependencies</span></a></li><li><a href="#important-setup"><span>Important <wbr/>Setup</span></a></li></ul><a href="#🚀-basic-usage"><span>🚀 <wbr/>Basic <wbr/>Usage</span></a><a href="#📖-api-documentation"><span>📖 <wbr/>API <wbr/>Documentation</span></a><ul><li><a href="#test-ids"><span>Test <wbr/>I<wbr/>Ds</span></a></li><li><a href="#props"><span>Props</span></a></li><li><ul><li><a href="#animation-props"><span>Animation <wbr/>Props</span></a></li><li><a href="#backdrop-props"><span>Backdrop <wbr/>Props</span></a></li><li><a href="#swipe-props"><span>Swipe <wbr/>Props</span></a></li><li><a href="#bounce-props"><span>Bounce <wbr/>Props</span></a></li><li><a href="#other-props"><span>Other <wbr/>Props</span></a></li><li><a href="#event-props"><span>Event <wbr/>Props</span></a></li><li><a href="#react-native-modal-props"><span>React <wbr/>Native <wbr/>Modal <wbr/>Props</span></a></li></ul></li><li><a href="#types"><span>Types</span></a></li></ul><a href="#🔄-react-navigation-support"><span>🔄 <wbr/>React <wbr/>Navigation support</span></a><a href="#🎨-advanced-examples"><span>🎨 <wbr/>Advanced <wbr/>Examples</span></a><ul><li><a href="#custom-animation-with-swipe-directions"><span>Custom <wbr/>Animation with <wbr/>Swipe <wbr/>Directions</span></a></li><li><a href="#full-screen-modal"><span>Full <wbr/>Screen <wbr/>Modal</span></a></li></ul><a href="#🤝-contributing"><span>🤝 <wbr/>Contributing</span></a><a href="#📄-license"><span>📄 <wbr/>License</span></a></div></details></div><div class="site-menu"><nav class="tsd-navigation"><a href="modules.html">react-native-reanimated-modal - v1.0.1</a><ul class="tsd-small-nested-navigation" id="tsd-nav-container"><li>Loading...</li></ul></nav></div></div></div><footer><p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a> with <a href="https://github.com/JulianWowra/typedoc-github-theme" target="_blank">typedoc-github-theme</a></p></footer><div class="overlay"></div></body></html>
