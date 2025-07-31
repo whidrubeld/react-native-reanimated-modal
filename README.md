@@ -19,12 +19,7 @@ A lightweight, scalable, flexible, and high-performance modal component.  Based 
 - **📚 TypeScript**: Full TypeScript support out of the box
 - **🔄 Multi-Modal**: Easy integration with React Navigation and support for multiple overlays
 
-## 📱 Example
-
-**See it in action!** A comprehensive example app with **15 interactive demos** showcasing every feature and use case.
-
-
-### 🎮 Try the Example App
+## 🎮 Example
 
 <table>
 <tr>
