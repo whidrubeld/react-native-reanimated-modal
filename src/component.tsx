@@ -50,36 +50,7 @@ enum AnimationMode {
  * Modal component with smooth, customizable animations and gesture support.
  * Built on top of React Native's Modal, Reanimated, and Gesture Handler.
  *
- * @component
- * @param {object} props - Modal props
- * @param {boolean} [props.visible=false] - Controls the visibility of the modal.
- * @param {boolean} [props.closable=true] - Whether the modal can be closed by user actions (backdrop press, swipe, hardware back).
- * @param {React.ReactNode} props.children - Content to render inside the modal.
- * @param {StyleProp<ViewStyle>} [props.style] - Style for the modal container.
- * @param {StyleProp<ViewStyle>} [props.contentContainerStyle] - Style for the content wrapper.
- * @param {'fade'|'slide'} [props.animation='slide'] - Animation type for modal appearance.
- * @param {number} [props.animationDuration=300] - Duration of the open/close animation in milliseconds.
- * @param {boolean} [props.hasBackdrop=true] - Whether to show a backdrop behind the modal.
- * @param {string} [props.backdropColor='black'] - Color of the backdrop.
- * @param {number} [props.backdropOpacity=0.7] - Opacity of the backdrop (0-1).
- * @param {() => void} [props.onBackdropPress] - Callback when the backdrop is pressed.
- * @param {() => ReactNode} [props.renderBackdrop] - Custom backdrop renderer. If provided, it will be rendered instead of the default backdrop. Useful for BlurView, gradients, etc.
- * @param {SwipeDirection|SwipeDirection[]} [props.swipeDirection='down'] - Direction(s) to enable swipe-to-dismiss. If array, the first element determines the initial slide-in direction.
- * @param {number} [props.swipeThreshold=100] - Distance in pixels to trigger dismiss by swipe.
- * @param {boolean} [props.swipeEnabled=true] - Whether swipe gestures are enabled.
- * @param {SpringConfig} [props.bounceSpringConfig] - Spring config for bounce-back animation after failed swipe. Accepts the same shape as Reanimated's spring config.
- * @param {number} [props.bounceOpacityThreshold=0.05] - Threshold for backdrop opacity correction during bounce. If the difference between target and current opacity is less than this value, opacity is snapped to target.
- * @param {boolean} [props.coverScreen=false] - If true, covers the entire screen without using native Modal.
- * @param {() => void} [props.onShow] - Called when the modal appears.
- * @param {() => void} [props.onHide] - Called when the modal disappears.
- * @param {boolean} [props.hardwareAccelerated] - See React Native Modal docs.
- * @param {boolean} [props.navigationBarTranslucent] - See React Native Modal docs.
- * @param {() => void} [props.onOrientationChange] - See React Native Modal docs.
- * @param {boolean} [props.statusBarTranslucent] - See React Native Modal docs.
- * @param {string[]} [props.supportedOrientations] - See React Native Modal docs.
- * @param {string} [props.backdropTestID='modal-backdrop'] - testID for the backdrop Pressable.
- * @param {string} [props.contentTestID='modal-content'] - testID for the modal content (Animated.View).
- * @param {string} [props.containerTestID='modal-container'] - testID for the root container View.
+ * @param {ModalProps} props - Props for the modal component.
  * @returns {JSX.Element}
  */
 export const Modal: FC<ModalProps> = ({
