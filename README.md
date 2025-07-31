@@ -80,7 +80,6 @@ const App = () => {
 
       <Modal
         visible={visible}
-        swipeDirection="down"
         onHide={() => setVisible(false)}
       >
         <View style={{
@@ -121,9 +120,10 @@ These props are optional and help you write robust e2e/unit tests.
 |------|------|---------|-------------|
 | `visible` | `boolean` | `false` | Controls the visibility of the modal |
 | `closable` | `boolean` | `true` | Whether the modal can be closed by user actions (backdrop press, swipe, hardware back). |
-| `children` | `React.ReactNode` | - | Content to render inside the modal |
+| `children` | `ReactNode` | - | Content to render inside the modal |
 | `style` | `StyleProp<ViewStyle>` | - | Style for the modal container |
 | `contentContainerStyle` | `StyleProp<ViewStyle>` | - | Style for the content wrapper |
+| `renderBackdrop` | `() => ReactNode` | - | Custom backdrop renderer. If provided, it will be rendered instead of the default backdrop. Useful for BlurView, gradients, etc. |
 
 #### Animation Props
 
