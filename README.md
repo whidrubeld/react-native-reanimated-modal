@@ -1,7 +1,7 @@
 [![downloads](https://img.shields.io/npm/dw/react-native-reanimated-modal.svg)](https://www.npmjs.com/package/react-native-reanimated-modal)
 [![npm](https://img.shields.io/npm/v/react-native-reanimated-modal.svg)](https://www.npmjs.com/package/react-native-reanimated-modal)
 
-A lightweight and scalable alternative to [react-native-modal](https://github.com/react-native-modal/react-native-modal), built with [react-native-reanimated](https://github.com/software-mansion/react-native-reanimated/) and [react-native-gesture-handler](https://github.com/software-mansion/react-native-gesture-handler). Based on React Native's vanilla Modal component, this library is designed for smooth animations, flexibility, and minimal footprint.
+A lightweight, scalable, flexible, and high-performance modal component.  Based on the vanilla [Modal](https://reactnative.dev/docs/modal) component for maximum compatibility and native feel. Built with [react-native-reanimated](https://github.com/software-mansion/react-native-reanimated/) and [react-native-gesture-handler](https://github.com/software-mansion/react-native-gesture-handler).
 
 <p align="center">
 <img src="https://github.com/WhidRubeld/react-native-reanimated-modal/blob/main/.github/images/example.gif?raw=true" width="300" alt="React Native Reanimated Modal Demo" />
@@ -13,7 +13,7 @@ A lightweight and scalable alternative to [react-native-modal](https://github.co
 - **🚀 Performance**: Built with react-native-reanimated for 60fps animations that run on the UI thread
 - **🎨 Smooth Animations**: Supports both fade and slide animations with customizable durations
 - **👆 Gesture Support**: Interactive swipe-to-dismiss in any direction (up, down, left, right)
-- **🪶 Lightweight**: Minimal dependencies and smaller bundle size compared to alternatives (12kb)
+- **🪶 Lightweight**: Minimal dependencies and smaller bundle size compared to alternatives (**13KB**)
 - **📱 Native Feel**: Uses React Native's Modal component as foundation for platform consistency
 - **🔧 Flexible**: Highly customizable with extensive prop options
 - **📚 TypeScript**: Full TypeScript support out of the box
@@ -25,10 +25,16 @@ A lightweight and scalable alternative to [react-native-modal](https://github.co
 npm install react-native-reanimated-modal
 ```
 
-or
-
 ```sh
 yarn add react-native-reanimated-modal
+```
+
+```sh
+pnpm add react-native-reanimated-modal
+```
+
+```sh
+bun add react-native-reanimated-modal
 ```
 
 ### Required Dependencies
@@ -36,14 +42,7 @@ yarn add react-native-reanimated-modal
 This library depends on the following peer dependencies:
 
 1. **[react-native-reanimated](https://github.com/software-mansion/react-native-reanimated)** (>= 3.0.0)
-   ```sh
-   npm install react-native-reanimated
-   ```
-
 2. **[react-native-gesture-handler](https://github.com/software-mansion/react-native-gesture-handler)** (>= 2.0.0)
-   ```sh
-   npm install react-native-gesture-handler
-   ```
 
 > **Note**: Make sure to follow the installation guides for both libraries, as they require additional platform-specific setup steps.
 
@@ -184,9 +183,9 @@ type SwipeDirection = 'up' | 'down' | 'left' | 'right';
 type ModalAnimation = 'fade' | 'slide';
 ```
 
-## 🔄 React Navigation Native Stack support
+## 🔄 React Navigation support
 
-When using multiple modals simultaneously with React Navigation Native Stack, you can leverage iOS's `FullWindowOverlay` for better layering:
+When using multiple modals simultaneously with `@react-navigation/native-stack`, you can leverage iOS's `FullWindowOverlay` for better layering:
 
 ```tsx
 import React from 'react';
