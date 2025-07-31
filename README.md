@@ -19,6 +19,7 @@ A lightweight, scalable, flexible, and high-performance modal component.  Based 
 - **📚 TypeScript**: Full TypeScript support out of the box
 - **🔄 Multi-Modal**: Easy integration with React Navigation and support for multiple overlays
 
+
 ## 🎮 Example
 
 <img src="https://github.com/WhidRubeld/react-native-reanimated-modal/blob/main/.github/images/expo-go-qr.svg?raw=true" alt="Expo QR Code" width="200" height="200" />
@@ -28,7 +29,11 @@ A lightweight, scalable, flexible, and high-performance modal component.  Based 
 3. Open the link in Expo Go
 4. Explore example app!
 
-**Or browse the code:**: [**📂 View Example Code →**](https://github.com/WhidRubeld/react-native-reanimated-modal/tree/main/example)
+**Or browse the code**: [**📂 View Example Code →**](https://github.com/WhidRubeld/react-native-reanimated-modal/tree/main/example)
+
+## 📚 Documentation
+
+**Full API and usage documentation**: [**🗂️ View Documentation →**](https://whidrubeld.github.io/react-native-reanimated-modal/)
 
 
 ## 📦 Installation
