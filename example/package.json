@@ -13,6 +13,7 @@
     "expo": "~53.0.20",
     "expo-blur": "~14.1.5",
     "expo-status-bar": "~2.2.3",
+    "expo-updates": "~0.28.17",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.5",
