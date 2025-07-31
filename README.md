@@ -23,7 +23,6 @@ A lightweight, scalable, flexible, and high-performance modal component.  Based 
 
 **See it in action!** A comprehensive example app with **15 interactive demos** showcasing every feature and use case.
 
-<div align="center">
 
 ### 🎮 Try the Example App
 
@@ -48,11 +47,13 @@ _Scan with your camera or Expo Go app_
 4. Explore 15 interactive examples!
 
 **Or browse the code:**
+
 [**📂 View Example →**](https://github.com/WhidRubeld/react-native-reanimated-modal/tree/main/example)
 
 </td>
 </tr>
 </table>
+
 
 ## 📦 Installation
 
