@@ -21,33 +21,14 @@ A lightweight, scalable, flexible, and high-performance modal component.  Based 
 
 ## 🎮 Example
 
-<table>
-<tr>
-<td align="center" width="50%">
-
-**📱 Scan & Play**
-
 <img src="https://github.com/WhidRubeld/react-native-reanimated-modal/blob/main/.github/images/expo-go-qr.svg?raw=true" alt="Expo QR Code" width="200" height="200" />
-
-_Scan with your camera or Expo Go app_
-
-</td>
-<td align="center" width="50%">
-
-**🚀 Quick Start**
 
 1. Install [Expo Go](https://expo.dev/client) on your phone
 2. Scan the QR code with your camera
 3. Open the link in Expo Go
-4. Explore 15 interactive examples!
+4. Explore example app!
 
-**Or browse the code:**
-
-[**📂 View Example →**](https://github.com/WhidRubeld/react-native-reanimated-modal/tree/main/example)
-
-</td>
-</tr>
-</table>
+**Or browse the code:**: [**📂 View Example Code →**](https://github.com/WhidRubeld/react-native-reanimated-modal/tree/main/example)
 
 
 ## 📦 Installation
