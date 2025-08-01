@@ -28,7 +28,11 @@ export default function InputModal({
   }));
 
   return (
-    <Modal visible={visible} onHide={() => setVisible(false)}>
+    <Modal
+      visible={visible}
+      animationConfig={{ animation: 'slide', direction: 'down' }}
+      onHide={() => setVisible(false)}
+    >
       <StatusBar style="light" animated />
       <Animated.View style={containerStyles}>
         <View style={baseStyles.container}>

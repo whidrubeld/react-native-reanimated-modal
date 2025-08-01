@@ -18,6 +18,7 @@ export default function MultipleModal({
       <Modal
         visible={visible}
         coverScreen // need for multiple modals. RUN multiple modals not working correctly
+        animationConfig={{ animation: 'slide', direction: 'up' }}
         swipeConfig={{ directions: ['up', 'down', 'left', 'right'] }}
         onHide={() => setVisible(false)}
       >
@@ -40,6 +41,7 @@ export default function MultipleModal({
       <Modal
         visible={secondaryVisible}
         coverScreen // need for multiple modals. RUN multiple modals not working correctly
+        animationConfig={{ animation: 'slide', direction: 'left' }}
         swipeConfig={{ directions: ['left', 'down', 'right', 'up'] }}
         onHide={() => setSecondaryVisible(false)}
       >
