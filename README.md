@@ -68,7 +68,7 @@ Make sure to wrap your root App component with `gestureHandlerRootHOC` for gestu
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 
 const App = () => {
-  // Your app content
+  {/* Your app */}
 };
 
 export default gestureHandlerRootHOC(App);
@@ -92,7 +92,6 @@ const App = () => {
       <Modal
         visible={visible}
         onHide={() => setVisible(false)}
-        // New config-based API (recommended)
         animationConfig={{
           animation: 'scale',
           duration: 400,
@@ -229,11 +228,6 @@ const noSwipe: SwipeConfig = {
   {/* Your content */}
 </Modal>
 ```
-
-### Legacy Props (Backward Compatible)
-
-The old prop-based API is still supported for backward compatibility:
-
 
 ### Test IDs
 
@@ -436,9 +430,7 @@ const MultiModalExample = () => {
   swipeDirection={['down', 'right']} // Modal slides in from bottom, can be dismissed by swiping down or right
   onHide={() => setVisible(false)}
 >
-  {
-    // your content...
-  }
+  {/* Modal content */}
 </Modal>
 ```
 
@@ -452,9 +444,7 @@ const MultiModalExample = () => {
   swipeDirection={['down', 'right']} // Modal slides in from bottom, can be dismissed by swiping down or right
   onHide={() => setVisible(false)}
 >
-  {
-    // your content...
-  }
+  {/* Modal content */}
 </Modal>
 ```
 
@@ -469,9 +459,7 @@ const MultiModalExample = () => {
   swipeThreshold={150}
   onHide={() => setVisible(false)}
 >
-  {
-    // your content...
-  }
+  {/* Modal content */}
 </Modal>
 ```
 
@@ -484,7 +472,7 @@ const MultiModalExample = () => {
   visible={visible}
   contentContainerStyle={{ flex: 1 }}
 >
-  <YourFullScreenContent />
+  {/* Modal content */}
 </Modal>
 ```
 
