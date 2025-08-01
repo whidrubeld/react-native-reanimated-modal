@@ -438,7 +438,7 @@ export const Modal: FC<ModalProps> = ({
   });
 
   /**
-   * Animated style for the modal content (slide/fade/gesture transforms).
+   * Animated style for the modal content (slide/fade/scale/gesture transforms).
    */
   const contentAnimatedStyle = useAnimatedStyle(() => {
     if (activeSwipeDirection.value) {
@@ -457,6 +457,13 @@ export const Modal: FC<ModalProps> = ({
         return {
           opacity: progress.value,
           transform: [{ translateX: 0 }, { translateY: 0 }],
+        };
+      }
+      case 'scale': {
+        const scale = interpolate(progress.value, [0, 1], [0.8, 1]);
+        return {
+          opacity: progress.value,
+          transform: [{ translateX: 0 }, { translateY: 0 }, { scale }],
         };
       }
       case 'slide':

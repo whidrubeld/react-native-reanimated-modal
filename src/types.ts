@@ -7,7 +7,7 @@ import type {
 } from 'react-native';
 import type { SpringConfig } from 'react-native-reanimated/lib/typescript/animation/springUtils';
 
-export type ModalAnimation = 'fade' | 'slide';
+export type ModalAnimation = 'fade' | 'slide' | 'scale';
 export type SwipeDirection = 'up' | 'down' | 'left' | 'right';
 
 /**
@@ -66,6 +66,9 @@ export interface ModalProps
   // Animation type
   /**
    * Animation type for modal appearance.
+   * - 'fade': Modal fades in/out with opacity animation
+   * - 'slide': Modal slides in from specified direction
+   * - 'scale': Modal scales in/out from center with zoom effect
    * @default 'slide'
    */
   animation?: ModalAnimation;
