@@ -67,7 +67,7 @@
   "bugs": {
     "url": "https://github.com/WhidRubeld/react-native-reanimated-modal/issues"
   },
-  "homepage": "https://github.com/WhidRubeld/react-native-reanimated-modal#readme",
+  "homepage": "https://whidrubeld.github.io/react-native-reanimated-modal",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
