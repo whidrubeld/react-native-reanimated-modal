@@ -252,7 +252,7 @@ These props are optional and help you write robust e2e/unit tests.
 | `contentContainerStyle` | `StyleProp<ViewStyle>` | - | Style for the content wrapper |
 | `renderBackdrop` | `() => ReactNode` | - | Custom backdrop renderer |
 
-#### New Configuration Props
+#### Configuration Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
@@ -267,21 +267,6 @@ These props are optional and help you write robust e2e/unit tests.
 | `backdropColor` | `string` | `'black'` | Color of the backdrop |
 | `backdropOpacity` | `number` | `0.7` | Opacity of the backdrop (0-1) |
 | `onBackdropPress` | `() => void` | - | Callback when backdrop is pressed |
-
-#### Swipe Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `swipeDirection` | `SwipeDirection \| SwipeDirection[]` | `'down'` | Direction(s) to enable swipe-to-dismiss. When array is provided, the first element determines the initial slide-in direction |
-| `swipeThreshold` | `number` | `100` | Distance in pixels to trigger dismiss |
-| `swipeEnabled` | `boolean` | `true` | Whether swipe gestures are enabled |
-
-#### Bounce Props
-
-| Prop                     | Type           | Default                                    | Description                                                                                                                                                      |
-| ------------------------ | -------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `bounceSpringConfig`     | `SpringConfig` | `{ stiffness: 200, dampingRatio: 0.5, duration: 7e2 }` | Spring config for bounce-back animation after failed swipe. Accepts the same shape as Reanimated's spring config.|
-| `bounceOpacityThreshold` | `number`       | `0.05` | Threshold for backdrop opacity correction during bounce. If difference between target and current opacity is less than this value, opacity is snapped to target. |
 
 #### Other Props
 
@@ -419,15 +404,19 @@ const MultiModalExample = () => {
 
 ## 🎨 Advanced Examples
 
-
 ### Fade Animation with Custom Duration
 
 ```tsx
 <Modal
   visible={visible}
-  animation="fade" // default variant
-  animationDuration={400}
-  swipeDirection={['down', 'right']} // Modal slides in from bottom, can be dismissed by swiping down or right
+  animationConfig={{
+    animation: 'fade',
+    duration: 400,
+  }}
+  swipeConfig={{
+    directions: ['down', 'right'],
+    threshold: 100,
+  }}
   onHide={() => setVisible(false)}
 >
   {/* Modal content */}
@@ -439,31 +428,49 @@ const MultiModalExample = () => {
 ```tsx
 <Modal
   visible={visible}
-  animation="scale"
-  animationDuration={400}
-  swipeDirection={['down', 'right']} // Modal slides in from bottom, can be dismissed by swiping down or right
+  animationConfig={{
+    animation: 'scale',
+    duration: 400,
+    scaleFactor: 0.8,
+  }}
+  swipeConfig={{
+    directions: ['down', 'right'],
+    threshold: 100,
+  }}
   onHide={() => setVisible(false)}
 >
   {/* Modal content */}
 </Modal>
 ```
 
-### Custom Animation with Swipe Directions
+### Custom Slide Animation with Swipe Directions
 
 ```tsx
 <Modal
   visible={visible}
-  animation="slide"
-  animationDuration={500}
-  swipeDirection={['down', 'right']} // Modal slides in from bottom, can be dismissed by swiping down or right
-  swipeThreshold={150}
+  animationConfig={{
+    animation: 'slide',
+    duration: 500,
+    direction: {
+      start: 'down',           // Slides in from bottom
+      end: ['down', 'right'],  // Can dismiss by swiping down or right
+    },
+  }}
+  swipeConfig={{
+    threshold: 150,
+    bounceSpringConfig: {
+      stiffness: 300,
+      dampingRatio: 0.8,
+      duration: 400,
+    },
+  }}
   onHide={() => setVisible(false)}
 >
   {/* Modal content */}
 </Modal>
 ```
 
-> **Note**: When using an array for `swipeDirection`, the first element (`'down'` in this example) determines the initial slide-in animation direction, while all elements in the array define the available swipe-to-dismiss directions.
+> **Note**: When using slide animation with complex directions, the `start` property determines the initial slide-in direction, while the `end` property (array or single direction) defines the available swipe-to-dismiss directions.
 
 ### Full Screen Modal
 
@@ -471,6 +478,17 @@ const MultiModalExample = () => {
 <Modal
   visible={visible}
   contentContainerStyle={{ flex: 1 }}
+  animationConfig={{
+    animation: 'slide',
+    duration: 300,
+    direction: 'down',
+  }}
+  swipeConfig={{
+    directions: ['down'],
+    threshold: 80,
+  }}
+  hasBackdrop={false} // No backdrop for full screen
+  onHide={() => setVisible(false)}
 >
   {/* Modal content */}
 </Modal>
