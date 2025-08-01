@@ -25,14 +25,21 @@ import Animated, {
   useAnimatedReaction,
 } from 'react-native-reanimated';
 
-import type { ModalProps, SwipeDirection } from './types';
+import type { ModalProps, SwipeDirection, ModalAnimationConfig } from './types';
 import { styles } from './styles';
 import {
-  DEFAULT_ANIMATION_DURATION,
-  DEFAULT_BOUNCE_OPACITY_THRESHOLD,
-  DEFAULT_BOUNCE_SPRING_CONFIG,
-  DEFAULT_SWIPE_THRESHOLD,
-} from './constants';
+  normalizeAnimationConfig,
+  normalizeSwipeConfig,
+  getSwipeDirections,
+  getSlideInDirection,
+  DEFAULT_MODAL_ANIMATION_DURATION,
+  DEFAULT_MODAL_SCALE_FACTOR,
+  DEFAULT_MODAL_BACKDROP_OPACITY,
+  DEFAULT_MODAL_BACKDROP_COLOR,
+  DEFAULT_MODAL_SWIPE_THRESHOLD,
+  DEFAULT_MODAL_BOUNCE_SPRING_CONFIG,
+  DEFAULT_MODAL_BOUNCE_OPACITY_THRESHOLD,
+} from './config';
 
 /**
  * Animation state for the modal.
@@ -60,21 +67,16 @@ export const Modal: FC<ModalProps> = ({
   style,
   contentContainerStyle,
   //
-  animation = 'slide',
-  animationDuration = DEFAULT_ANIMATION_DURATION,
+  animationConfig,
   //
   hasBackdrop = true,
-  backdropColor = 'black',
-  backdropOpacity = 0.7,
+  backdropColor = DEFAULT_MODAL_BACKDROP_COLOR,
+  backdropOpacity = DEFAULT_MODAL_BACKDROP_OPACITY,
   onBackdropPress,
   renderBackdrop,
   //
-  swipeDirection = 'down',
-  swipeThreshold = DEFAULT_SWIPE_THRESHOLD,
-  swipeEnabled = true,
+  swipeConfig,
   //
-  bounceSpringConfig = DEFAULT_BOUNCE_SPRING_CONFIG,
-  bounceOpacityThreshold = DEFAULT_BOUNCE_OPACITY_THRESHOLD,
   coverScreen = false,
   //
   onShow,
@@ -91,6 +93,30 @@ export const Modal: FC<ModalProps> = ({
   containerTestID = 'modal-container',
 }) => {
   const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
+
+  // Normalize configs with defaults
+  const normalizedAnimationConfig = useMemo(
+    () => normalizeAnimationConfig(animationConfig),
+    [animationConfig]
+  );
+
+  const normalizedSwipeConfig = useMemo(
+    () => normalizeSwipeConfig(swipeConfig),
+    [swipeConfig]
+  );
+
+  // Extract values from configs
+  const animationDuration =
+    normalizedAnimationConfig.duration || DEFAULT_MODAL_ANIMATION_DURATION;
+  const swipeEnabled = normalizedSwipeConfig.enabled ?? true;
+  const swipeThreshold =
+    normalizedSwipeConfig.threshold || DEFAULT_MODAL_SWIPE_THRESHOLD;
+  const bounceSpringConfig =
+    normalizedSwipeConfig.bounceSpringConfig ||
+    DEFAULT_MODAL_BOUNCE_SPRING_CONFIG;
+  const bounceOpacityThreshold =
+    normalizedSwipeConfig.bounceOpacityThreshold ||
+    DEFAULT_MODAL_BOUNCE_OPACITY_THRESHOLD;
 
   /**
    * Tracks the modal's actual visibility state (native Modal open/close).
@@ -114,8 +140,17 @@ export const Modal: FC<ModalProps> = ({
    * @type {SwipeDirection[]}
    */
   const swipeDirections = useMemo(
-    () => (Array.isArray(swipeDirection) ? swipeDirection : [swipeDirection]),
-    [swipeDirection]
+    () => getSwipeDirections(normalizedSwipeConfig, normalizedAnimationConfig),
+    [normalizedSwipeConfig, normalizedAnimationConfig]
+  );
+
+  /**
+   * Slide-in direction for the modal.
+   * @type {SwipeDirection}
+   */
+  const slideInDirection = useMemo(
+    () => getSlideInDirection(normalizedAnimationConfig),
+    [normalizedAnimationConfig]
   );
 
   /**
@@ -442,7 +477,8 @@ export const Modal: FC<ModalProps> = ({
    */
   const contentAnimatedStyle = useAnimatedStyle(() => {
     if (activeSwipeDirection.value) {
-      const baseOpacity = animation === 'fade' ? progress.value : 1;
+      const baseOpacity =
+        normalizedAnimationConfig.animation === 'fade' ? progress.value : 1;
       return {
         opacity: baseOpacity,
         transform: [
@@ -452,7 +488,7 @@ export const Modal: FC<ModalProps> = ({
       };
     }
 
-    switch (animation) {
+    switch (normalizedAnimationConfig.animation) {
       case 'fade': {
         return {
           opacity: progress.value,
@@ -460,7 +496,11 @@ export const Modal: FC<ModalProps> = ({
         };
       }
       case 'scale': {
-        const scale = interpolate(progress.value, [0, 1], [0.8, 1]);
+        const scaleConfig =
+          normalizedAnimationConfig as ModalAnimationConfig<'scale'>;
+        const scaleFactor =
+          scaleConfig.scaleFactor || DEFAULT_MODAL_SCALE_FACTOR;
+        const scale = interpolate(progress.value, [0, 1], [scaleFactor, 1]);
         return {
           opacity: progress.value,
           transform: [{ translateX: 0 }, { translateY: 0 }, { scale }],
@@ -480,7 +520,7 @@ export const Modal: FC<ModalProps> = ({
               return { x: SCREEN_WIDTH, y: 0 };
           }
         };
-        const entryPos = slideIn(swipeDirections[0] || 'down');
+        const entryPos = slideIn(slideInDirection);
         return {
           opacity: 1,
           transform: [
