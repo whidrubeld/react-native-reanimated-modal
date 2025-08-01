@@ -28,10 +28,9 @@ export default function BottomHalfModal({
   return (
     <Modal
       visible={visible}
-      swipeDirection="down"
+      swipeConfig={{ directions: ['down'], threshold: 150 }}
       style={styles.root}
-      swipeThreshold={150}
-      animationDuration={5e2}
+      animationConfig={{ animation: 'slide', duration: 500 }}
       onHide={() => setVisible(false)}
     >
       <StatusBar style="light" animated />

@@ -13,8 +13,8 @@ export default function BasicModal({
   return (
     <Modal
       visible={visible}
-      animation="fade"
-      swipeDirection={['down', 'left', 'right', 'up']}
+      animationConfig={{ animation: 'fade' }}
+      swipeConfig={{ directions: ['down', 'left', 'right', 'up'] }}
       onHide={() => setVisible(false)}
     >
       <StatusBar style="light" animated />

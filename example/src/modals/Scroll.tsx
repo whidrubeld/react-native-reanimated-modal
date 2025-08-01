@@ -33,8 +33,8 @@ export default function ScrollModal({
   return (
     <Modal
       visible={visible}
-      animation="scale"
-      swipeDirection="down"
+      animationConfig={{ animation: 'scale' }}
+      swipeConfig={{ directions: ['down'] }}
       onHide={() => setVisible(false)}
     >
       <StatusBar style="light" animated />

@@ -68,7 +68,7 @@ export default function AlertModal({
     <Modal
       visible={visible}
       style={styles.root}
-      swipeDirection={['down', 'left', 'right']}
+      swipeConfig={{ directions: ['down', 'left', 'right'] }}
       hasBackdrop={false}
       coverScreen // NOTE: need for pointer events
       onHide={() => setVisible(false)}
