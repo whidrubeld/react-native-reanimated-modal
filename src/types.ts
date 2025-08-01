@@ -11,6 +11,110 @@ export type ModalAnimation = 'fade' | 'slide' | 'scale';
 export type SwipeDirection = 'up' | 'down' | 'left' | 'right';
 
 /**
+ * Base configuration for all animation types.
+ */
+interface BaseAnimationConfig {
+  /**
+   * Duration of the animation in milliseconds.
+   * @default 300
+   */
+  duration?: number;
+}
+
+/**
+ * Configuration for fade animation.
+ */
+export interface FadeAnimationConfig extends BaseAnimationConfig {
+  animation: 'fade';
+}
+
+/**
+ * Configuration for slide animation.
+ */
+export interface SlideAnimationConfig extends BaseAnimationConfig {
+  animation: 'slide';
+  /**
+   * Direction for slide animation.
+   * Can be a single direction or an object with start/end directions.
+   * @default 'down'
+   */
+  direction?:
+    | SwipeDirection
+    | {
+        /**
+         * Direction for slide-in animation.
+         */
+        start: SwipeDirection;
+        /**
+         * Allowed directions for swipe-to-dismiss.
+         */
+        end: SwipeDirection | SwipeDirection[];
+      };
+}
+
+/**
+ * Configuration for scale animation.
+ */
+export interface ScaleAnimationConfig extends BaseAnimationConfig {
+  animation: 'scale';
+  /**
+   * Initial scale factor for the modal (0-1).
+   * @default 0.8
+   */
+  scaleFactor?: number;
+}
+
+/**
+ * Union of all animation configuration types.
+ */
+export type ModalAnimationConfigUnion =
+  | FadeAnimationConfig
+  | SlideAnimationConfig
+  | ScaleAnimationConfig;
+
+/**
+ * Generic type for animation config based on animation type.
+ */
+export type ModalAnimationConfig<T extends ModalAnimation> = T extends 'fade'
+  ? FadeAnimationConfig
+  : T extends 'slide'
+    ? SlideAnimationConfig
+    : T extends 'scale'
+      ? ScaleAnimationConfig
+      : never;
+
+/**
+ * Configuration for swipe gestures.
+ */
+export interface SwipeConfig {
+  /**
+   * Whether swipe gestures are enabled.
+   * @default true
+   */
+  enabled?: boolean;
+  /**
+   * Array of swipe directions that should close the modal.
+   * @default []
+   */
+  directions?: SwipeDirection[];
+  /**
+   * Distance in pixels to trigger dismiss by swipe.
+   * @default 100
+   */
+  threshold?: number;
+  /**
+   * Spring config for bounce-back animation after failed swipe.
+   * @default { stiffness: 200, dampingRatio: 0.5, duration: 700 }
+   */
+  bounceSpringConfig?: SpringConfig;
+  /**
+   * Threshold for backdrop opacity correction during bounce.
+   * @default 0.05
+   */
+  bounceOpacityThreshold?: number;
+}
+
+/**
  * Props for the Modal component.
  *
  * @remarks
@@ -63,20 +167,13 @@ export interface ModalProps
    */
   containerTestID?: string;
 
-  // Animation type
+  // Animation configuration
   /**
-   * Animation type for modal appearance.
-   * - 'fade': Modal fades in/out with opacity animation
-   * - 'slide': Modal slides in from specified direction
-   * - 'scale': Modal scales in/out from center with zoom effect
-   * @default 'slide'
+   * Animation configuration for modal appearance.
+   * Can be a simple animation type string or a detailed config object.
+   * @default { animation: 'slide', duration: 300 }
    */
-  animation?: ModalAnimation;
-  /**
-   * Duration of the open/close animation in milliseconds.
-   * @default 300
-   */
-  animationDuration?: number;
+  animationConfig?: ModalAnimationConfigUnion | ModalAnimation;
 
   // Backdrop related
   /**
@@ -106,34 +203,12 @@ export interface ModalProps
    */
   onBackdropPress?: () => void;
 
-  // Swipe
+  // Swipe configuration
   /**
-   * Direction(s) to enable swipe-to-dismiss. When array is provided, the first element determines the initial slide-in direction.
-   * @default 'down'
+   * Swipe gesture configuration.
+   * @default { enabled: true, threshold: 100 }
    */
-  swipeDirection?: SwipeDirection | SwipeDirection[];
-  /**
-   * Distance in pixels to trigger dismiss by swipe.
-   * @default 100
-   */
-  swipeThreshold?: number;
-  /**
-   * Whether swipe gestures are enabled.
-   * @default true
-   */
-  swipeEnabled?: boolean;
-
-  // Bounce
-  /**
-   * Spring config for bounce-back animation after failed swipe. Accepts the same shape as Reanimated's spring config.
-   * @default { stiffness: 200, dampingRatio: 0.5, duration: 700 }
-   */
-  bounceSpringConfig?: SpringConfig;
-  /**
-   * Threshold for backdrop opacity correction during bounce. If the difference between target and current opacity is less than this value, opacity is snapped to target.
-   * @default 0.05
-   */
-  bounceOpacityThreshold?: number;
+  swipeConfig?: SwipeConfig;
 
   // Others
   /**
