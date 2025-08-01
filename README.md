@@ -8,7 +8,7 @@ A lightweight, scalable, flexible, and high-performance modal component.  Based 
 ## ✨ Features
 
 - **🚀 Performance**: Built with react-native-reanimated for 60fps animations that run on the UI thread
-- **🎨 Smooth Animations**: Supports both fade and slide animations with customizable durations
+- **🎨 Smooth Animations**: Supports fade, slide, and scale animations with customizable durations
 - **👆 Gesture Support**: Interactive swipe-to-dismiss in any direction (up, down, left, right)
 - **🪶 Lightweight**: Minimal dependencies and smaller bundle size compared to alternatives
 - **📱 Native Feel**: Uses React Native's Modal component as foundation for platform consistency
@@ -140,7 +140,7 @@ These props are optional and help you write robust e2e/unit tests.
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `animation` | `'fade' \| 'slide'` | `'slide'` | Animation type for modal appearance |
+| `animation` | `'fade' \| 'slide' \| 'scale'` | `'slide'` | Animation type for modal appearance |
 | `animationDuration` | `number` | `300` | Duration of the animation in milliseconds |
 
 #### Backdrop Props
@@ -194,7 +194,7 @@ The component also accepts these props from React Native's Modal:
 
 ```tsx
 type SwipeDirection = 'up' | 'down' | 'left' | 'right';
-type ModalAnimation = 'fade' | 'slide';
+type ModalAnimation = 'fade' | 'slide' | 'scale';
 ```
 
 ## 🔄 React Navigation support
@@ -242,6 +242,39 @@ const MultiModalExample = () => {
 
 ## 🎨 Advanced Examples
 
+
+### Fade Animation with Custom Duration
+
+```tsx
+<Modal
+  visible={visible}
+  animation="fade" // default variant
+  animationDuration={400}
+  swipeDirection={['down', 'right']} // Modal slides in from bottom, can be dismissed by swiping down or right
+  onHide={() => setVisible(false)}
+>
+  {
+    // your content...
+  }
+</Modal>
+```
+
+### Scale Animation with Custom Duration
+
+```tsx
+<Modal
+  visible={visible}
+  animation="scale"
+  animationDuration={400}
+  swipeDirection={['down', 'right']} // Modal slides in from bottom, can be dismissed by swiping down or right
+  onHide={() => setVisible(false)}
+>
+  {
+    // your content...
+  }
+</Modal>
+```
+
 ### Custom Animation with Swipe Directions
 
 ```tsx
@@ -251,9 +284,11 @@ const MultiModalExample = () => {
   animationDuration={500}
   swipeDirection={['down', 'right']} // Modal slides in from bottom, can be dismissed by swiping down or right
   swipeThreshold={150}
-  onBackdropPress={() => setVisible(false)}
+  onHide={() => setVisible(false)}
 >
-  <YourContent />
+  {
+    // your content...
+  }
 </Modal>
 ```
 
