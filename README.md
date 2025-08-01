@@ -92,6 +92,17 @@ const App = () => {
       <Modal
         visible={visible}
         onHide={() => setVisible(false)}
+        // New config-based API (recommended)
+        animationConfig={{
+          animation: 'scale',
+          duration: 400,
+          scaleFactor: 0.8,
+        }}
+        swipeConfig={{
+          enabled: true,
+          directions: ['down', 'left', 'right'],
+          threshold: 100,
+        }}
       >
         <View style={{
           backgroundColor: 'white',
@@ -112,6 +123,117 @@ export default gestureHandlerRootHOC(App);
 
 ## 📖 API Documentation
 
+### New Configuration-Based API (Recommended)
+
+Starting from v1.1.0, we recommend using the new configuration-based API for better type safety and cleaner code:
+
+#### Animation Configurations
+
+```tsx
+import type { ModalAnimationConfig } from 'react-native-reanimated-modal';
+
+// Scale animation with custom settings
+const scaleConfig: ModalAnimationConfig<'scale'> = {
+  animation: 'scale',
+  duration: 400,
+  scaleFactor: 0.8, // Start from 80% size
+};
+
+// Fade animation
+const fadeConfig: ModalAnimationConfig<'fade'> = {
+  animation: 'fade',
+  duration: 300,
+};
+
+// Slide animation with complex directions
+const slideConfig: ModalAnimationConfig<'slide'> = {
+  animation: 'slide',
+  duration: 500,
+  direction: {
+    start: 'down',        // Slides in from bottom
+    end: ['down', 'right'], // Can dismiss by swiping down or right
+  },
+};
+
+// Simple slide animation
+const simpleSlideConfig: ModalAnimationConfig<'slide'> = {
+  animation: 'slide',
+  duration: 400,
+  direction: 'up', // Both slide-in and dismiss direction
+};
+```
+
+#### Swipe Configurations
+
+```tsx
+import type { SwipeConfig } from 'react-native-reanimated-modal';
+
+// Basic swipe config
+const basicSwipe: SwipeConfig = {
+  enabled: true,
+  directions: ['down', 'left', 'right'], // Allow swiping in these directions
+  threshold: 120,
+};
+
+// Advanced swipe config with custom bounce
+const advancedSwipe: SwipeConfig = {
+  enabled: true,
+  directions: ['up', 'down'], // Only vertical swipes
+  threshold: 80,
+  bounceSpringConfig: {
+    stiffness: 300,
+    dampingRatio: 0.7,
+    duration: 400,
+  },
+  bounceOpacityThreshold: 0.1,
+};
+
+// Disabled swipe
+const noSwipe: SwipeConfig = {
+  enabled: false,
+};
+```
+
+#### Usage Examples
+
+```tsx
+<Modal
+  visible={visible}
+  animationConfig={scaleConfig}
+  swipeConfig={advancedSwipe}
+>
+  {/* Your content */}
+</Modal>
+
+// Or with inline configs
+<Modal
+  visible={visible}
+  animationConfig={{
+    animation: 'scale',
+    duration: 600,
+    scaleFactor: 0.9,
+  }}
+  swipeConfig={{
+    enabled: true,
+    threshold: 100,
+  }}
+>
+  {/* Your content */}
+</Modal>
+
+// Legacy string syntax still supported
+<Modal
+  visible={visible}
+  animationConfig="fade" // Equivalent to { animation: 'fade', duration: 300 }
+>
+  {/* Your content */}
+</Modal>
+```
+
+### Legacy Props (Backward Compatible)
+
+The old prop-based API is still supported for backward compatibility:
+
 
 ### Test IDs
 
@@ -130,18 +252,18 @@ These props are optional and help you write robust e2e/unit tests.
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `visible` | `boolean` | `false` | Controls the visibility of the modal |
-| `closable` | `boolean` | `true` | Whether the modal can be closed by user actions (backdrop press, swipe, hardware back). |
+| `closable` | `boolean` | `true` | Whether the modal can be closed by user actions |
 | `children` | `ReactNode` | - | Content to render inside the modal |
 | `style` | `StyleProp<ViewStyle>` | - | Style for the modal container |
 | `contentContainerStyle` | `StyleProp<ViewStyle>` | - | Style for the content wrapper |
-| `renderBackdrop` | `() => ReactNode` | - | Custom backdrop renderer. If provided, it will be rendered instead of the default backdrop. Useful for BlurView, gradients, etc. |
+| `renderBackdrop` | `() => ReactNode` | - | Custom backdrop renderer |
 
-#### Animation Props
+#### New Configuration Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `animation` | `'fade' \| 'slide' \| 'scale'` | `'slide'` | Animation type for modal appearance |
-| `animationDuration` | `number` | `300` | Duration of the animation in milliseconds |
+| `animationConfig` | `ModalAnimationConfigUnion \| ModalAnimation` | `{ animation: 'slide', duration: 300 }` | Animation configuration object or simple animation type string |
+| `swipeConfig` | `SwipeConfig` | `{ enabled: true, threshold: 100 }` | Swipe gesture configuration |
 
 #### Backdrop Props
 
@@ -190,11 +312,72 @@ The component also accepts these props from React Native's Modal:
 - `onOrientationChange` (iOS)
 - `supportedOrientations` (iOS)
 
+### Constants
+
+The library exports several useful constants for customization:
+
+```tsx
+import {
+  DEFAULT_MODAL_ANIMATION_DURATION,    // 300
+  DEFAULT_MODAL_SCALE_FACTOR,          // 0.8
+  DEFAULT_MODAL_BACKDROP_OPACITY,      // 0.7
+  DEFAULT_MODAL_BACKDROP_COLOR,        // 'black'
+  DEFAULT_MODAL_SWIPE_THRESHOLD,       // 100
+  DEFAULT_MODAL_BOUNCE_SPRING_CONFIG,  // { stiffness: 200, dampingRatio: 0.5, duration: 700 }
+  DEFAULT_MODAL_BOUNCE_OPACITY_THRESHOLD, // 0.05
+} from 'react-native-reanimated-modal';
+
+// Use in your custom configurations
+const customAnimationConfig = {
+  animation: 'scale',
+  duration: DEFAULT_MODAL_ANIMATION_DURATION * 2, // 600ms
+  scaleFactor: DEFAULT_MODAL_SCALE_FACTOR,         // 0.8
+};
+```
+
 ### Types
 
 ```tsx
 type SwipeDirection = 'up' | 'down' | 'left' | 'right';
 type ModalAnimation = 'fade' | 'slide' | 'scale';
+
+// New Configuration Types
+type ModalAnimationConfig<T extends ModalAnimation> =
+  T extends 'fade' ? FadeAnimationConfig :
+  T extends 'slide' ? SlideAnimationConfig :
+  T extends 'scale' ? ScaleAnimationConfig : never;
+
+interface FadeAnimationConfig {
+  animation: 'fade';
+  duration?: number;
+}
+
+interface SlideAnimationConfig {
+  animation: 'slide';
+  duration?: number;
+  direction?: SwipeDirection | {
+    start: SwipeDirection;
+    end: SwipeDirection | SwipeDirection[];
+  };
+}
+
+interface ScaleAnimationConfig {
+  animation: 'scale';
+  duration?: number;
+  scaleFactor?: number; // 0-1, default: 0.8
+}
+
+interface SwipeConfig {
+  enabled?: boolean;
+  threshold?: number;
+  bounceSpringConfig?: SpringConfig;
+  bounceOpacityThreshold?: number;
+}
+
+type ModalAnimationConfigUnion =
+  | FadeAnimationConfig
+  | SlideAnimationConfig
+  | ScaleAnimationConfig;
 ```
 
 ## 🔄 React Navigation support
