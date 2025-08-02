@@ -8,7 +8,7 @@ A lightweight, scalable, flexible, and high-performance modal component.  Based 
 ## ✨ Features
 
 - **🚀 Performance**: Built with react-native-reanimated for 60fps animations that run on the UI thread
-- **🎨 Smooth Animations**: Supports fade, slide, and scale animations with customizable durations
+- **🎨 Smooth Animations**: Supports fade, slide, and scale animations with customizable configs
 - **👆 Gesture Support**: Interactive swipe-to-dismiss in any direction (up, down, left, right)
 - **🪶 Lightweight**: Minimal dependencies and smaller bundle size compared to alternatives
 - **📱 Native Feel**: Uses React Native's Modal component as foundation for platform consistency
