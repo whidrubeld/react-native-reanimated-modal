@@ -17,6 +17,7 @@ export const DEFAULT_MODAL_BACKDROP_OPACITY = 0.7;
 export const DEFAULT_MODAL_BACKDROP_COLOR = 'black';
 export const DEFAULT_MODAL_SWIPE_THRESHOLD = 100;
 export const DEFAULT_MODAL_BOUNCE_OPACITY_THRESHOLD = 0.05;
+export const DEFAULT_SWIPE_DIRECTION: SwipeDirection = 'down';
 
 export const DEFAULT_MODAL_BOUNCE_SPRING_CONFIG = {
   stiffness: 200,
@@ -35,7 +36,7 @@ export const DEFAULT_MODAL_ANIMATION_CONFIGS = {
   slide: {
     animation: 'slide',
     duration: DEFAULT_MODAL_ANIMATION_DURATION,
-    direction: 'down',
+    direction: DEFAULT_SWIPE_DIRECTION,
   } as SlideAnimationConfig,
   scale: {
     animation: 'scale',
@@ -49,7 +50,7 @@ export const DEFAULT_MODAL_ANIMATION_CONFIGS = {
  */
 export const DEFAULT_MODAL_SWIPE_CONFIG: SwipeConfig = {
   enabled: true,
-  directions: [],
+  directions: [DEFAULT_SWIPE_DIRECTION],
   threshold: DEFAULT_MODAL_SWIPE_THRESHOLD,
   bounceSpringConfig: DEFAULT_MODAL_BOUNCE_SPRING_CONFIG,
   bounceOpacityThreshold: DEFAULT_MODAL_BOUNCE_OPACITY_THRESHOLD,
@@ -101,7 +102,7 @@ export function normalizeSwipeConfig(
 export function getSwipeDirections(
   swipeConfig: SwipeConfig,
   animationConfig?: ModalAnimationConfigUnion,
-  fallback: SwipeDirection | SwipeDirection[] = 'down'
+  fallback: SwipeDirection | SwipeDirection[] = DEFAULT_SWIPE_DIRECTION
 ): SwipeDirection[] {
   // If swipe config has directions, use them
   if (swipeConfig.directions && swipeConfig.directions.length > 0) {
@@ -130,7 +131,7 @@ export function getSwipeDirections(
  */
 export function getSlideInDirection(
   animationConfig: ModalAnimationConfigUnion,
-  fallback: SwipeDirection = 'down'
+  fallback: SwipeDirection = DEFAULT_SWIPE_DIRECTION
 ): SwipeDirection {
   if (animationConfig.animation === 'slide' && animationConfig.direction) {
     if (typeof animationConfig.direction === 'string') {
