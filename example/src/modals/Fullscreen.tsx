@@ -1,7 +1,8 @@
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Modal } from 'react-native-reanimated-modal';
 import { baseStyles } from './styles';
 import { StatusBar } from 'expo-status-bar';
+import Button from './Button';
 
 export default function FullscreenModal({
   visible,

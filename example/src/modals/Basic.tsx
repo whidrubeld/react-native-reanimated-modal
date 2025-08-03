@@ -1,7 +1,8 @@
-import { Button, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { Modal } from 'react-native-reanimated-modal';
 import { baseStyles } from './styles';
 import { StatusBar } from 'expo-status-bar';
+import Button from './Button';
 
 export default function BasicModal({
   visible,

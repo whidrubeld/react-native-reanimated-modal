@@ -1,9 +1,10 @@
-import { Button, StyleSheet, Text, View, type ViewStyle } from 'react-native';
+import { StyleSheet, Text, View, type ViewStyle } from 'react-native';
 import { Modal } from 'react-native-reanimated-modal';
 import { baseStyles } from './styles';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useMemo } from 'react';
 import { StatusBar } from 'expo-status-bar';
+import Button from './Button';
 
 export default function BottomHalfModal({
   visible,
@@ -75,6 +76,6 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
   },
-  content: { marginVertical: 30, gap: 20 },
-  emoji: { textAlign: 'center', fontSize: 48 },
+  content: { marginVertical: 20, gap: 10 },
+  emoji: { textAlign: 'center', fontSize: 48, marginBottom: 10 },
 });

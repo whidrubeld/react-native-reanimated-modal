@@ -9,11 +9,14 @@ export const baseStyles = StyleSheet.create({
     gap: 10,
     textAlign: 'center',
   },
-  title: { fontSize: 18, fontWeight: 600, textAlign: 'center' },
-  description: { textAlign: 'center' },
+  title: {
+    fontSize: 18,
+    fontWeight: 700,
+    textAlign: 'center',
+  },
+  description: { textAlign: 'center', fontWeight: 400, lineHeight: 20 },
   buttonGroup: {
-    gap: 5,
+    gap: 10,
     marginTop: 5,
-    marginBottom: -5,
   },
 });

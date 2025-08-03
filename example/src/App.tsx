@@ -1,4 +1,4 @@
-import { View, StyleSheet, Button, Text } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useState } from 'react';
@@ -11,6 +11,7 @@ import InputModal from './modals/Input';
 import AlertModal from './modals/Alert';
 import BlurModal from './modals/Blur';
 import ScrollModal from './modals/Scroll';
+import Button from './modals/Button';
 
 const App = () => {
   const [isBasicVisible, setBasicVisible] = useState(false);
@@ -26,14 +27,19 @@ const App = () => {
     <SafeAreaProvider>
       <View style={styles.container}>
         <Text style={styles.title}>React Native Reanimated Modal Examples</Text>
-        <Button title="📋 Basic" onPress={() => setBasicVisible(true)} />
-        <Button title="🔄 Multiple" onPress={() => setMultipleVisible(true)} />
-        <Button title="📝 Input" onPress={() => setInputVisible(true)} />
-        <Button title="📜 Scroll" onPress={() => setScrollVisible(true)} />
-        <Button title="🔍 Blur" onPress={() => setBlurVisible(true)} />
-        <Button title="📱 Fullscreen" onPress={() => setFullVisible(true)} />
-        <Button title="⚠️ Alert" onPress={() => setAlertVisible(true)} />
-        <Button title="⬆️ Bottom Half" onPress={() => setHalfVisible(true)} />
+        <View style={styles.buttonGroup}>
+          <Button title="📋 Basic" onPress={() => setBasicVisible(true)} />
+          <Button
+            title="🔄 Multiple"
+            onPress={() => setMultipleVisible(true)}
+          />
+          <Button title="📝 Input" onPress={() => setInputVisible(true)} />
+          <Button title="📜 Scroll" onPress={() => setScrollVisible(true)} />
+          <Button title="🔍 Blur" onPress={() => setBlurVisible(true)} />
+          <Button title="📱 Fullscreen" onPress={() => setFullVisible(true)} />
+          <Button title="⚠️ Alert" onPress={() => setAlertVisible(true)} />
+          <Button title="⬆️ Bottom Half" onPress={() => setHalfVisible(true)} />
+        </View>
 
         <BasicModal visible={isBasicVisible} setVisible={setBasicVisible} />
         <MultipleModal
@@ -63,8 +69,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
     textAlign: 'center',
     maxWidth: '80%',
+  },
+  buttonGroup: {
+    padding: 20,
+    gap: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
   },
 });

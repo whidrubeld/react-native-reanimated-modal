@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Button, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { Modal } from 'react-native-reanimated-modal';
 import { baseStyles } from './styles';
 import { StatusBar } from 'expo-status-bar';
+import Button from './Button';
 
 export default function MultipleModal({
   visible,
@@ -31,10 +32,14 @@ export default function MultipleModal({
           </Text>
           <View style={baseStyles.buttonGroup}>
             <Button
-              title="Open secondary modal"
+              title="Secondary modal"
               onPress={() => setSecondaryVisible(true)}
             />
-            <Button title="Close" onPress={() => setVisible(false)} />
+            <Button
+              title="Close"
+              variant="secondary"
+              onPress={() => setVisible(false)}
+            />
           </View>
         </View>
       </Modal>

@@ -106,14 +106,14 @@ const styles = StyleSheet.create({
     elevation: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.25,
     shadowRadius: 15,
-    borderRadius: 10,
+    borderRadius: 14,
   },
   alert: {
     backgroundColor: '#ffffff',
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 14,
     gap: 5,
     overflow: 'hidden',
   },
@@ -125,6 +125,6 @@ const styles = StyleSheet.create({
   },
   progress: {
     height: 4,
-    backgroundColor: '#f6ad55',
+    backgroundColor: '#000000',
   },
 });

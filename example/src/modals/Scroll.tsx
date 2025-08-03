@@ -1,5 +1,4 @@
 import {
-  Button,
   RefreshControl,
   StyleSheet,
   Text,
@@ -12,6 +11,7 @@ import { baseStyles } from './styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useMemo } from 'react';
 import { StatusBar } from 'expo-status-bar';
+import Button from './Button';
 
 export default function ScrollModal({
   visible,
@@ -22,11 +22,14 @@ export default function ScrollModal({
 }) {
   const { height } = useWindowDimensions();
 
-  const scrollStyles = useMemo<ViewStyle>(
-    () => ({
-      maxHeight: height / 3,
-      marginTop: 5,
-    }),
+  const scrollStyles = useMemo<ViewStyle[]>(
+    () => [
+      {
+        maxHeight: height / 3,
+        marginTop: 5,
+      },
+      styles.scrollRoot,
+    ],
     [height]
   );
 
@@ -54,7 +57,7 @@ export default function ScrollModal({
             </View>
           ))}
         </ScrollView>
-        <View style={baseStyles.buttonGroup}>
+        <View style={[baseStyles.buttonGroup, styles.buttonGroup]}>
           <Button title="Close" onPress={() => setVisible(false)} />
         </View>
       </View>
@@ -64,8 +67,16 @@ export default function ScrollModal({
 
 const styles = StyleSheet.create({
   container: { paddingHorizontal: 0 },
+  scrollRoot: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
   scrollContainer: {
+    paddingVertical: 10,
     paddingHorizontal: 20,
     gap: 10,
+  },
+  buttonGroup: {
+    paddingHorizontal: 20,
   },
 });
