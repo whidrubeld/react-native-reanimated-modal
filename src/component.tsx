@@ -18,11 +18,11 @@ import Animated, {
   Easing,
   interpolate,
   runOnJS,
+  useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
   withSpring,
-  useAnimatedReaction,
 } from 'react-native-reanimated';
 
 import type { ModalProps, SwipeDirection, ModalAnimationConfig } from './types';
@@ -119,25 +119,62 @@ export const Modal: FC<ModalProps> = ({
     DEFAULT_MODAL_BOUNCE_OPACITY_THRESHOLD;
 
   /**
-   * Tracks the modal's actual visibility state (native Modal open/close).
-   * @type {[boolean, Function]}
-   */
-  const [modalVisible, setModalVisible] = useState(false);
-
-  /**
    * Shared values for animation progress and gesture state.
-   * @type {Animated.SharedValue<number>}
    */
   const progress = useSharedValue(0);
   const offsetX = useSharedValue(0);
   const offsetY = useSharedValue(0);
   const activeSwipeDirection = useSharedValue<SwipeDirection | null>(null);
-
   const animationMode = useSharedValue(AnimationMode.None);
+  const shouldRender = useSharedValue(visible);
+
+  /**
+   * React state buffers for shared values (for React hooks dependencies).
+   */
+  const [shouldRenderValue, setShouldRenderValue] = useState(visible);
+  const [animationModeValue, setAnimationModeValue] = useState(
+    AnimationMode.None
+  );
+
+  /**
+   * Animated reactions to sync shared values with React state buffers.
+   */
+  useAnimatedReaction(
+    () => shouldRender.value,
+    (current) => {
+      runOnJS(setShouldRenderValue)(current);
+    },
+    []
+  );
+
+  useAnimatedReaction(
+    () => animationMode.value,
+    (current) => {
+      runOnJS(setAnimationModeValue)(current);
+    },
+    []
+  );
+
+  /**
+   * Memo: determines if modal needs to open
+   */
+  const isNeedOpen = useMemo(() => {
+    return (
+      visible && !shouldRenderValue && animationModeValue === AnimationMode.None
+    );
+  }, [visible, shouldRenderValue, animationModeValue]);
+
+  /**
+   * Memo: determines if modal needs to close
+   */
+  const isNeedClose = useMemo(() => {
+    return (
+      !visible && shouldRenderValue && animationModeValue === AnimationMode.None
+    );
+  }, [visible, shouldRenderValue, animationModeValue]);
 
   /**
    * Allowed swipe directions for dismissing the modal.
-   * @type {SwipeDirection[]}
    */
   const swipeDirections = useMemo(
     () => getSwipeDirections(normalizedSwipeConfig, normalizedAnimationConfig),
@@ -146,7 +183,6 @@ export const Modal: FC<ModalProps> = ({
 
   /**
    * Slide-in direction for the modal.
-   * @type {SwipeDirection}
    */
   const slideInDirection = useMemo(
     () => getSlideInDirection(normalizedAnimationConfig),
@@ -155,9 +191,9 @@ export const Modal: FC<ModalProps> = ({
 
   /**
    * Resets all animation and gesture state to initial values.
-   * @function
    */
   const resetAnimationState = useCallback(() => {
+    'worklet';
     progress.value = 0;
     offsetX.value = 0;
     offsetY.value = 0;
@@ -166,18 +202,11 @@ export const Modal: FC<ModalProps> = ({
   }, [progress, offsetX, offsetY, activeSwipeDirection, animationMode]);
 
   /**
-   * Opens the modal with animation.
-   * @function
+   * Handles modal opening
    */
-  const handleOpen = useCallback<() => void>(() => {
-    if (animationMode.value !== AnimationMode.None) return;
-    setModalVisible(true);
+  const handleOpen = useCallback(() => {
+    shouldRender.value = true;
     animationMode.value = AnimationMode.Open;
-
-    offsetX.value = 0;
-    offsetY.value = 0;
-    activeSwipeDirection.value = null;
-
     progress.value = withTiming(
       1,
       { duration: animationDuration, easing: Easing.out(Easing.ease) },
@@ -186,49 +215,73 @@ export const Modal: FC<ModalProps> = ({
         if (onShow) runOnJS(onShow)();
       }
     );
-  }, [
-    animationDuration,
-    progress,
-    onShow,
-    offsetX,
-    offsetY,
-    activeSwipeDirection,
-    animationMode,
-  ]);
+  }, [animationDuration, progress, onShow, shouldRender, animationMode]);
 
-  /**
-   * Resets modal state and calls onHide after close animation.
-   * @function
-   */
-  const handleReset = useCallback(() => {
-    animationMode.value = AnimationMode.None;
-    setModalVisible(false);
+  const handleCloseCompletion = useCallback(() => {
+    'worklet';
+    shouldRender.value = false;
     resetAnimationState();
     if (onHide) runOnJS(onHide)();
-  }, [onHide, resetAnimationState, animationMode]);
+  }, [onHide, resetAnimationState, shouldRender]);
 
   /**
-   * Closes the modal with animation.
-   * @function
+   * Handles modal closing
    */
   const handleClose = useCallback(() => {
-    if (animationMode.value !== AnimationMode.None) return;
-    animationMode.value = AnimationMode.Close;
+    if (animationModeValue !== AnimationMode.None) return;
 
+    animationMode.value = AnimationMode.Close;
     progress.value = withTiming(
       0,
       { duration: animationDuration, easing: Easing.in(Easing.ease) },
+      handleCloseCompletion
+    );
+  }, [
+    animationModeValue,
+    animationMode,
+    progress,
+    animationDuration,
+    handleCloseCompletion,
+  ]);
+
+  /**
+   * Effect: handles modal openingк
+   */
+  useEffect(() => {
+    if (!isNeedOpen) return;
+    handleOpen();
+  }, [isNeedOpen, handleOpen]);
+
+  /**
+   * Effect: handles modal closing
+   */
+  useEffect(() => {
+    if (!isNeedClose) return;
+    handleClose();
+  }, [isNeedClose, handleClose]);
+
+  /**
+   * Effect: handles hardware back button for Android.
+   */
+  useEffect(() => {
+    if (!closable || !shouldRenderValue || !onHide) return;
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
       () => {
-        runOnJS(handleReset)();
+        if (shouldRenderValue && animationModeValue === AnimationMode.None) {
+          handleClose();
+          return true;
+        }
+        return false;
       }
     );
-  }, [animationDuration, progress, animationMode, handleReset]);
+
+    return () => backHandler.remove();
+  }, [shouldRenderValue, handleClose, closable, animationModeValue, onHide]);
 
   /**
    * Checks if a swipe direction is allowed for dismiss.
-   * @function
-   * @param {SwipeDirection} direction
-   * @returns {boolean}
    */
   const isDirectionAllowed = (direction: SwipeDirection): boolean => {
     'worklet';
@@ -237,10 +290,6 @@ export const Modal: FC<ModalProps> = ({
 
   /**
    * Calculates swipe progress for gesture-based dismiss.
-   * @function
-   * @param {number} dx
-   * @param {number} dy
-   * @returns {number}
    */
   const calculateSwipeProgress = (dx: number, dy: number): number => {
     'worklet';
@@ -268,10 +317,10 @@ export const Modal: FC<ModalProps> = ({
    * Pan gesture handler for swipe-to-dismiss.
    */
   const panGesture = Gesture.Pan()
-    .enabled(swipeEnabled && closable)
+    .enabled(swipeEnabled && closable && !!onHide)
     .onBegin(() => {
       if (animationMode.value !== AnimationMode.None) return;
-      activeSwipeDirection.value = null; // Reset direction at the start of gesture
+      activeSwipeDirection.value = null;
     })
     .onUpdate((event) => {
       // Only set direction once per gesture
@@ -338,18 +387,18 @@ export const Modal: FC<ModalProps> = ({
               : 0;
 
         let counter = 0;
+        const onComplete = () => {
+          counter += 1;
+          if (counter === 2) handleCloseCompletion();
+        };
+
         offsetX.value = withTiming(
           finalX,
           {
             duration: animationDuration,
             easing: Easing.out(Easing.ease),
           },
-          () => {
-            counter += 1;
-            if (counter === 2) {
-              runOnJS(handleReset)();
-            }
-          }
+          onComplete
         );
         offsetY.value = withTiming(
           finalY,
@@ -357,12 +406,7 @@ export const Modal: FC<ModalProps> = ({
             duration: animationDuration,
             easing: Easing.out(Easing.ease),
           },
-          () => {
-            counter += 1;
-            if (counter === 2) {
-              runOnJS(handleReset)();
-            }
-          }
+          onComplete
         );
       } else {
         // Bounce back
@@ -385,57 +429,6 @@ export const Modal: FC<ModalProps> = ({
         }
       }
     });
-
-  /**
-   * Handles modal open/close based on visibility and animation state.
-   * @function
-   */
-  const handleToggle = useCallback(
-    (mode: AnimationMode, isVisible: boolean, isModalVisible: boolean) => {
-      if (mode !== AnimationMode.None) return;
-      if (isVisible && !isModalVisible) handleOpen();
-      else if (!isVisible && isModalVisible) handleClose();
-    },
-    [handleClose, handleOpen]
-  );
-
-  /**
-   * Effect: open/close modal when visible prop changes.
-   */
-  useEffect(() => {
-    handleToggle(animationMode.value, visible, modalVisible);
-  }, [visible, modalVisible, handleToggle, animationMode]);
-
-  /**
-   * Animated reaction: syncs animationMode changes with React state.
-   */
-  useAnimatedReaction(
-    () => animationMode.value,
-    (anim, prev) => {
-      if (anim !== prev) {
-        runOnJS(handleToggle)(anim, visible, modalVisible);
-      }
-    },
-    [visible, modalVisible, handleToggle]
-  );
-
-  /**
-   * Effect: handles hardware back button for Android.
-   */
-  useEffect(() => {
-    if (!closable) return;
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      () => {
-        if (visible) {
-          handleClose();
-          return true;
-        }
-        return false;
-      }
-    );
-    return () => backHandler.remove();
-  }, [visible, handleClose, closable]);
 
   /**
    * Animated style for the backdrop (opacity, fade, bounce correction).
@@ -566,10 +559,8 @@ export const Modal: FC<ModalProps> = ({
         testID={backdropTestID}
         style={styles.absolute}
         onPress={
-          closable
-            ? onBackdropPress
-              ? onBackdropPress
-              : handleClose
+          closable && (onBackdropPress || onHide)
+            ? onBackdropPress || handleClose
             : undefined
         }
       >
@@ -586,7 +577,7 @@ export const Modal: FC<ModalProps> = ({
     );
   };
 
-  if (coverScreen && modalVisible) {
+  if (coverScreen && shouldRenderValue) {
     return (
       <View
         testID={containerTestID}
@@ -608,7 +599,7 @@ export const Modal: FC<ModalProps> = ({
       supportedOrientations={supportedOrientations}
       // presentationStyle="overFullScreen"
       transparent
-      visible={modalVisible}
+      visible={shouldRenderValue}
       onRequestClose={handleClose}
     >
       <View
