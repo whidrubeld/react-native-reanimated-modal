@@ -245,73 +245,43 @@ export const Modal: FC<ModalProps> = ({
   ]);
 
   /**
-   * Effect: handles modal openingк
-   */
-  useEffect(() => {
-    if (!isNeedOpen) return;
-    handleOpen();
-  }, [isNeedOpen, handleOpen]);
-
-  /**
-   * Effect: handles modal closing
-   */
-  useEffect(() => {
-    if (!isNeedClose) return;
-    handleClose();
-  }, [isNeedClose, handleClose]);
-
-  /**
-   * Effect: handles hardware back button for Android.
-   */
-  useEffect(() => {
-    if (!closable || !shouldRenderValue || !onHide) return;
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      () => {
-        if (shouldRenderValue && animationModeValue === AnimationMode.None) {
-          handleClose();
-          return true;
-        }
-        return false;
-      }
-    );
-
-    return () => backHandler.remove();
-  }, [shouldRenderValue, handleClose, closable, animationModeValue, onHide]);
-
-  /**
    * Checks if a swipe direction is allowed for dismiss.
    */
-  const isDirectionAllowed = (direction: SwipeDirection): boolean => {
-    'worklet';
-    return swipeDirections.includes(direction);
-  };
+  const isDirectionAllowed = useCallback(
+    (direction: SwipeDirection): boolean => {
+      'worklet';
+      return swipeDirections.includes(direction);
+    },
+    [swipeDirections]
+  );
 
   /**
    * Calculates swipe progress for gesture-based dismiss.
    */
-  const calculateSwipeProgress = (dx: number, dy: number): number => {
-    'worklet';
-    if (!activeSwipeDirection.value) return 0;
+  const calculateSwipeProgress = useCallback(
+    (dx: number, dy: number): number => {
+      'worklet';
+      if (!activeSwipeDirection.value) return 0;
 
-    let dist = 0;
-    switch (activeSwipeDirection.value) {
-      case 'left':
-        dist = Math.abs(dx);
-        break;
-      case 'right':
-        dist = dx;
-        break;
-      case 'up':
-        dist = Math.abs(dy);
-        break;
-      case 'down':
-        dist = dy;
-        break;
-    }
-    return Math.min(1, Math.max(0, dist / swipeThreshold));
-  };
+      let dist = 0;
+      switch (activeSwipeDirection.value) {
+        case 'left':
+          dist = Math.abs(dx);
+          break;
+        case 'right':
+          dist = dx;
+          break;
+        case 'up':
+          dist = Math.abs(dy);
+          break;
+        case 'down':
+          dist = dy;
+          break;
+      }
+      return Math.min(1, Math.max(0, dist / swipeThreshold));
+    },
+    [activeSwipeDirection.value, swipeThreshold]
+  );
 
   /**
    * Pan gesture handler for swipe-to-dismiss.
@@ -528,6 +498,42 @@ export const Modal: FC<ModalProps> = ({
       }
     }
   });
+
+  /**
+   * Effect: handles modal openingк
+   */
+  useEffect(() => {
+    if (!isNeedOpen) return;
+    handleOpen();
+  }, [isNeedOpen, handleOpen]);
+
+  /**
+   * Effect: handles modal closing
+   */
+  useEffect(() => {
+    if (!isNeedClose) return;
+    handleClose();
+  }, [isNeedClose, handleClose]);
+
+  /**
+   * Effect: handles hardware back button for Android.
+   */
+  useEffect(() => {
+    if (!closable || !shouldRenderValue || !onHide) return;
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
+        if (shouldRenderValue && animationModeValue === AnimationMode.None) {
+          handleClose();
+          return true;
+        }
+        return false;
+      }
+    );
+
+    return () => backHandler.remove();
+  }, [shouldRenderValue, handleClose, closable, animationModeValue, onHide]);
 
   /**
    * Renders the modal content, optionally wrapped with gesture detector.
