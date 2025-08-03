@@ -33,7 +33,7 @@ export default function ScrollModal({
   return (
     <Modal
       visible={visible}
-      animationConfig={{ animation: 'scale' }}
+      animationConfig="scale"
       swipeConfig={{ directions: ['down'] }}
       onHide={() => setVisible(false)}
     >

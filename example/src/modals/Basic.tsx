@@ -13,9 +13,17 @@ export default function BasicModal({
   return (
     <Modal
       visible={visible}
-      animationConfig={{ animation: 'fade' }}
+      animationConfig="slide"
       swipeConfig={{ directions: ['down', 'left', 'right', 'up'] }}
-      onHide={() => setVisible(false)}
+      // onBackdropPress={() => setVisible(false)}
+      // onBackdropPress={() => {
+      //   console.log('Backdrop pressed');
+      //   // setVisible(false);
+      // }}
+      onHide={() => {
+        console.log('Modal has been hidden');
+        setVisible(false);
+      }}
     >
       <StatusBar style="light" animated />
       <View style={baseStyles.container}>

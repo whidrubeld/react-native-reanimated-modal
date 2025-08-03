@@ -30,7 +30,7 @@ export default function InputModal({
   return (
     <Modal
       visible={visible}
-      animationConfig={{ animation: 'slide', direction: 'down' }}
+      animationConfig="slide"
       onHide={() => setVisible(false)}
     >
       <StatusBar style="light" animated />

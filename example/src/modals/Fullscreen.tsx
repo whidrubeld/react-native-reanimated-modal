@@ -14,7 +14,7 @@ export default function FullscreenModal({
     <Modal
       contentContainerStyle={styles.root}
       visible={visible}
-      animationConfig={{ animation: 'slide', direction: 'down' }}
+      animationConfig="slide"
       onHide={() => setVisible(false)}
     >
       <StatusBar style="dark" animated />
