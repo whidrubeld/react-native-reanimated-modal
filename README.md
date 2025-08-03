@@ -256,8 +256,8 @@ These props are optional and help you write robust e2e/unit tests.
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `animationConfig` | `ModalAnimationConfigUnion \| ModalAnimation` | `{ animation: 'slide', duration: 300 }` | Animation configuration object or simple animation type string |
-| `swipeConfig` | `SwipeConfig` | `{ enabled: true, threshold: 100 }` | Swipe gesture configuration |
+| `animationConfig` | `ModalAnimationConfigUnion \| ModalAnimation` | `{ animation: 'fade', duration: 300 }` | Animation configuration object or simple animation type string |
+| `swipeConfig` | `SwipeConfig` | `{ enabled: true, directions: ['down'], threshold: 100 }` | Swipe gesture configuration |
 
 #### Backdrop Props
 
@@ -304,6 +304,7 @@ import {
   DEFAULT_MODAL_SWIPE_THRESHOLD,       // 100
   DEFAULT_MODAL_BOUNCE_SPRING_CONFIG,  // { stiffness: 200, dampingRatio: 0.5, duration: 700 }
   DEFAULT_MODAL_BOUNCE_OPACITY_THRESHOLD, // 0.05
+  DEFAULT_MODAL_SWIPE_DIRECTION, // 'down'
 } from 'react-native-reanimated-modal';
 
 // Use in your custom configurations
