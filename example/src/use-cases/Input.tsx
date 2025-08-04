@@ -8,7 +8,7 @@ import Animated, {
 import { TextInput } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import Button from './Button';
+import Button from '../primitives/Button';
 
 export default function InputModal({
   visible,

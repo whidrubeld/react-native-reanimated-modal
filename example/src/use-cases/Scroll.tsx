@@ -11,7 +11,7 @@ import { baseStyles } from './styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useMemo } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import Button from './Button';
+import Button from '../primitives/Button';
 
 export default function ScrollModal({
   visible,

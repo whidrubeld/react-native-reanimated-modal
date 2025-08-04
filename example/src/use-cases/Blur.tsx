@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { Modal } from 'react-native-reanimated-modal';
 import { baseStyles } from './styles';
+import { BlurView } from 'expo-blur';
 import { StatusBar } from 'expo-status-bar';
-import Button from './Button';
+import Button from '../primitives/Button';
 
-export default function FullscreenModal({
+export default function BlurModal({
   visible,
   setVisible,
 }: {
@@ -13,18 +14,24 @@ export default function FullscreenModal({
 }) {
   return (
     <Modal
-      contentContainerStyle={styles.root}
       visible={visible}
+      renderBackdrop={() => (
+        <BlurView
+          tint="systemThickMaterialDark"
+          experimentalBlurMethod="dimezisBlurView"
+          intensity={30}
+          style={StyleSheet.absoluteFillObject}
+        />
+      )}
       animationConfig="slide"
       onHide={() => setVisible(false)}
     >
       <StatusBar style="dark" animated />
       <View style={[baseStyles.container, styles.container]}>
-        <Text style={baseStyles.title}>📱 Fullscreen Modal</Text>
+        <Text style={baseStyles.title}>🔍 Blurred Modal</Text>
         <Text style={baseStyles.description}>
-          This is a fullscreen modal that covers the entire screen. It uses
-          contentContainerStyle with flex: 1 to expand to full height and width,
-          creating an immersive experience.
+          This is blurred modal. You can override the backdrop render to make a
+          custom background
         </Text>
         <View style={baseStyles.buttonGroup}>
           <Button title="Close" onPress={() => setVisible(false)} />
@@ -35,12 +42,11 @@ export default function FullscreenModal({
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1 },
   container: {
-    margin: 0,
-    padding: 30,
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
   },
 });

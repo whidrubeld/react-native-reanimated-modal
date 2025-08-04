@@ -2,7 +2,7 @@ import { Text, View } from 'react-native';
 import { Modal } from 'react-native-reanimated-modal';
 import { baseStyles } from './styles';
 import { StatusBar } from 'expo-status-bar';
-import Button from './Button';
+import Button from '../primitives/Button';
 
 export default function BasicModal({
   visible,

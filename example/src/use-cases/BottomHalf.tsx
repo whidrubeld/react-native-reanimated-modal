@@ -4,7 +4,7 @@ import { baseStyles } from './styles';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useMemo } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import Button from './Button';
+import Button from '../primitives/Button';
 
 export default function BottomHalfModal({
   visible,
