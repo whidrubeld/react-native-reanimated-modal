@@ -337,7 +337,7 @@ interface SlideAnimationConfig {
   duration?: number;
   direction?: SwipeDirection | {
     start: SwipeDirection;
-    end: SwipeDirection | SwipeDirection[];
+    end: SwipeDirection | SwipeDirection[]; // swipe enabled for this directions (low priority)
   };
 }
 
@@ -349,6 +349,7 @@ interface ScaleAnimationConfig {
 
 interface SwipeConfig {
   enabled?: boolean;
+  directions?: SwipeDirection[], // swipe enabled for this directions (high priority)
   threshold?: number;
   bounceSpringConfig?: SpringConfig;
   bounceOpacityThreshold?: number;
