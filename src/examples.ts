@@ -54,6 +54,7 @@ export const basicSwipeConfig: SwipeConfig = {
 export const advancedSwipeConfig: SwipeConfig = {
   enabled: true,
   threshold: 80,
+  directions: ['up', 'down'], // Can be dismissed by swiping up or down
   bounceSpringConfig: DEFAULT_MODAL_BOUNCE_SPRING_CONFIG,
   bounceOpacityThreshold: 0.1,
 };
