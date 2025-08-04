@@ -20,7 +20,7 @@ export default function FullscreenModal({
     >
       <StatusBar style="dark" animated />
       <View style={[baseStyles.container, styles.container]}>
-        <Text style={baseStyles.title}>📱 Fullscreen Modal</Text>
+        <Text style={baseStyles.title}>Fullscreen Example</Text>
         <Text style={baseStyles.description}>
           This is a fullscreen modal that covers the entire screen. It uses
           contentContainerStyle with flex: 1 to expand to full height and width,

@@ -42,7 +42,7 @@ export default function ScrollModal({
     >
       <StatusBar style="light" animated />
       <View style={[baseStyles.container, styles.container]}>
-        <Text style={baseStyles.title}>📜 Scrollable Modal</Text>
+        <Text style={baseStyles.title}>Scroll Example</Text>
         <ScrollView
           style={scrollStyles}
           contentContainerStyle={styles.scrollContainer}

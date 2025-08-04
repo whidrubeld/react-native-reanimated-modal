@@ -39,7 +39,7 @@ export default function InputModal({
       <StatusBar style="light" animated />
       <Animated.View style={containerStyles}>
         <View style={[baseStyles.container]}>
-          <Text style={baseStyles.title}>📝 Input Modal</Text>
+          <Text style={baseStyles.title}>Input Example</Text>
           <Text style={baseStyles.description}>
             This modal allows you to input text. It will adjust its position
             when the keyboard appears.

@@ -28,10 +28,10 @@ export default function BlurModal({
     >
       <StatusBar style="dark" animated />
       <View style={[baseStyles.container, styles.container]}>
-        <Text style={baseStyles.title}>🔍 Blurred Modal</Text>
+        <Text style={baseStyles.title}>Blur Example</Text>
         <Text style={baseStyles.description}>
-          This is blurred modal. You can override the backdrop render to make a
-          custom background
+          This is a blurred modal. You can override the backdrop render to make
+          a custom background
         </Text>
         <View style={baseStyles.buttonGroup}>
           <Button title="Close" onPress={() => setVisible(false)} />

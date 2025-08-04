@@ -25,7 +25,7 @@ export default function MultipleModal({
       >
         <StatusBar style="light" animated />
         <View style={baseStyles.container}>
-          <Text style={baseStyles.title}>🔄 Primary Modal</Text>
+          <Text style={baseStyles.title}>Multiple Example</Text>
           <Text style={baseStyles.description}>
             This is the primary modal in a multi-modal setup. You can open a
             secondary modal on top of this one.
@@ -57,7 +57,7 @@ export default function MultipleModal({
             { margin: 50 },
           ]}
         >
-          <Text style={baseStyles.title}>🔄 Secondary Modal</Text>
+          <Text style={baseStyles.title}>Secondary Modal</Text>
           <Text style={baseStyles.description}>
             This is the secondary modal that appears on top of the primary
             modal. It demonstrates multi-modal functionality.

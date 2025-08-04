@@ -41,7 +41,7 @@ export default function BottomHalfModal({
       <View style={containerStyles}>
         <View style={styles.content}>
           <Text style={styles.emoji}>👋</Text>
-          <Text style={baseStyles.title}>Bottom Half Modal</Text>
+          <Text style={baseStyles.title}>Bottom Half Example</Text>
           <Text style={baseStyles.description}>
             This modal appears at the bottom half of the screen. It is designed
             to be used for quick actions or additional information without

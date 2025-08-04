@@ -15,7 +15,7 @@ export default function BasicModal({
     <Modal visible={visible} onHide={() => setVisible(false)}>
       <StatusBar style="light" animated />
       <View style={baseStyles.container}>
-        <Text style={baseStyles.title}>📋 Basic Modal</Text>
+        <Text style={baseStyles.title}>Basic Example</Text>
         <Text style={baseStyles.description}>
           This is a basic modal example using react-native-reanimated-modal. You
           can customize it further as per your requirements.

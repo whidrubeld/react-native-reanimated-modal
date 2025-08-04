@@ -83,7 +83,7 @@ export default function AlertModal({
         <View style={styles.wrapper}>
           <View style={styles.alert}>
             <Text style={[baseStyles.title, styles.title]}>
-              ⚠️ Notification alert
+              ⚠️ Alert Example
             </Text>
             <Text style={[baseStyles.description, styles.description]}>
               This modal is designed to display alerts or important messages. It
