@@ -60,12 +60,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/WhidRubeld/react-native-reanimated-modal.git"
+    "url": "git+https://github.com/whidrubeld/react-native-reanimated-modal.git"
   },
-  "author": "whidrubeld <whidrubeld@gmail.com> (https://github.com/WhidRubeld)",
+  "author": "whidrubeld <whidrubeld@gmail.com> (https://github.com/whidrubeld)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/WhidRubeld/react-native-reanimated-modal/issues"
+    "url": "https://github.com/whidrubeld/react-native-reanimated-modal/issues"
   },
   "homepage": "https://whidrubeld.github.io/react-native-reanimated-modal",
   "publishConfig": {
