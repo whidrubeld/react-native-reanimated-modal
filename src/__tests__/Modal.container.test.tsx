@@ -9,7 +9,7 @@ describe('Modal container', () => {
         <TestContent />
       </Modal>
     );
-    // Проверяем, что текст есть внутри кастомного containerTestID
+    // Check that text is inside the custom containerTestID
     expect(
       within(getByTestId('custom-container-test-id')).getByText(
         'Test Modal Content'

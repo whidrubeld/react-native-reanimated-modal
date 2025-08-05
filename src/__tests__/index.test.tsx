@@ -9,7 +9,7 @@ describe('Modal', () => {
         <TestContent />
       </Modal>
     );
-    // Контент не должен быть в дереве
+    // Content should not be in the tree
     expect(queryByTestId('modal-content')).toBeNull();
   });
 
@@ -19,7 +19,7 @@ describe('Modal', () => {
         <TestContent />
       </Modal>
     );
-    // Проверяем, что текст есть внутри modal-content
+    // Check that text is inside modal-content
     expect(
       within(getByTestId('modal-content')).getByText('Test Modal Content')
     ).toBeTruthy();
