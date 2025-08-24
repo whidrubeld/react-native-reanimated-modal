@@ -103,12 +103,9 @@ export interface ModalBackdropConfig {
    */
   opacity?: number;
 }
-
 /**
- * Backdrop configuration union type.
- * Can be false (no backdrop), a custom renderer function, or a configuration object.
+ * Configuration for modal swipe.
  */
-export type ModalBackdrop = ModalBackdropConfig | ReactNode | false;
 export interface ModalSwipeConfig {
   /**
    * Whether swipe gestures are enabled.
@@ -204,7 +201,7 @@ export interface ModalProps
    * Can be false (no backdrop), a custom renderer function, or a configuration object.
    * @default { enabled: true, color: 'black', opacity: 0.7 }
    */
-  backdrop?: ModalBackdrop;
+  backdrop?: ModalBackdropConfig | ReactNode | false;
   /**
    * Callback when the backdrop is pressed.
    */

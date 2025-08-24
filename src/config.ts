@@ -8,7 +8,6 @@ import type {
   FadeAnimationConfig,
   SlideAnimationConfig,
   ScaleAnimationConfig,
-  ModalBackdrop,
 } from './types';
 
 /**
@@ -98,7 +97,10 @@ export function normalizeAnimationConfig(
  * @returns Normalized backdrop information with enabled flag and config.
  */
 export function normalizeBackdropConfig(
-  backdrop: ModalBackdrop = DEFAULT_MODAL_BACKDROP_CONFIG
+  backdrop:
+    | ModalBackdropConfig
+    | ReactNode
+    | false = DEFAULT_MODAL_BACKDROP_CONFIG
 ): {
   enabled: boolean;
   isCustom: boolean;

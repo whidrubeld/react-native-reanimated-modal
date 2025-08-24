@@ -361,8 +361,6 @@ interface ModalBackdropConfig {
   opacity?: number;
 }
 
-type ModalBackdrop = false | ReactNode | ModalBackdropConfig;
-
 type ModalAnimationConfigUnion =
   | FadeAnimationConfig
   | SlideAnimationConfig
