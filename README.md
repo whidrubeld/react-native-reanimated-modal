@@ -1,19 +1,7 @@
 [![documentation](https://img.shields.io/badge/documentation-blue.svg)](https://whidrubeld.github.io/react-native-reanimated-modal/)
 [![npm bundle size](https://img.shields.io/bundlephobia/min/react-native-reanimated-modal)](https://www.npmjs.com/package/react-native-reanimated-modal)
 
-A lightweight, scalable, flexible, and high-performance modal component.  Based on the vanilla [Modal](https://reactnative.dev/docs/modal) component for maximum compatibility and native feel. Built with [react-native-reanimated](https://git// Custom backdrop renderer (e.g., BlurView)
-<Modal
-  visible={visible}
-  backdrop={
-    <BlurView
-      style={StyleSheet.absoluteFill}
-      blurType="light"
-      blurAmount={10}
-    />
-  }
->
-  {/* Modal content */}
-</Modal>are-mansion/react-native-reanimated/) and [react-native-gesture-handler](https://github.com/software-mansion/react-native-gesture-handler).
+A lightweight, scalable, flexible, and high-performance modal component.  Based on the vanilla [Modal](https://reactnative.dev/docs/modal) component for maximum compatibility and native feel. Built with [react-native-reanimated](https://github.com/software-mansion/react-native-reanimated/) and [react-native-gesture-handler](https://github.com/software-mansion/react-native-gesture-handler).
 
 <img src="https://github.com/whidrubeld/react-native-reanimated-modal/blob/main/.github/images/example.gif?raw=true" width="100%" style="max-width: 500px; height: auto;" alt="React Native Reanimated Modal Demo" />
 
@@ -31,7 +19,7 @@ A lightweight, scalable, flexible, and high-performance modal component.  Based 
 
 ## 🎮 Example
 
-<img src="https://github.com/whidrubeld/react-native-reanimated-modal/blob/main/.github/images/expo-go-qr.svg?raw=true" alt="Expo QR Code" width="200" height="200" />
+<img src="https://github.com/whidrubeld/react-native-reanimated-modal/blob/main/.github/images/eas-update.svg?raw=true" alt="Expo QR Code" width="200" height="200" />
 
 1. Install [Expo Go](https://expo.dev/client) on your phone
 2. Scan the QR code with your camera
