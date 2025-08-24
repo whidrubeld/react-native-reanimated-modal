@@ -101,22 +101,8 @@ describe('Animation Config Utils', () => {
       const result = normalizeBackdropConfig(false);
       expect(result).toEqual({
         enabled: false,
-        isCustomRenderer: false,
+        isCustom: false,
         config: { enabled: false, color: 'black', opacity: 0.7 },
-      });
-    });
-
-    it('should handle ReactNode (custom renderer)', () => {
-      const customRenderer = {
-        type: 'View',
-        props: { children: 'Custom Backdrop' },
-      };
-      const result = normalizeBackdropConfig(customRenderer);
-      expect(result).toEqual({
-        enabled: true,
-        isCustomRenderer: true,
-        config: { enabled: true, color: 'black', opacity: 0.7 },
-        customRenderer,
       });
     });
 
@@ -125,7 +111,7 @@ describe('Animation Config Utils', () => {
       const result = normalizeBackdropConfig(config);
       expect(result).toEqual({
         enabled: true,
-        isCustomRenderer: false,
+        isCustom: false,
         config,
       });
     });
@@ -134,7 +120,7 @@ describe('Animation Config Utils', () => {
       const result = normalizeBackdropConfig();
       expect(result).toEqual({
         enabled: true,
-        isCustomRenderer: false,
+        isCustom: false,
         config: { enabled: true, color: 'black', opacity: 0.7 },
       });
     });

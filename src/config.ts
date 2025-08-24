@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type {
   ModalAnimation,
   ModalAnimationConfigUnion,
@@ -7,6 +8,7 @@ import type {
   FadeAnimationConfig,
   SlideAnimationConfig,
   ScaleAnimationConfig,
+  ModalBackdrop,
 } from './types';
 
 /**
@@ -96,18 +98,18 @@ export function normalizeAnimationConfig(
  * @returns Normalized backdrop information with enabled flag and config.
  */
 export function normalizeBackdropConfig(
-  backdrop: any = DEFAULT_MODAL_BACKDROP_CONFIG
+  backdrop: ModalBackdrop = DEFAULT_MODAL_BACKDROP_CONFIG
 ): {
   enabled: boolean;
-  isCustomRenderer: boolean;
+  isCustom: boolean;
   config: ModalBackdropConfig;
-  customRenderer?: any;
+  customRenderer?: ReactNode;
 } {
   // false - no backdrop
   if (backdrop === false) {
     return {
       enabled: false,
-      isCustomRenderer: false,
+      isCustom: false,
       config: { ...DEFAULT_MODAL_BACKDROP_CONFIG, enabled: false },
     };
   }
@@ -116,17 +118,20 @@ export function normalizeBackdropConfig(
   if (backdrop && typeof backdrop === 'object' && 'type' in backdrop) {
     return {
       enabled: true,
-      isCustomRenderer: true,
+      isCustom: true,
       config: DEFAULT_MODAL_BACKDROP_CONFIG,
       customRenderer: backdrop,
     };
   }
 
   // object or undefined - use config with defaults
-  const config = { ...DEFAULT_MODAL_BACKDROP_CONFIG, ...backdrop };
+  const config = {
+    ...DEFAULT_MODAL_BACKDROP_CONFIG,
+    ...(backdrop as ModalBackdropConfig),
+  };
   return {
     enabled: config.enabled !== false,
-    isCustomRenderer: false,
+    isCustom: false,
     config,
   };
 }
@@ -137,7 +142,7 @@ export function normalizeBackdropConfig(
  * @returns Complete swipe configuration with defaults applied.
  */
 export function normalizeSwipeConfig(
-  config: Partial<ModalSwipeConfig | false> = {}
+  config: ModalSwipeConfig | false = {}
 ): ModalSwipeConfig {
   if (config === false) return { enabled: false };
   return {

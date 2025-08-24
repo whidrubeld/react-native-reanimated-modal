@@ -107,27 +107,23 @@ export const Modal: FC<ModalProps> = ({
   );
 
   // Extract values from configs
-  const animationDuration =
-    normalizedAnimationConfig.duration || DEFAULT_MODAL_ANIMATION_DURATION;
-  const swipeEnabled = normalizedSwipeConfig.enabled ?? true;
-  const swipeThreshold =
-    normalizedSwipeConfig.threshold || DEFAULT_MODAL_SWIPE_THRESHOLD;
-  const bounceSpringConfig =
-    normalizedSwipeConfig.bounceSpringConfig ||
-    DEFAULT_MODAL_BOUNCE_SPRING_CONFIG;
-  const bounceOpacityThreshold =
-    normalizedSwipeConfig.bounceOpacityThreshold ||
-    DEFAULT_MODAL_BOUNCE_OPACITY_THRESHOLD;
+  const { duration: animationDuration = DEFAULT_MODAL_ANIMATION_DURATION } =
+    normalizedAnimationConfig;
 
-  // Extract backdrop values
+  const {
+    enabled: swipeEnabled = true,
+    threshold: swipeThreshold = DEFAULT_MODAL_SWIPE_THRESHOLD,
+    bounceSpringConfig = DEFAULT_MODAL_BOUNCE_SPRING_CONFIG,
+    bounceOpacityThreshold = normalizedSwipeConfig.bounceOpacityThreshold ||
+      DEFAULT_MODAL_BOUNCE_OPACITY_THRESHOLD,
+  } = normalizedSwipeConfig;
+
   const {
     enabled: hasBackdrop,
-    isCustomRenderer: renderBackdrop,
+    isCustom: isCustomBackdrop,
     config: backdropConfig,
-    customRenderer,
+    customRenderer: customBackdropRenderer,
   } = normalizedBackdropConfig;
-  const backdropColor = backdropConfig.color;
-  const backdropOpacity = backdropConfig.opacity;
 
   /**
    * Shared values for animation progress and gesture state.
@@ -415,7 +411,7 @@ export const Modal: FC<ModalProps> = ({
    * Animated style for the backdrop (opacity, fade, bounce correction).
    */
   const backdropAnimatedStyle = useAnimatedStyle(() => {
-    const computedOpacity = !renderBackdrop ? backdropOpacity || 1 : 1;
+    const computedOpacity = !isCustomBackdrop ? backdropConfig.opacity || 1 : 1;
     let swipeFade = 0;
     if (activeSwipeDirection.value) {
       let fullSwipeDistance = 1;
@@ -584,11 +580,15 @@ export const Modal: FC<ModalProps> = ({
         <Animated.View
           style={[
             styles.absolute,
-            !renderBackdrop && { backgroundColor: backdropColor },
+            !isCustomBackdrop && {
+              backgroundColor: backdropConfig.color,
+            },
             backdropAnimatedStyle,
           ]}
         >
-          {renderBackdrop && customRenderer ? customRenderer : null}
+          {isCustomBackdrop && !!customBackdropRenderer
+            ? customBackdropRenderer
+            : null}
         </Animated.View>
       </Pressable>
     );
