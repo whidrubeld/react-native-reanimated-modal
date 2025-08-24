@@ -67,7 +67,7 @@ export const Modal: FC<ModalProps> = ({
   style,
   contentContainerStyle,
   //
-  animationConfig,
+  animation,
   //
   hasBackdrop = true,
   backdropColor = DEFAULT_MODAL_BACKDROP_COLOR,
@@ -75,7 +75,7 @@ export const Modal: FC<ModalProps> = ({
   onBackdropPress,
   renderBackdrop,
   //
-  swipeConfig,
+  swipe,
   //
   coverScreen = false,
   //
@@ -96,13 +96,13 @@ export const Modal: FC<ModalProps> = ({
 
   // Normalize configs with defaults
   const normalizedAnimationConfig = useMemo(
-    () => normalizeAnimationConfig(animationConfig),
-    [animationConfig]
+    () => normalizeAnimationConfig(animation),
+    [animation]
   );
 
   const normalizedSwipeConfig = useMemo(
-    () => normalizeSwipeConfig(swipeConfig),
-    [swipeConfig]
+    () => normalizeSwipeConfig(swipe),
+    [swipe]
   );
 
   // Extract values from configs
@@ -441,7 +441,7 @@ export const Modal: FC<ModalProps> = ({
   const contentAnimatedStyle = useAnimatedStyle(() => {
     if (activeSwipeDirection.value) {
       const baseOpacity =
-        normalizedAnimationConfig.animation === 'fade' ? progress.value : 1;
+        normalizedAnimationConfig.type === 'fade' ? progress.value : 1;
       return {
         opacity: baseOpacity,
         transform: [
@@ -451,7 +451,7 @@ export const Modal: FC<ModalProps> = ({
       };
     }
 
-    switch (normalizedAnimationConfig.animation) {
+    switch (normalizedAnimationConfig.type) {
       case 'fade': {
         return {
           opacity: progress.value,

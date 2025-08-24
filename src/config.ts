@@ -30,16 +30,16 @@ export const DEFAULT_MODAL_BOUNCE_SPRING_CONFIG = {
  */
 export const DEFAULT_MODAL_ANIMATION_CONFIGS = {
   fade: {
-    animation: 'fade',
+    type: 'fade',
     duration: DEFAULT_MODAL_ANIMATION_DURATION,
   } as FadeAnimationConfig,
   slide: {
-    animation: 'slide',
+    type: 'slide',
     duration: DEFAULT_MODAL_ANIMATION_DURATION,
     direction: DEFAULT_MODAL_SWIPE_DIRECTION,
   } as SlideAnimationConfig,
   scale: {
-    animation: 'scale',
+    type: 'scale',
     duration: DEFAULT_MODAL_ANIMATION_DURATION,
     scaleFactor: DEFAULT_MODAL_SCALE_FACTOR,
   } as ScaleAnimationConfig,
@@ -88,8 +88,9 @@ export function normalizeAnimationConfig(
  * @returns Complete swipe configuration with defaults applied.
  */
 export function normalizeSwipeConfig(
-  config: Partial<ModalSwipeConfig> = {}
+  config: Partial<ModalSwipeConfig | false> = {}
 ): ModalSwipeConfig {
+  if (config === false) return { enabled: false };
   return {
     ...DEFAULT_MODAL_SWIPE_CONFIG,
     ...config,
@@ -112,7 +113,7 @@ export function getSwipeDirections(
   // Fallback to animation config for slide animations
   if (
     animationConfig &&
-    animationConfig.animation === 'slide' &&
+    animationConfig.type === 'slide' &&
     animationConfig.direction
   ) {
     if (typeof animationConfig.direction === 'string') {
@@ -133,7 +134,7 @@ export function getSlideInDirection(
   animationConfig: ModalAnimationConfigUnion,
   fallback: SwipeDirection = DEFAULT_MODAL_SWIPE_DIRECTION
 ): SwipeDirection {
-  if (animationConfig.animation === 'slide' && animationConfig.direction) {
+  if (animationConfig.type === 'slide' && animationConfig.direction) {
     if (typeof animationConfig.direction === 'string') {
       return animationConfig.direction;
     }

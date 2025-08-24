@@ -23,7 +23,7 @@ export default function BlurModal({
           style={StyleSheet.absoluteFillObject}
         />
       )}
-      animationConfig="slide"
+      animation="slide"
       onHide={() => setVisible(false)}
     >
       <StatusBar style="dark" animated />

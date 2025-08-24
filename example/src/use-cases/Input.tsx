@@ -31,7 +31,7 @@ export default function InputModal({
   return (
     <Modal
       visible={visible}
-      animationConfig="slide"
+      animation="slide"
       coverScreen
       contentContainerStyle={styles.root}
       onHide={() => setVisible(false)}

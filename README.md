@@ -90,12 +90,12 @@ const App = () => {
       <Modal
         visible={visible}
         onHide={() => setVisible(false)}
-        animationConfig={{
-          animation: 'scale',
+        animation={{
+          type: 'scale',
           duration: 400,
           scaleFactor: 0.8,
         }}
-        swipeConfig={{
+        swipe={{
           enabled: true,
           directions: ['down', 'left', 'right'],
           threshold: 100,
@@ -131,20 +131,20 @@ import type { ModalAnimationConfig } from 'react-native-reanimated-modal';
 
 // Scale animation with custom settings
 const scaleConfig: ModalAnimationConfig<'scale'> = {
-  animation: 'scale',
+  type: 'scale',
   duration: 400,
   scaleFactor: 0.8, // Start from 80% size
 };
 
 // Fade animation
 const fadeConfig: ModalAnimationConfig<'fade'> = {
-  animation: 'fade',
+  type: 'fade',
   duration: 300,
 };
 
 // Slide animation with complex directions
 const slideConfig: ModalAnimationConfig<'slide'> = {
-  animation: 'slide',
+  type: 'slide',
   duration: 500,
   direction: {
     start: 'down',        // Slides in from bottom
@@ -154,7 +154,7 @@ const slideConfig: ModalAnimationConfig<'slide'> = {
 
 // Simple slide animation
 const simpleSlideConfig: ModalAnimationConfig<'slide'> = {
-  animation: 'slide',
+  type: 'slide',
   duration: 400,
   direction: 'up', // Both slide-in and dismiss direction
 };
@@ -196,8 +196,8 @@ const noSwipe: ModalSwipeConfig = {
 ```tsx
 <Modal
   visible={visible}
-  animationConfig={scaleConfig}
-  swipeConfig={advancedSwipe}
+  animation={scaleConfig}
+  swipe={advancedSwipe}
 >
   {/* Your content */}
 </Modal>
@@ -205,12 +205,12 @@ const noSwipe: ModalSwipeConfig = {
 // Or with inline configs
 <Modal
   visible={visible}
-  animationConfig={{
-    animation: 'scale',
+  animation={{
+    type: 'scale',
     duration: 600,
     scaleFactor: 0.9,
   }}
-  swipeConfig={{
+  swipe={{
     enabled: true,
     threshold: 100,
   }}
@@ -221,7 +221,7 @@ const noSwipe: ModalSwipeConfig = {
 // Legacy string syntax still supported
 <Modal
   visible={visible}
-  animationConfig="fade" // Equivalent to { animation: 'fade', duration: 300 }
+  animation="fade" // Equivalent to { type: 'fade', duration: 300 }
 >
   {/* Your content */}
 </Modal>
@@ -254,8 +254,8 @@ These props are optional and help you write robust e2e/unit tests.
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `animationConfig` | `ModalAnimationConfigUnion \| ModalAnimation` | `{ animation: 'fade', duration: 300 }` | Animation configuration object or simple animation type string |
-| `swipeConfig` | `ModalSwipeConfig` | `{ enabled: true, directions: ['down'], threshold: 100 }` | Swipe gesture configuration |
+| `animation` | `ModalAnimationConfigUnion \| ModalAnimation` | `{ type: 'fade', duration: 300 }` | Animation configuration object or simple animation type string |
+| `swipe` | `ModalSwipeConfig \| false` | `{ enabled: true, directions: ['down'], threshold: 100 }` | Swipe gesture configuration |
 
 #### Backdrop Props
 
@@ -307,7 +307,7 @@ import {
 
 // Use in your custom configurations
 const customAnimationConfig = {
-  animation: 'scale',
+  type: 'scale',
   duration: DEFAULT_MODAL_ANIMATION_DURATION * 2, // 600ms
   scaleFactor: DEFAULT_MODAL_SCALE_FACTOR,         // 0.8
 };
@@ -326,12 +326,12 @@ type ModalAnimationConfig<T extends ModalAnimation> =
   T extends 'scale' ? ScaleAnimationConfig : never;
 
 interface FadeAnimationConfig {
-  animation: 'fade';
+  type: 'fade';
   duration?: number;
 }
 
 interface SlideAnimationConfig {
-  animation: 'slide';
+  type: 'slide';
   duration?: number;
   direction?: SwipeDirection | {
     start: SwipeDirection;
@@ -340,7 +340,7 @@ interface SlideAnimationConfig {
 }
 
 interface ScaleAnimationConfig {
-  animation: 'scale';
+  type: 'scale';
   duration?: number;
   scaleFactor?: number; // 0-1, default: 0.8
 }
@@ -409,11 +409,11 @@ const MultiModalExample = () => {
 ```tsx
 <Modal
   visible={visible}
-  animationConfig={{
-    animation: 'fade',
+  animation={{
+    type: 'fade',
     duration: 400,
   }}
-  swipeConfig={{
+  swipe={{
     directions: ['down', 'right'],
     threshold: 100,
   }}
@@ -428,12 +428,12 @@ const MultiModalExample = () => {
 ```tsx
 <Modal
   visible={visible}
-  animationConfig={{
-    animation: 'scale',
+  animation={{
+    type: 'scale',
     duration: 400,
     scaleFactor: 0.8,
   }}
-  swipeConfig={{
+  swipe={{
     directions: ['down', 'right'],
     threshold: 100,
   }}
@@ -448,15 +448,15 @@ const MultiModalExample = () => {
 ```tsx
 <Modal
   visible={visible}
-  animationConfig={{
-    animation: 'slide',
+  animation={{
+    type: 'slide',
     duration: 500,
     direction: {
       start: 'down',           // Slides in from bottom
       end: ['down', 'right'],  // Can dismiss by swiping down or right
     },
   }}
-  swipeConfig={{
+  swipe={{
     threshold: 150,
     bounceSpringConfig: {
       stiffness: 300,
@@ -478,12 +478,12 @@ const MultiModalExample = () => {
 <Modal
   visible={visible}
   contentContainerStyle={{ flex: 1 }}
-  animationConfig={{
-    animation: 'slide',
+  animation={{
+    type: 'slide',
     duration: 300,
     direction: 'down',
   }}
-  swipeConfig={{
+  swipe={{
     directions: ['down'],
     threshold: 80,
   }}

@@ -11,18 +11,18 @@ import {
 
 // Fade animation configuration
 export const fadeAnimation: ModalAnimationConfig<'fade'> = {
-  animation: 'fade',
+  type: 'fade',
   duration: 400,
 };
 
 export const slideAnimation: ModalAnimationConfig<'slide'> = {
-  animation: 'slide',
+  type: 'slide',
   duration: 500,
   direction: 'up', // Simple direction
 };
 
 export const slideAnimationAdvanced: ModalAnimationConfig<'slide'> = {
-  animation: 'slide',
+  type: 'slide',
   duration: 600,
   direction: {
     start: 'down', // Slides in from bottom
@@ -31,13 +31,13 @@ export const slideAnimationAdvanced: ModalAnimationConfig<'slide'> = {
 };
 
 export const scaleAnimation: ModalAnimationConfig<'scale'> = {
-  animation: 'scale',
+  type: 'scale',
   duration: 350,
   scaleFactor: 0.7, // Starts from 70% size
 };
 
 export const customScaleAnimation: ModalAnimationConfig<'scale'> = {
-  animation: 'scale',
+  type: 'scale',
   duration: 700,
   scaleFactor: DEFAULT_MODAL_SCALE_FACTOR, // Use default scale factor
 };

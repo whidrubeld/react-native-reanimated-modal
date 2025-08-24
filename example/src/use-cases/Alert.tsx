@@ -68,8 +68,8 @@ export default function AlertModal({
     <Modal
       visible={visible}
       style={styles.root}
-      animationConfig="slide"
-      swipeConfig={{ directions: ['down', 'left', 'right'] }}
+      animation="slide"
+      swipe={{ directions: ['down', 'left', 'right'] }}
       hasBackdrop={false}
       coverScreen // NOTE: need for pointer events
       onHide={() => setVisible(false)}

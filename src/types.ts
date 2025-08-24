@@ -25,14 +25,14 @@ interface BaseAnimationConfig {
  * Configuration for fade animation.
  */
 export interface FadeAnimationConfig extends BaseAnimationConfig {
-  animation: 'fade';
+  type: 'fade';
 }
 
 /**
  * Configuration for slide animation.
  */
 export interface SlideAnimationConfig extends BaseAnimationConfig {
-  animation: 'slide';
+  type: 'slide';
   /**
    * Direction for slide animation.
    * Can be a single direction or an object with start/end directions.
@@ -56,7 +56,7 @@ export interface SlideAnimationConfig extends BaseAnimationConfig {
  * Configuration for scale animation.
  */
 export interface ScaleAnimationConfig extends BaseAnimationConfig {
-  animation: 'scale';
+  type: 'scale';
   /**
    * Initial scale factor for the modal (0-1).
    * @default 0.8
@@ -171,9 +171,9 @@ export interface ModalProps
   /**
    * Animation configuration for modal appearance.
    * Can be a simple animation type string or a detailed config object.
-   * @default { animation: 'slide', duration: 300 }
+   * @default { type: 'slide', duration: 300 }
    */
-  animationConfig?: ModalAnimationConfigUnion | ModalAnimation;
+  animation?: ModalAnimationConfigUnion | ModalAnimation;
 
   // Backdrop related
   /**
@@ -192,10 +192,10 @@ export interface ModalProps
    */
   backdropOpacity?: number;
   /**
-   * Custom backdrop renderer. Если задан, используется вместо стандартного backdrop.
-   * Полезно для BlurView, градиентов и других кастомных фонов.
+   * Custom backdrop renderer. If provided, used instead of the standard backdrop.
+   * Useful for BlurView, gradients and other custom backgrounds.
    *
-   * @returns ReactNode — кастомный backdrop-элемент
+   * @returns ReactNode — custom backdrop element
    */
   renderBackdrop?: () => ReactNode;
   /**
@@ -208,7 +208,7 @@ export interface ModalProps
    * Swipe gesture configuration.
    * @default { enabled: true, threshold: 100 }
    */
-  swipeConfig?: ModalSwipeConfig;
+  swipe?: ModalSwipeConfig | false;
 
   // Others
   /**

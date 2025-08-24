@@ -4,7 +4,7 @@ import { Modal } from '../component';
 describe('Modal Scale Animation', () => {
   it('should render modal with scale animation', () => {
     const { getByTestId } = render(
-      <Modal visible={true} animationConfig={{ animation: 'scale' }}>
+      <Modal visible={true} animation={{ type: 'scale' }}>
         <></>
       </Modal>
     );
@@ -15,10 +15,7 @@ describe('Modal Scale Animation', () => {
 
   it('should apply scale animation properties', () => {
     const { getByTestId } = render(
-      <Modal
-        visible={true}
-        animationConfig={{ animation: 'scale', duration: 500 }}
-      >
+      <Modal visible={true} animation={{ type: 'scale', duration: 500 }}>
         <></>
       </Modal>
     );
@@ -31,8 +28,8 @@ describe('Modal Scale Animation', () => {
     const { getByTestId } = render(
       <Modal
         visible={true}
-        animationConfig={{ animation: 'scale', duration: 600 }}
-        swipeConfig={{ directions: ['down'] }}
+        animation={{ type: 'scale', duration: 600 }}
+        swipe={{ directions: ['down'] }}
       >
         <></>
       </Modal>
