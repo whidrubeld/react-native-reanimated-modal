@@ -248,7 +248,6 @@ These props are optional and help you write robust e2e/unit tests.
 | `children` | `ReactNode` | - | Content to render inside the modal |
 | `style` | `StyleProp<ViewStyle>` | - | Style for the modal container |
 | `contentContainerStyle` | `StyleProp<ViewStyle>` | - | Style for the content wrapper |
-| `renderBackdrop` | `() => ReactNode` | - | Custom backdrop renderer |
 
 #### Configuration Props
 
