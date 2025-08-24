@@ -1,4 +1,4 @@
-import type { ModalAnimationConfig, SwipeConfig } from './types';
+import type { ModalAnimationConfig, ModalSwipeConfig } from './types';
 import {
   DEFAULT_MODAL_SCALE_FACTOR,
   DEFAULT_MODAL_SWIPE_THRESHOLD,
@@ -46,12 +46,12 @@ export const customScaleAnimation: ModalAnimationConfig<'scale'> = {
  * Examples of swipe configurations
  */
 
-export const basicSwipeConfig: SwipeConfig = {
+export const basicSwipeConfig: ModalSwipeConfig = {
   enabled: true,
   threshold: DEFAULT_MODAL_SWIPE_THRESHOLD,
 };
 
-export const advancedSwipeConfig: SwipeConfig = {
+export const advancedSwipeConfig: ModalSwipeConfig = {
   enabled: true,
   threshold: 80,
   directions: ['up', 'down'], // Can be dismissed by swiping up or down
@@ -59,6 +59,6 @@ export const advancedSwipeConfig: SwipeConfig = {
   bounceOpacityThreshold: 0.1,
 };
 
-export const disabledSwipeConfig: SwipeConfig = {
+export const disabledSwipeConfig: ModalSwipeConfig = {
   enabled: false,
 };

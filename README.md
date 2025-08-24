@@ -163,17 +163,17 @@ const simpleSlideConfig: ModalAnimationConfig<'slide'> = {
 #### Swipe Configurations
 
 ```tsx
-import type { SwipeConfig } from 'react-native-reanimated-modal';
+import type { ModalSwipeConfig } from 'react-native-reanimated-modal';
 
 // Basic swipe config
-const basicSwipe: SwipeConfig = {
+const basicSwipe: ModalSwipeConfig = {
   enabled: true,
   directions: ['down', 'left', 'right'], // Allow swiping in these directions
   threshold: 120,
 };
 
 // Advanced swipe config with custom bounce
-const advancedSwipe: SwipeConfig = {
+const advancedSwipe: ModalSwipeConfig = {
   enabled: true,
   directions: ['up', 'down'], // Only vertical swipes
   threshold: 80,
@@ -186,7 +186,7 @@ const advancedSwipe: SwipeConfig = {
 };
 
 // Disabled swipe
-const noSwipe: SwipeConfig = {
+const noSwipe: ModalSwipeConfig = {
   enabled: false,
 };
 ```
@@ -255,7 +255,7 @@ These props are optional and help you write robust e2e/unit tests.
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `animationConfig` | `ModalAnimationConfigUnion \| ModalAnimation` | `{ animation: 'fade', duration: 300 }` | Animation configuration object or simple animation type string |
-| `swipeConfig` | `SwipeConfig` | `{ enabled: true, directions: ['down'], threshold: 100 }` | Swipe gesture configuration |
+| `swipeConfig` | `ModalSwipeConfig` | `{ enabled: true, directions: ['down'], threshold: 100 }` | Swipe gesture configuration |
 
 #### Backdrop Props
 

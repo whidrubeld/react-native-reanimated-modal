@@ -86,7 +86,7 @@ export type ModalAnimationConfig<T extends ModalAnimation> = T extends 'fade'
 /**
  * Configuration for swipe gestures.
  */
-export interface SwipeConfig {
+export interface ModalSwipeConfig {
   /**
    * Whether swipe gestures are enabled.
    * @default true
@@ -208,7 +208,7 @@ export interface ModalProps
    * Swipe gesture configuration.
    * @default { enabled: true, threshold: 100 }
    */
-  swipeConfig?: SwipeConfig;
+  swipeConfig?: ModalSwipeConfig;
 
   // Others
   /**

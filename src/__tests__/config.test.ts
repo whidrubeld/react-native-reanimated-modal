@@ -31,7 +31,7 @@ describe('Animation Config Utils', () => {
   });
 
   describe('getSwipeDirections', () => {
-    it('should use directions from SwipeConfig when provided', () => {
+    it('should use directions from ModalSwipeConfig when provided', () => {
       const swipeConfig = {
         directions: ['up', 'left'] as SwipeDirection[],
       };
@@ -43,7 +43,7 @@ describe('Animation Config Utils', () => {
       expect(directions).toEqual(['up', 'left']);
     });
 
-    it('should extract directions from slide config with simple direction when SwipeConfig has no directions', () => {
+    it('should extract directions from slide config with simple direction when ModalSwipeConfig has no directions', () => {
       const swipeConfig = {};
       const animationConfig = {
         animation: 'slide' as const,
@@ -54,7 +54,7 @@ describe('Animation Config Utils', () => {
       expect(directions).toEqual(['up']);
     });
 
-    it('should extract directions from slide config with complex direction when SwipeConfig has no directions', () => {
+    it('should extract directions from slide config with complex direction when ModalSwipeConfig has no directions', () => {
       const swipeConfig = {};
       const animationConfig = {
         animation: 'slide' as const,
@@ -68,7 +68,7 @@ describe('Animation Config Utils', () => {
       expect(directions).toEqual(['down', 'left']);
     });
 
-    it('should use fallback for non-slide animations when SwipeConfig has no directions', () => {
+    it('should use fallback for non-slide animations when ModalSwipeConfig has no directions', () => {
       const swipeConfig = {};
       const animationConfig = {
         animation: 'fade' as const,

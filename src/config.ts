@@ -1,7 +1,7 @@
 import type {
   ModalAnimation,
   ModalAnimationConfigUnion,
-  SwipeConfig,
+  ModalSwipeConfig,
   SwipeDirection,
   FadeAnimationConfig,
   SlideAnimationConfig,
@@ -48,7 +48,7 @@ export const DEFAULT_MODAL_ANIMATION_CONFIGS = {
 /**
  * Default swipe configuration.
  */
-export const DEFAULT_MODAL_SWIPE_CONFIG: SwipeConfig = {
+export const DEFAULT_MODAL_SWIPE_CONFIG: ModalSwipeConfig = {
   enabled: true,
   directions: [DEFAULT_MODAL_SWIPE_DIRECTION],
   threshold: DEFAULT_MODAL_SWIPE_THRESHOLD,
@@ -88,8 +88,8 @@ export function normalizeAnimationConfig(
  * @returns Complete swipe configuration with defaults applied.
  */
 export function normalizeSwipeConfig(
-  config: Partial<SwipeConfig> = {}
-): SwipeConfig {
+  config: Partial<ModalSwipeConfig> = {}
+): ModalSwipeConfig {
   return {
     ...DEFAULT_MODAL_SWIPE_CONFIG,
     ...config,
@@ -100,7 +100,7 @@ export function normalizeSwipeConfig(
  * Extracts swipe directions from swipe config or animation config fallback.
  */
 export function getSwipeDirections(
-  swipeConfig: SwipeConfig,
+  swipeConfig: ModalSwipeConfig,
   animationConfig?: ModalAnimationConfigUnion,
   fallback: SwipeDirection | SwipeDirection[] = DEFAULT_MODAL_SWIPE_DIRECTION
 ): SwipeDirection[] {
