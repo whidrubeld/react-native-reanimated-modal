@@ -15,14 +15,14 @@ export default function BlurModal({
   return (
     <Modal
       visible={visible}
-      renderBackdrop={() => (
+      backdrop={
         <BlurView
           tint="systemThickMaterialDark"
           experimentalBlurMethod="dimezisBlurView"
           intensity={30}
           style={StyleSheet.absoluteFillObject}
         />
-      )}
+      }
       animation="slide"
       onHide={() => setVisible(false)}
     >

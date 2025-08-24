@@ -37,9 +37,9 @@ describe('Modal', () => {
     expect(onBackdropPress).toHaveBeenCalled();
   });
 
-  it('does not render backdrop if hasBackdrop is false', () => {
+  it('does not render backdrop if backdrop is false', () => {
     const { queryByTestId } = render(
-      <Modal visible={true} hasBackdrop={false}>
+      <Modal visible={true} backdrop={false}>
         <TestContent />
       </Modal>
     );

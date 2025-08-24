@@ -2,6 +2,7 @@ import type {
   ModalAnimation,
   ModalAnimationConfigUnion,
   ModalSwipeConfig,
+  ModalBackdropConfig,
   SwipeDirection,
   FadeAnimationConfig,
   SlideAnimationConfig,
@@ -13,11 +14,18 @@ import type {
  */
 export const DEFAULT_MODAL_ANIMATION_DURATION = 300;
 export const DEFAULT_MODAL_SCALE_FACTOR = 0.8;
-export const DEFAULT_MODAL_BACKDROP_OPACITY = 0.7;
-export const DEFAULT_MODAL_BACKDROP_COLOR = 'black';
 export const DEFAULT_MODAL_SWIPE_THRESHOLD = 100;
 export const DEFAULT_MODAL_BOUNCE_OPACITY_THRESHOLD = 0.05;
 export const DEFAULT_MODAL_SWIPE_DIRECTION: SwipeDirection = 'down';
+
+/**
+ * Default backdrop configuration.
+ */
+export const DEFAULT_MODAL_BACKDROP_CONFIG: ModalBackdropConfig = {
+  enabled: true,
+  color: 'black',
+  opacity: 0.7,
+} as const;
 
 export const DEFAULT_MODAL_BOUNCE_SPRING_CONFIG = {
   stiffness: 200,
@@ -80,6 +88,47 @@ export function normalizeAnimationConfig(
     ...defaultConfig,
     ...config,
   } as ModalAnimationConfigUnion;
+}
+
+/**
+ * Normalizes backdrop configuration by providing defaults for missing properties.
+ * @param backdrop - Backdrop configuration.
+ * @returns Normalized backdrop information with enabled flag and config.
+ */
+export function normalizeBackdropConfig(
+  backdrop: any = DEFAULT_MODAL_BACKDROP_CONFIG
+): {
+  enabled: boolean;
+  isCustomRenderer: boolean;
+  config: ModalBackdropConfig;
+  customRenderer?: any;
+} {
+  // false - no backdrop
+  if (backdrop === false) {
+    return {
+      enabled: false,
+      isCustomRenderer: false,
+      config: { ...DEFAULT_MODAL_BACKDROP_CONFIG, enabled: false },
+    };
+  }
+
+  // ReactNode - custom renderer
+  if (backdrop && typeof backdrop === 'object' && 'type' in backdrop) {
+    return {
+      enabled: true,
+      isCustomRenderer: true,
+      config: DEFAULT_MODAL_BACKDROP_CONFIG,
+      customRenderer: backdrop,
+    };
+  }
+
+  // object or undefined - use config with defaults
+  const config = { ...DEFAULT_MODAL_BACKDROP_CONFIG, ...backdrop };
+  return {
+    enabled: config.enabled !== false,
+    isCustomRenderer: false,
+    config,
+  };
 }
 
 /**

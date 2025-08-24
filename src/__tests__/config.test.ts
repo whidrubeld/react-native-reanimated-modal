@@ -1,4 +1,8 @@
-import { normalizeAnimationConfig, getSwipeDirections } from '../config';
+import {
+  normalizeAnimationConfig,
+  getSwipeDirections,
+  normalizeBackdropConfig,
+} from '../config';
 import type { SwipeDirection } from '../types';
 
 describe('Animation Config Utils', () => {
@@ -89,6 +93,50 @@ describe('Animation Config Utils', () => {
       };
       const directions = getSwipeDirections(swipeConfig, animationConfig);
       expect(directions).toEqual(['down']);
+    });
+  });
+
+  describe('normalizeBackdropConfig', () => {
+    it('should handle false value (no backdrop)', () => {
+      const result = normalizeBackdropConfig(false);
+      expect(result).toEqual({
+        enabled: false,
+        isCustomRenderer: false,
+        config: { enabled: false, color: 'black', opacity: 0.7 },
+      });
+    });
+
+    it('should handle ReactNode (custom renderer)', () => {
+      const customRenderer = {
+        type: 'View',
+        props: { children: 'Custom Backdrop' },
+      };
+      const result = normalizeBackdropConfig(customRenderer);
+      expect(result).toEqual({
+        enabled: true,
+        isCustomRenderer: true,
+        config: { enabled: true, color: 'black', opacity: 0.7 },
+        customRenderer,
+      });
+    });
+
+    it('should handle config object', () => {
+      const config = { enabled: true, color: 'red', opacity: 0.5 };
+      const result = normalizeBackdropConfig(config);
+      expect(result).toEqual({
+        enabled: true,
+        isCustomRenderer: false,
+        config,
+      });
+    });
+
+    it('should use defaults when undefined', () => {
+      const result = normalizeBackdropConfig();
+      expect(result).toEqual({
+        enabled: true,
+        isCustomRenderer: false,
+        config: { enabled: true, color: 'black', opacity: 0.7 },
+      });
     });
   });
 });

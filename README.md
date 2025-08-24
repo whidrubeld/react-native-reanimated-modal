@@ -1,7 +1,19 @@
 [![documentation](https://img.shields.io/badge/documentation-blue.svg)](https://whidrubeld.github.io/react-native-reanimated-modal/)
 [![npm bundle size](https://img.shields.io/bundlephobia/min/react-native-reanimated-modal)](https://www.npmjs.com/package/react-native-reanimated-modal)
 
-A lightweight, scalable, flexible, and high-performance modal component.  Based on the vanilla [Modal](https://reactnative.dev/docs/modal) component for maximum compatibility and native feel. Built with [react-native-reanimated](https://github.com/software-mansion/react-native-reanimated/) and [react-native-gesture-handler](https://github.com/software-mansion/react-native-gesture-handler).
+A lightweight, scalable, flexible, and high-performance modal component.  Based on the vanilla [Modal](https://reactnative.dev/docs/modal) component for maximum compatibility and native feel. Built with [react-native-reanimated](https://git// Custom backdrop renderer (e.g., BlurView)
+<Modal
+  visible={visible}
+  backdrop={
+    <BlurView
+      style={StyleSheet.absoluteFill}
+      blurType="light"
+      blurAmount={10}
+    />
+  }
+>
+  {/* Modal content */}
+</Modal>are-mansion/react-native-reanimated/) and [react-native-gesture-handler](https://github.com/software-mansion/react-native-gesture-handler).
 
 <img src="https://github.com/whidrubeld/react-native-reanimated-modal/blob/main/.github/images/example.gif?raw=true" width="100%" style="max-width: 500px; height: auto;" alt="React Native Reanimated Modal Demo" />
 
@@ -261,9 +273,7 @@ These props are optional and help you write robust e2e/unit tests.
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `hasBackdrop` | `boolean` | `true` | Whether to show backdrop behind modal |
-| `backdropColor` | `string` | `'black'` | Color of the backdrop |
-| `backdropOpacity` | `number` | `0.7` | Opacity of the backdrop (0-1) |
+| `backdrop` | `ModalBackdropConfig \| ReactNode \| false` | `{ enabled: true, color: 'black', opacity: 0.7 }` | Backdrop configuration: false (no backdrop), ReactNode for custom backdrop, or config object |
 | `onBackdropPress` | `() => void` | - | Callback when backdrop is pressed |
 
 #### Other Props
@@ -297,8 +307,7 @@ The library exports several useful constants for customization:
 import {
   DEFAULT_MODAL_ANIMATION_DURATION,    // 300
   DEFAULT_MODAL_SCALE_FACTOR,          // 0.8
-  DEFAULT_MODAL_BACKDROP_OPACITY,      // 0.7
-  DEFAULT_MODAL_BACKDROP_COLOR,        // 'black'
+  DEFAULT_MODAL_BACKDROP_CONFIG,       // { enabled: true, color: 'black', opacity: 0.7 }
   DEFAULT_MODAL_SWIPE_THRESHOLD,       // 100
   DEFAULT_MODAL_BOUNCE_SPRING_CONFIG,  // { stiffness: 200, dampingRatio: 0.5, duration: 700 }
   DEFAULT_MODAL_BOUNCE_OPACITY_THRESHOLD, // 0.05
@@ -310,6 +319,12 @@ const customAnimationConfig = {
   type: 'scale',
   duration: DEFAULT_MODAL_ANIMATION_DURATION * 2, // 600ms
   scaleFactor: DEFAULT_MODAL_SCALE_FACTOR,         // 0.8
+};
+
+const customBackdropConfig = {
+  ...DEFAULT_MODAL_BACKDROP_CONFIG,
+  color: 'rgba(0, 0, 0, 0.8)', // Darker backdrop
+  opacity: 0.9,
 };
 ```
 
@@ -345,13 +360,21 @@ interface ScaleAnimationConfig {
   scaleFactor?: number; // 0-1, default: 0.8
 }
 
-interface SwipeConfig {
+interface ModalSwipeConfig {
   enabled?: boolean;
   directions?: SwipeDirection[], // swipe enabled for this directions (high priority)
   threshold?: number;
   bounceSpringConfig?: SpringConfig;
   bounceOpacityThreshold?: number;
 }
+
+interface ModalBackdropConfig {
+  enabled?: boolean;
+  color?: string;
+  opacity?: number;
+}
+
+type ModalBackdrop = false | ReactNode | ModalBackdropConfig;
 
 type ModalAnimationConfigUnion =
   | FadeAnimationConfig
@@ -487,8 +510,43 @@ const MultiModalExample = () => {
     directions: ['down'],
     threshold: 80,
   }}
-  hasBackdrop={false} // No backdrop for full screen
+  backdrop={false} // No backdrop for full screen
   onHide={() => setVisible(false)}
+>
+  {/* Modal content */}
+</Modal>
+```
+
+### Custom Backdrop Examples
+
+```tsx
+// Disable backdrop completely
+<Modal visible={visible} backdrop={false}>
+  {/* Modal content */}
+</Modal>
+
+// Custom backdrop configuration
+<Modal
+  visible={visible}
+  backdrop={{
+    enabled: true,
+    color: 'rgba(255, 0, 0, 0.3)',
+    opacity: 0.8
+  }}
+>
+  {/* Modal content */}
+</Modal>
+
+// Custom backdrop renderer (e.g., BlurView)
+<Modal
+  visible={visible}
+  backdrop={
+    <BlurView
+      style={StyleSheet.absoluteFill}
+      blurType="light"
+      blurAmount={10}
+    />
+  }
 >
   {/* Modal content */}
 </Modal>

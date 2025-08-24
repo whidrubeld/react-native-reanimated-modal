@@ -30,12 +30,11 @@ import { styles } from './styles';
 import {
   normalizeAnimationConfig,
   normalizeSwipeConfig,
+  normalizeBackdropConfig,
   getSwipeDirections,
   getSlideInDirection,
   DEFAULT_MODAL_ANIMATION_DURATION,
   DEFAULT_MODAL_SCALE_FACTOR,
-  DEFAULT_MODAL_BACKDROP_OPACITY,
-  DEFAULT_MODAL_BACKDROP_COLOR,
   DEFAULT_MODAL_SWIPE_THRESHOLD,
   DEFAULT_MODAL_BOUNCE_SPRING_CONFIG,
   DEFAULT_MODAL_BOUNCE_OPACITY_THRESHOLD,
@@ -69,11 +68,8 @@ export const Modal: FC<ModalProps> = ({
   //
   animation,
   //
-  hasBackdrop = true,
-  backdropColor = DEFAULT_MODAL_BACKDROP_COLOR,
-  backdropOpacity = DEFAULT_MODAL_BACKDROP_OPACITY,
+  backdrop,
   onBackdropPress,
-  renderBackdrop,
   //
   swipe,
   //
@@ -105,6 +101,11 @@ export const Modal: FC<ModalProps> = ({
     [swipe]
   );
 
+  const normalizedBackdropConfig = useMemo(
+    () => normalizeBackdropConfig(backdrop),
+    [backdrop]
+  );
+
   // Extract values from configs
   const animationDuration =
     normalizedAnimationConfig.duration || DEFAULT_MODAL_ANIMATION_DURATION;
@@ -117,6 +118,16 @@ export const Modal: FC<ModalProps> = ({
   const bounceOpacityThreshold =
     normalizedSwipeConfig.bounceOpacityThreshold ||
     DEFAULT_MODAL_BOUNCE_OPACITY_THRESHOLD;
+
+  // Extract backdrop values
+  const {
+    enabled: hasBackdrop,
+    isCustomRenderer: renderBackdrop,
+    config: backdropConfig,
+    customRenderer,
+  } = normalizedBackdropConfig;
+  const backdropColor = backdropConfig.color;
+  const backdropOpacity = backdropConfig.opacity;
 
   /**
    * Shared values for animation progress and gesture state.
@@ -404,7 +415,7 @@ export const Modal: FC<ModalProps> = ({
    * Animated style for the backdrop (opacity, fade, bounce correction).
    */
   const backdropAnimatedStyle = useAnimatedStyle(() => {
-    const computedOpacity = !renderBackdrop ? backdropOpacity : 1;
+    const computedOpacity = !renderBackdrop ? backdropOpacity || 1 : 1;
     let swipeFade = 0;
     if (activeSwipeDirection.value) {
       let fullSwipeDistance = 1;
@@ -577,7 +588,7 @@ export const Modal: FC<ModalProps> = ({
             backdropAnimatedStyle,
           ]}
         >
-          {renderBackdrop ? renderBackdrop() : null}
+          {renderBackdrop && customRenderer ? customRenderer : null}
         </Animated.View>
       </Pressable>
     );

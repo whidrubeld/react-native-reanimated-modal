@@ -84,8 +84,31 @@ export type ModalAnimationConfig<T extends ModalAnimation> = T extends 'fade'
       : never;
 
 /**
- * Configuration for swipe gestures.
+ * Configuration for modal backdrop.
  */
+export interface ModalBackdropConfig {
+  /**
+   * Whether to show backdrop behind the modal.
+   * @default true
+   */
+  enabled?: boolean;
+  /**
+   * Color of the backdrop.
+   * @default 'black'
+   */
+  color?: string;
+  /**
+   * Opacity of the backdrop (0-1).
+   * @default 0.7
+   */
+  opacity?: number;
+}
+
+/**
+ * Backdrop configuration union type.
+ * Can be false (no backdrop), a custom renderer function, or a configuration object.
+ */
+export type ModalBackdrop = ModalBackdropConfig | ReactNode | false;
 export interface ModalSwipeConfig {
   /**
    * Whether swipe gestures are enabled.
@@ -175,29 +198,13 @@ export interface ModalProps
    */
   animation?: ModalAnimationConfigUnion | ModalAnimation;
 
-  // Backdrop related
+  // Backdrop configuration
   /**
-   * Whether to show a backdrop behind the modal.
-   * @default true
+   * Backdrop configuration for the modal.
+   * Can be false (no backdrop), a custom renderer function, or a configuration object.
+   * @default { enabled: true, color: 'black', opacity: 0.7 }
    */
-  hasBackdrop?: boolean;
-  /**
-   * Color of the backdrop.
-   * @default 'black'
-   */
-  backdropColor?: string;
-  /**
-   * Opacity of the backdrop (0-1).
-   * @default 0.7
-   */
-  backdropOpacity?: number;
-  /**
-   * Custom backdrop renderer. If provided, used instead of the standard backdrop.
-   * Useful for BlurView, gradients and other custom backgrounds.
-   *
-   * @returns ReactNode — custom backdrop element
-   */
-  renderBackdrop?: () => ReactNode;
+  backdrop?: ModalBackdrop;
   /**
    * Callback when the backdrop is pressed.
    */
