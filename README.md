@@ -391,7 +391,7 @@ const MultiModalExample = () => {
       <Modal
         visible={firstModalVisible}
         coverScreen // Important: excludes native Modal usage
-        onBackdropPress={() => setFirstModalVisible(false)}
+        onHide={() => setFirstModalVisible(false)}
       >
         {/* First modal content */}
       </Modal>
@@ -399,7 +399,7 @@ const MultiModalExample = () => {
       <Modal
         visible={secondModalVisible}
         coverScreen // Important: excludes native Modal usage
-        onBackdropPress={() => setSecondModalVisible(false)}
+        onHide={() => setSecondModalVisible(false)}
       >
         {/* Second modal content */}
       </Modal>
