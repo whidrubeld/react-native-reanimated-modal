@@ -87,25 +87,12 @@ const App = () => {
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Button title="Show Modal" onPress={() => setVisible(true)} />
 
-      <Modal
-        visible={visible}
-        onHide={() => setVisible(false)}
-        animation={{
-          type: 'scale',
-          duration: 400,
-          scaleFactor: 0.8,
-        }}
-        swipe={{
-          enabled: true,
-          directions: ['down', 'left', 'right'],
-          threshold: 100,
-        }}
-      >
+      <Modal visible={visible} onHide={() => setVisible(false)}>
         <View style={{
           backgroundColor: 'white',
           padding: 20,
           borderRadius: 10,
-          margin: 20
+          margin: 20,
         }}>
           <Text>Hello from Modal!</Text>
           <Button title="Close" onPress={() => setVisible(false)} />
