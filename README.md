@@ -205,6 +205,23 @@ const noSwipe: ModalSwipeConfig = {
   {/* Your content */}
 </Modal>
 
+// Backdrop examples
+<Modal
+  visible={visible}
+  onBackdropPress={false} // Prevent backdrop from closing modal
+  onHide={() => setVisible(false)} // Only programmatic close allowed
+>
+  {/* Your content */}
+</Modal>
+
+<Modal
+  visible={visible}
+  backdrop={{ color: 'red', opacity: 0.8 }} // Custom backdrop styling
+  onBackdropPress={() => console.log('Backdrop pressed!')} // Custom handler
+>
+  {/* Your content */}
+</Modal>
+
 // Legacy string syntax still supported
 <Modal
   visible={visible}
@@ -248,7 +265,7 @@ These props are optional and help you write robust e2e/unit tests.
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `backdrop` | `ModalBackdropConfig \| ReactNode \| false` | `{ enabled: true, color: 'black', opacity: 0.7 }` | Backdrop configuration: false (no backdrop), ReactNode for custom backdrop, or config object |
-| `onBackdropPress` | `() => void` | - | Callback when backdrop is pressed |
+| `onBackdropPress` | `(() => void) \| false` | - | Callback when backdrop is pressed. Set to `false` to prevent backdrop from closing the modal |
 
 #### Other Props
 

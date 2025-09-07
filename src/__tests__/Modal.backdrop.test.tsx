@@ -60,6 +60,56 @@ describe('Modal backdrop', () => {
     expect(getByTestId('custom-backdrop-test-id')).toBeTruthy();
     expect(getByTestId('custom-backdrop-content')).toBeTruthy();
   });
+
+  it('does not close modal when onBackdropPress is false', () => {
+    const onHide = jest.fn();
+    const { getByTestId } = render(
+      <Modal
+        visible={true}
+        onBackdropPress={false}
+        onHide={onHide}
+        backdropTestID="custom-backdrop-test-id"
+      >
+        <TestContent />
+      </Modal>
+    );
+    fireEvent.press(getByTestId('custom-backdrop-test-id'));
+    expect(onHide).not.toHaveBeenCalled();
+  });
+
+  it('calls onHide when backdrop is pressed and onBackdropPress is not provided', () => {
+    const onHide = jest.fn();
+    const { getByTestId } = render(
+      <Modal
+        visible={true}
+        onHide={onHide}
+        backdropTestID="custom-backdrop-test-id"
+      >
+        <TestContent />
+      </Modal>
+    );
+    fireEvent.press(getByTestId('custom-backdrop-test-id'));
+    expect(onHide).toHaveBeenCalled();
+  });
+
+  it('respects closable=false even when onBackdropPress is provided', () => {
+    const onBackdropPress = jest.fn();
+    const onHide = jest.fn();
+    const { getByTestId } = render(
+      <Modal
+        visible={true}
+        closable={false}
+        onBackdropPress={onBackdropPress}
+        onHide={onHide}
+        backdropTestID="custom-backdrop-test-id"
+      >
+        <TestContent />
+      </Modal>
+    );
+    fireEvent.press(getByTestId('custom-backdrop-test-id'));
+    expect(onBackdropPress).not.toHaveBeenCalled();
+    expect(onHide).not.toHaveBeenCalled();
+  });
 });
 
 function TestContent() {

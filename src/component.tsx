@@ -572,7 +572,7 @@ export const Modal: FC<ModalProps> = ({
         testID={backdropTestID}
         style={styles.absolute}
         onPress={
-          closable && (onBackdropPress || onHide)
+          closable && onBackdropPress !== false && (onBackdropPress || onHide)
             ? onBackdropPress || handleClose
             : undefined
         }

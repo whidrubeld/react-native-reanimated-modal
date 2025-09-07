@@ -204,8 +204,9 @@ export interface ModalProps
   backdrop?: ModalBackdropConfig | ReactNode | false;
   /**
    * Callback when the backdrop is pressed.
+   * Set to false to prevent backdrop press from closing the modal.
    */
-  onBackdropPress?: () => void;
+  onBackdropPress?: (() => void) | false;
 
   // Swipe configuration
   /**
