@@ -9,19 +9,20 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@expo/metro-runtime": "~5.0.4",
-    "@expo/vector-icons": "^14.1.0",
-    "expo": "~53.0.20",
-    "expo-blur": "~14.1.5",
-    "expo-status-bar": "~2.2.3",
-    "expo-updates": "~0.28.17",
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
-    "react-native": "0.79.5",
-    "react-native-gesture-handler": "~2.24.0",
-    "react-native-reanimated": "~3.17.4",
-    "react-native-safe-area-context": "5.4.0",
-    "react-native-web": "~0.20.0"
+    "@expo/metro-runtime": "~6.1.1",
+    "@expo/vector-icons": "^15.0.2",
+    "expo": "^54.0.1",
+    "expo-blur": "~15.0.6",
+    "expo-status-bar": "~3.0.7",
+    "expo-updates": "~29.0.9",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-native": "0.81.4",
+    "react-native-gesture-handler": "~2.28.0",
+    "react-native-reanimated": "~4.1.0",
+    "react-native-safe-area-context": "~5.6.0",
+    "react-native-web": "^0.21.0",
+    "react-native-worklets": "0.5.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

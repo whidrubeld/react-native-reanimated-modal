@@ -58,20 +58,6 @@ This library depends on the following peer dependencies:
 
 > **Note**: Make sure to follow the installation guides for both libraries, as they require additional platform-specific setup steps.
 
-### Important Setup
-
-Make sure to wrap your root App component with `gestureHandlerRootHOC` for gesture handling to work properly:
-
-```tsx
-import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
-
-const App = () => {
-  {/* Your app */}
-};
-
-export default gestureHandlerRootHOC(App);
-```
-
 ## 🚀 Basic Usage
 
 ```tsx
@@ -84,25 +70,25 @@ const App = () => {
   const [visible, setVisible] = useState(false);
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Button title="Show Modal" onPress={() => setVisible(true)} />
+    <GestureHandlerRootView>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Button title="Show Modal" onPress={() => setVisible(true)} />
 
-      <Modal visible={visible} onHide={() => setVisible(false)}>
-        <View style={{
-          backgroundColor: 'white',
-          padding: 20,
-          borderRadius: 10,
-          margin: 20,
-        }}>
-          <Text>Hello from Modal!</Text>
-          <Button title="Close" onPress={() => setVisible(false)} />
-        </View>
-      </Modal>
-    </View>
+        <Modal visible={visible} onHide={() => setVisible(false)}>
+          <View style={{
+            backgroundColor: 'white',
+            padding: 20,
+            borderRadius: 10,
+            margin: 20,
+          }}>
+            <Text>Hello from Modal!</Text>
+            <Button title="Close" onPress={() => setVisible(false)} />
+          </View>
+        </Modal>
+      </View>
+    </GestureHandlerRootView>
   );
 };
-
-export default gestureHandlerRootHOC(App);
 ```
 
 ## 📖 API Documentation
@@ -165,7 +151,6 @@ const advancedSwipe: ModalSwipeConfig = {
   directions: ['up', 'down'], // Only vertical swipes
   threshold: 80,
   bounceSpringConfig: {
-    stiffness: 300,
     dampingRatio: 0.7,
     duration: 400,
   },
@@ -300,7 +285,7 @@ import {
   DEFAULT_MODAL_SCALE_FACTOR,          // 0.8
   DEFAULT_MODAL_BACKDROP_CONFIG,       // { enabled: true, color: 'black', opacity: 0.7 }
   DEFAULT_MODAL_SWIPE_THRESHOLD,       // 100
-  DEFAULT_MODAL_BOUNCE_SPRING_CONFIG,  // { stiffness: 200, dampingRatio: 0.5, duration: 700 }
+  DEFAULT_MODAL_BOUNCE_SPRING_CONFIG,  // { dampingRatio: 0.5, duration: 700 }
   DEFAULT_MODAL_BOUNCE_OPACITY_THRESHOLD, // 0.05
   DEFAULT_MODAL_SWIPE_DIRECTION, // 'down'
 } from 'react-native-reanimated-modal';
@@ -471,7 +456,6 @@ const MultiModalExample = () => {
   swipe={{
     threshold: 150,
     bounceSpringConfig: {
-      stiffness: 300,
       dampingRatio: 0.8,
       duration: 400,
     },

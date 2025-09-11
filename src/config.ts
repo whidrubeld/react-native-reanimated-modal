@@ -9,6 +9,7 @@ import type {
   SlideAnimationConfig,
   ScaleAnimationConfig,
 } from './types';
+import type { SpringConfig } from 'react-native-reanimated/lib/typescript/animation/spring';
 
 /**
  * Default values and configurations.
@@ -28,8 +29,7 @@ export const DEFAULT_MODAL_BACKDROP_CONFIG: ModalBackdropConfig = {
   opacity: 0.7,
 } as const;
 
-export const DEFAULT_MODAL_BOUNCE_SPRING_CONFIG = {
-  stiffness: 200,
+export const DEFAULT_MODAL_BOUNCE_SPRING_CONFIG: SpringConfig = {
   dampingRatio: 0.5,
   duration: 700,
 } as const;

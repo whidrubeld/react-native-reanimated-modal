@@ -5,7 +5,7 @@ import type {
   StyleProp,
   ViewStyle,
 } from 'react-native';
-import type { SpringConfig } from 'react-native-reanimated/lib/typescript/animation/springUtils';
+import type { SpringConfig } from 'react-native-reanimated/lib/typescript/animation/spring';
 
 export type ModalAnimation = 'fade' | 'slide' | 'scale';
 export type SwipeDirection = 'up' | 'down' | 'left' | 'right';

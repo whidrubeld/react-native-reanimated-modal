@@ -1,14 +1,16 @@
-import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { Content } from './Content';
 
 const App = () => {
   return (
-    <SafeAreaProvider>
-      <Content />
-    </SafeAreaProvider>
+    <GestureHandlerRootView>
+      <SafeAreaProvider>
+        <Content />
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 };
 
-export default gestureHandlerRootHOC(App);
+export default App;
