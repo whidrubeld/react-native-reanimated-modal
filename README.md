@@ -53,10 +53,12 @@ bun add react-native-reanimated-modal
 
 This library depends on the following peer dependencies:
 
-1. **[react-native-reanimated](https://github.com/software-mansion/react-native-reanimated)** (>= 3.0.0)
-2. **[react-native-gesture-handler](https://github.com/software-mansion/react-native-gesture-handler)** (>= 2.0.0)
+1. **[react-native-reanimated](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/getting-started/)** (>= 3.0.0)
+2. **[react-native-gesture-handler](https://docs.swmansion.com/react-native-gesture-handler/docs/fundamentals/installation)** (>= 2.0.0)
+3. **[react-native-worklets](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/getting-started/#dependencies)** (>= 0.5.0) - **Required for Reanimated 4.0.0+**
 
-> **Note**: Make sure to follow the installation guides for both libraries, as they require additional platform-specific setup steps.
+> **Note**: Make sure to follow the installation guides for all libraries, as they require additional platform-specific setup steps.
+
 
 ## 🚀 Basic Usage
 
