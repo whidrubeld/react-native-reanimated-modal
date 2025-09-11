@@ -63,7 +63,7 @@ This library depends on the following peer dependencies:
 ```tsx
 import React, { useState } from 'react';
 import { View, Text, Button } from 'react-native';
-import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Modal } from 'react-native-reanimated-modal';
 
 const App = () => {
