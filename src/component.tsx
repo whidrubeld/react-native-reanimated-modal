@@ -507,7 +507,7 @@ export const Modal: FC<ModalProps> = ({
   });
 
   /**
-   * Effect: handles modal openingк
+   * Effect: handles modal opening
    */
   useEffect(() => {
     if (!isNeedOpen) return;
