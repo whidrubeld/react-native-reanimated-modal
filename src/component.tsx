@@ -307,14 +307,21 @@ export const Modal: FC<ModalProps> = ({
     .onUpdate((event) => {
       // Only set direction once per gesture
       if (activeSwipeDirection.value == null) {
-        if (Math.abs(event.translationX) > Math.abs(event.translationY)) {
-          const dir = event.translationX > 0 ? 'right' : 'left';
+        const { translationX, translationY } = event;
+        const absX = Math.abs(translationX);
+        const absY = Math.abs(translationY);
+
+        // Require minimum movement to detect direction (prevent false detection at 0,0)
+        if (absX < 1 && absY < 1) return; // Not enough movement to determine direction
+
+        if (absX > absY) {
+          const dir = translationX > 0 ? 'right' : 'left';
           if (isDirectionAllowed(dir)) {
             activeSwipeDirection.value = dir;
             animationMode.value = AnimationMode.Slide;
           }
         } else {
-          const dir = event.translationY > 0 ? 'down' : 'up';
+          const dir = translationY > 0 ? 'down' : 'up';
           if (isDirectionAllowed(dir)) {
             activeSwipeDirection.value = dir;
             animationMode.value = AnimationMode.Slide;
