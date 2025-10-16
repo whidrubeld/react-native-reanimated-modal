@@ -12,8 +12,13 @@ import {
   Pressable,
   View,
   useWindowDimensions,
+  Platform,
 } from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import {
+  Gesture,
+  GestureDetector,
+  GestureHandlerRootView,
+} from 'react-native-gesture-handler';
 import Animated, {
   Easing,
   interpolate,
@@ -316,7 +321,6 @@ export const Modal: FC<ModalProps> = ({
           }
         }
       }
-
       // Move only along the chosen direction
       switch (activeSwipeDirection.value) {
         case 'left':
@@ -622,14 +626,20 @@ export const Modal: FC<ModalProps> = ({
       visible={shouldRenderValue}
       onRequestClose={handleClose}
     >
-      <View
-        testID={containerTestID}
-        style={[styles.root, style]}
-        pointerEvents="box-none"
-      >
-        {renderBackdropInternal()}
-        {renderContent()}
-      </View>
+      {Platform.OS === 'android' ? (
+        <GestureHandlerRootView
+          testID={containerTestID}
+          style={[styles.root, style]}
+        >
+          {renderBackdropInternal()}
+          {renderContent()}
+        </GestureHandlerRootView>
+      ) : (
+        <View testID={containerTestID} style={[styles.root, style]}>
+          {renderBackdropInternal()}
+          {renderContent()}
+        </View>
+      )}
     </RNModal>
   );
 };
