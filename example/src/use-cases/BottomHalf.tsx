@@ -29,6 +29,7 @@ export default function BottomHalfModal({
   return (
     <Modal
       visible={visible}
+      statusBarTranslucent
       swipe={{ directions: ['down'], threshold: 150 }}
       style={styles.root}
       animation={{ type: 'slide', duration: 500 }}

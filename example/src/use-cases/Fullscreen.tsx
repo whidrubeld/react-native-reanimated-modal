@@ -13,6 +13,7 @@ export default function FullscreenModal({
 }) {
   return (
     <Modal
+      statusBarTranslucent
       contentContainerStyle={styles.root}
       visible={visible}
       animation="slide"

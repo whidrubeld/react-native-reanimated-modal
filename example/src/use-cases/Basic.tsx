@@ -12,7 +12,11 @@ export default function BasicModal({
   setVisible: (visible: boolean) => void;
 }) {
   return (
-    <Modal visible={visible} onHide={() => setVisible(false)}>
+    <Modal
+      visible={visible}
+      statusBarTranslucent
+      onHide={() => setVisible(false)}
+    >
       <StatusBar style="light" animated />
       <View style={baseStyles.container}>
         <Text style={baseStyles.title}>Basic Example</Text>

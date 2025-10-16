@@ -15,6 +15,7 @@ export default function BlurModal({
   return (
     <Modal
       visible={visible}
+      statusBarTranslucent
       backdrop={
         <BlurView
           tint="systemThickMaterialDark"
