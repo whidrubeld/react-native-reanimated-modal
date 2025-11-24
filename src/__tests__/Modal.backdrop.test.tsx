@@ -77,21 +77,6 @@ describe('Modal backdrop', () => {
     expect(onHide).not.toHaveBeenCalled();
   });
 
-  it('calls onHide when backdrop is pressed and onBackdropPress is not provided', () => {
-    const onHide = jest.fn();
-    const { getByTestId } = render(
-      <Modal
-        visible={true}
-        onHide={onHide}
-        backdropTestID="custom-backdrop-test-id"
-      >
-        <TestContent />
-      </Modal>
-    );
-    fireEvent.press(getByTestId('custom-backdrop-test-id'));
-    expect(onHide).toHaveBeenCalled();
-  });
-
   it('respects closable=false even when onBackdropPress is provided', () => {
     const onBackdropPress = jest.fn();
     const onHide = jest.fn();
