@@ -586,7 +586,7 @@ export const Modal: FC<ModalProps> = ({
           closable && onBackdropPress !== false
             ? () => {
                 if (onBackdropPress) onBackdropPress();
-                else onHide?.();
+                else handleClose();
               }
             : undefined
         }
