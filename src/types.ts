@@ -7,8 +7,23 @@ import type {
 } from 'react-native';
 import type { SpringConfig } from 'react-native-reanimated/lib/typescript/animation/spring';
 
-export type ModalAnimation = 'fade' | 'slide' | 'scale';
+export type ModalAnimation = 'fade' | 'slide' | 'scale' | 'custom';
 export type SwipeDirection = 'up' | 'down' | 'left' | 'right';
+export type ModalAnimationState =
+  | 'opening'
+  | 'sliding'
+  | 'bouncing'
+  | 'closing';
+
+export type ModalAnimatedStyleFunction = (props: {
+  animationState: ModalAnimationState | null;
+  swipeDirection?: SwipeDirection | null; // when is swiping animation state
+  progress: number; // when opening or closing animation state
+  offsetX: number; // when swiping animation state
+  offsetY: number; // when swiping animation state
+  screenWidth: number;
+  screenHeight: number;
+}) => ViewStyle;
 
 /**
  * Base configuration for all animation types.
@@ -19,6 +34,17 @@ interface BaseAnimationConfig {
    * @default 300
    */
   duration?: number;
+  /**
+   * Optional custom worklet function for content animation styles.
+   * If provided, merges with the default animation for this type.
+   * Receives progress (0-1), offsetX, offsetY, and screen dimensions.
+   */
+  contentAnimatedStyle?: ModalAnimatedStyleFunction;
+  /**
+   * Optional custom worklet function for backdrop animation styles.
+   * If provided, merges with the default backdrop fade.
+   */
+  backdropAnimatedStyle?: ModalAnimatedStyleFunction;
 }
 
 /**
@@ -65,12 +91,20 @@ export interface ScaleAnimationConfig extends BaseAnimationConfig {
 }
 
 /**
+ * Configuration for custom animation.
+ */
+export interface CustomAnimationConfig extends BaseAnimationConfig {
+  type: 'custom';
+}
+
+/**
  * Union of all animation configuration types.
  */
 export type ModalAnimationConfigUnion =
   | FadeAnimationConfig
   | SlideAnimationConfig
-  | ScaleAnimationConfig;
+  | ScaleAnimationConfig
+  | CustomAnimationConfig;
 
 /**
  * Generic type for animation config based on animation type.
@@ -81,7 +115,9 @@ export type ModalAnimationConfig<T extends ModalAnimation> = T extends 'fade'
     ? SlideAnimationConfig
     : T extends 'scale'
       ? ScaleAnimationConfig
-      : never;
+      : T extends 'custom'
+        ? CustomAnimationConfig
+        : never;
 
 /**
  * Configuration for modal backdrop.

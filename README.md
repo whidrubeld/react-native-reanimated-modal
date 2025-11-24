@@ -310,37 +310,65 @@ const customBackdropConfig = {
 
 ```tsx
 type SwipeDirection = 'up' | 'down' | 'left' | 'right';
-type ModalAnimation = 'fade' | 'slide' | 'scale';
+type ModalAnimation = 'fade' | 'slide' | 'scale' | 'custom';
 
-// New Configuration Types
+// Animation states for custom worklet functions
+type ModalAnimationState =
+  | 'opening'   // Modal is opening (progress: 0 -> 1)
+  | 'closing'   // Modal is closing (progress: 1 -> 0)
+  | 'sliding'   // User is swiping (offsetX, offsetY active)
+  | 'bouncing'  // Bounce back after failed swipe
+
+// Custom worklet function type
+type ModalAnimatedStyleFunction = (props: {
+  animationState: ModalAnimationState | null;
+  swipeDirection?: SwipeDirection | null; // Active during 'sliding' state
+  progress: number;        // 0-1 during 'opening'/'closing' states
+  offsetX: number;         // Pixel offset during 'sliding' state
+  offsetY: number;         // Pixel offset during 'sliding' state
+  screenWidth: number;     // Device screen width
+  screenHeight: number;    // Device screen height
+}) => ViewStyle;
+
+// Configuration Types
 type ModalAnimationConfig<T extends ModalAnimation> =
   T extends 'fade' ? FadeAnimationConfig :
   T extends 'slide' ? SlideAnimationConfig :
-  T extends 'scale' ? ScaleAnimationConfig : never;
+  T extends 'scale' ? ScaleAnimationConfig :
+  T extends 'custom' ? CustomAnimationConfig : never;
 
-interface FadeAnimationConfig {
-  type: 'fade';
+interface BaseAnimationConfig {
   duration?: number;
+  // Custom worklet functions (optional for all animation types)
+  contentAnimatedStyle?: ModalAnimatedStyleFunction;
+  backdropAnimatedStyle?: ModalAnimatedStyleFunction;
 }
 
-interface SlideAnimationConfig {
+interface FadeAnimationConfig extends BaseAnimationConfig {
+  type: 'fade';
+}
+
+interface SlideAnimationConfig extends BaseAnimationConfig {
   type: 'slide';
-  duration?: number;
   direction?: SwipeDirection | {
     start: SwipeDirection;
-    end: SwipeDirection | SwipeDirection[]; // swipe enabled for this directions (low priority)
+    end: SwipeDirection | SwipeDirection[];
   };
 }
 
-interface ScaleAnimationConfig {
+interface ScaleAnimationConfig extends BaseAnimationConfig {
   type: 'scale';
-  duration?: number;
   scaleFactor?: number; // 0-1, default: 0.8
+}
+
+interface CustomAnimationConfig extends BaseAnimationConfig {
+  type: 'custom';
+  // No preset animation - relies entirely on contentAnimatedStyle
 }
 
 interface ModalSwipeConfig {
   enabled?: boolean;
-  directions?: SwipeDirection[], // swipe enabled for this directions (high priority)
+  directions?: SwipeDirection[];
   threshold?: number;
   bounceSpringConfig?: SpringConfig;
   bounceOpacityThreshold?: number;
@@ -355,7 +383,8 @@ interface ModalBackdropConfig {
 type ModalAnimationConfigUnion =
   | FadeAnimationConfig
   | SlideAnimationConfig
-  | ScaleAnimationConfig;
+  | ScaleAnimationConfig
+  | CustomAnimationConfig;
 ```
 
 ## 🔄 React Navigation support
@@ -487,6 +516,93 @@ const MultiModalExample = () => {
   }}
   backdrop={false} // No backdrop for full screen
   onHide={() => setVisible(false)}
+>
+  {/* Modal content */}
+</Modal>
+```
+
+### Custom Animation Worklets
+
+You can create fully custom animations by providing worklet functions that run on the UI thread. These functions receive animation state information and return style objects that get merged with the default preset animations.
+
+```tsx
+// Custom slide animation with rotation and color changes
+<Modal
+  visible={visible}
+  animation={{
+    type: 'slide',
+    duration: 500,
+    direction: 'down',
+    contentAnimatedStyle: ({ progress, animationState }) => {
+      'worklet';
+      return {
+        // Add rotation during slide animation
+        transform: [{ rotate: `${progress * 360}deg` }],
+        // Change background color based on progress
+        backgroundColor: `rgba(255, 0, 0, ${progress * 0.5})`,
+      };
+    },
+    backdropAnimatedStyle: ({ progress }) => {
+      'worklet';
+      return {
+        // Custom backdrop with color transition
+        backgroundColor: `rgba(0, 255, 0, ${progress * 0.3})`,
+      };
+    }
+  }}
+>
+  {/* Modal content */}
+</Modal>
+
+// Custom animation type without any presets
+<Modal
+  visible={visible}
+  animation={{
+    type: 'custom',
+    duration: 800,
+    contentAnimatedStyle: ({ progress, offsetX, offsetY, animationState }) => {
+      'worklet';
+
+      if (animationState === 'sliding') {
+        // During swipe gestures
+        return {
+          opacity: 1 - Math.abs(offsetX) / 200,
+          transform: [
+            { translateX: offsetX },
+            { scale: 1 - Math.abs(offsetX) / 400 }
+          ],
+        };
+      }
+
+      // During open/close animations
+      return {
+        opacity: progress,
+        transform: [
+          { scale: 0.5 + progress * 0.5 },
+          { rotateY: `${(1 - progress) * 180}deg` }
+        ],
+      };
+    }
+  }}
+>
+  {/* Modal content */}
+</Modal>
+
+// Enhance existing animations with custom effects
+<Modal
+  visible={visible}
+  animation={{
+    type: 'fade', // Use fade preset
+    duration: 600,
+    contentAnimatedStyle: ({ progress }) => {
+      'worklet';
+      // Add elastic scale effect to fade animation
+      const elasticScale = 1 + Math.sin(progress * Math.PI * 2) * 0.1;
+      return {
+        transform: [{ scale: elasticScale }]
+      };
+    }
+  }}
 >
   {/* Modal content */}
 </Modal>

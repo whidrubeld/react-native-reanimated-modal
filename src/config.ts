@@ -8,6 +8,7 @@ import type {
   FadeAnimationConfig,
   SlideAnimationConfig,
   ScaleAnimationConfig,
+  CustomAnimationConfig,
 } from './types';
 import type { SpringConfig } from 'react-native-reanimated/lib/typescript/animation/spring';
 
@@ -81,6 +82,17 @@ export function normalizeAnimationConfig(
   }
 
   const type = (config as any)?.type || 'fade';
+
+  // For custom animation, validate required fields
+  if (type === 'custom') {
+    const customConfig = config as Partial<CustomAnimationConfig>;
+    return {
+      type: 'custom',
+      duration: DEFAULT_MODAL_ANIMATION_DURATION,
+      ...customConfig,
+    } as CustomAnimationConfig;
+  }
+
   const defaultConfig =
     DEFAULT_MODAL_ANIMATION_CONFIGS[
       type as keyof typeof DEFAULT_MODAL_ANIMATION_CONFIGS

@@ -13,6 +13,7 @@ import {
   View,
   useWindowDimensions,
   Platform,
+  type ViewStyle,
 } from 'react-native';
 import {
   Gesture,
@@ -30,7 +31,12 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 
-import type { ModalProps, SwipeDirection, ModalAnimationConfig } from './types';
+import type {
+  ModalProps,
+  SwipeDirection,
+  ModalAnimationConfig,
+  ModalAnimationState,
+} from './types';
 import { styles } from './styles';
 import {
   normalizeAnimationConfig,
@@ -44,18 +50,6 @@ import {
   DEFAULT_MODAL_BOUNCE_SPRING_CONFIG,
   DEFAULT_MODAL_BOUNCE_OPACITY_THRESHOLD,
 } from './config';
-
-/**
- * Animation state for the modal.
- * @enum {string}
- */
-enum AnimationMode {
-  None = 'None',
-  Open = 'Open',
-  Slide = 'Slide',
-  Bounce = 'Bounce',
-  Close = 'Close',
-}
 
 /**
  * Modal component with smooth, customizable animations and gesture support.
@@ -137,16 +131,15 @@ export const Modal: FC<ModalProps> = ({
   const offsetX = useSharedValue(0);
   const offsetY = useSharedValue(0);
   const activeSwipeDirection = useSharedValue<SwipeDirection | null>(null);
-  const animationMode = useSharedValue(AnimationMode.None);
+  const animationMode = useSharedValue<ModalAnimationState | null>(null);
   const shouldRender = useSharedValue(visible);
 
   /**
    * React state buffers for shared values (for React hooks dependencies).
    */
   const [shouldRenderValue, setShouldRenderValue] = useState(visible);
-  const [animationModeValue, setAnimationModeValue] = useState(
-    AnimationMode.None
-  );
+  const [animationModeValue, setAnimationModeValue] =
+    useState<ModalAnimationState | null>(null);
 
   /**
    * Animated reactions to sync shared values with React state buffers.
@@ -171,18 +164,14 @@ export const Modal: FC<ModalProps> = ({
    * Memo: determines if modal needs to open
    */
   const isNeedOpen = useMemo(() => {
-    return (
-      visible && !shouldRenderValue && animationModeValue === AnimationMode.None
-    );
+    return visible && !shouldRenderValue && !animationModeValue;
   }, [visible, shouldRenderValue, animationModeValue]);
 
   /**
    * Memo: determines if modal needs to close
    */
   const isNeedClose = useMemo(() => {
-    return (
-      !visible && shouldRenderValue && animationModeValue === AnimationMode.None
-    );
+    return !visible && shouldRenderValue && !animationModeValue;
   }, [visible, shouldRenderValue, animationModeValue]);
 
   /**
@@ -210,7 +199,7 @@ export const Modal: FC<ModalProps> = ({
     offsetX.value = 0;
     offsetY.value = 0;
     activeSwipeDirection.value = null;
-    animationMode.value = AnimationMode.None;
+    animationMode.value = null;
   }, [progress, offsetX, offsetY, activeSwipeDirection, animationMode]);
 
   /**
@@ -218,12 +207,12 @@ export const Modal: FC<ModalProps> = ({
    */
   const handleOpen = useCallback(() => {
     shouldRender.value = true;
-    animationMode.value = AnimationMode.Open;
+    animationMode.value = 'opening';
     progress.value = withTiming(
       1,
       { duration: animationDuration, easing: Easing.out(Easing.ease) },
       () => {
-        animationMode.value = AnimationMode.None;
+        animationMode.value = null;
         if (onShow) runOnJS(onShow)();
       }
     );
@@ -240,9 +229,9 @@ export const Modal: FC<ModalProps> = ({
    * Handles modal closing
    */
   const handleClose = useCallback(() => {
-    if (animationModeValue !== AnimationMode.None) return;
+    if (animationModeValue) return;
 
-    animationMode.value = AnimationMode.Close;
+    animationMode.value = 'closing';
     progress.value = withTiming(
       0,
       { duration: animationDuration, easing: Easing.in(Easing.ease) },
@@ -301,7 +290,7 @@ export const Modal: FC<ModalProps> = ({
   const panGesture = Gesture.Pan()
     .enabled(swipeEnabled && closable && !!onHide)
     .onBegin(() => {
-      if (animationMode.value !== AnimationMode.None) return;
+      if (animationMode.value) return;
       activeSwipeDirection.value = null;
     })
     .onUpdate((event) => {
@@ -318,13 +307,13 @@ export const Modal: FC<ModalProps> = ({
           const dir = translationX > 0 ? 'right' : 'left';
           if (isDirectionAllowed(dir)) {
             activeSwipeDirection.value = dir;
-            animationMode.value = AnimationMode.Slide;
+            animationMode.value = 'sliding';
           }
         } else {
           const dir = translationY > 0 ? 'down' : 'up';
           if (isDirectionAllowed(dir)) {
             activeSwipeDirection.value = dir;
-            animationMode.value = AnimationMode.Slide;
+            animationMode.value = 'sliding';
           }
         }
       }
@@ -349,18 +338,15 @@ export const Modal: FC<ModalProps> = ({
       }
     })
     .onEnd(() => {
-      if (
-        animationMode.value !== AnimationMode.Slide ||
-        !activeSwipeDirection.value
-      ) {
-        animationMode.value = AnimationMode.None;
+      if (animationMode.value !== 'sliding' || !activeSwipeDirection.value) {
+        animationMode.value = null;
         return;
       }
 
       const swipeProg = calculateSwipeProgress(offsetX.value, offsetY.value);
       if (swipeProg >= 1) {
         // Close via swipe
-        animationMode.value = AnimationMode.Close;
+        animationMode.value = 'closing';
         const finalX =
           activeSwipeDirection.value === 'left'
             ? -SCREEN_WIDTH
@@ -398,19 +384,19 @@ export const Modal: FC<ModalProps> = ({
         );
       } else {
         // Bounce back
-        animationMode.value = AnimationMode.Bounce;
+        animationMode.value = 'bouncing';
         switch (activeSwipeDirection.value) {
           case 'left':
           case 'right':
             offsetX.value = withSpring(0, bounceSpringConfig, () => {
-              animationMode.value = AnimationMode.None;
+              animationMode.value = null;
               activeSwipeDirection.value = null;
             });
             break;
           case 'up':
           case 'down':
             offsetY.value = withSpring(0, bounceSpringConfig, () => {
-              animationMode.value = AnimationMode.None;
+              animationMode.value = null;
               activeSwipeDirection.value = null;
             });
             break;
@@ -421,7 +407,8 @@ export const Modal: FC<ModalProps> = ({
   /**
    * Animated style for the backdrop (opacity, fade, bounce correction).
    */
-  const backdropAnimatedStyle = useAnimatedStyle(() => {
+  const backdropAnimatedStyle = useAnimatedStyle<ViewStyle>(() => {
+    // Default backdrop animation logic
     const computedOpacity = !isCustomBackdrop ? backdropConfig.opacity || 1 : 1;
     let swipeFade = 0;
     if (activeSwipeDirection.value) {
@@ -443,78 +430,147 @@ export const Modal: FC<ModalProps> = ({
     }
     let baseOpacity = computedOpacity * (1 - swipeFade);
     if (
-      animationMode.value === AnimationMode.Bounce &&
+      animationMode.value === 'bouncing' &&
       computedOpacity - baseOpacity <= bounceOpacityThreshold
     ) {
       baseOpacity = computedOpacity;
     }
-    return {
+
+    const defaultStyle = {
       opacity: interpolate(progress.value, [0, 1], [0, baseOpacity]),
     };
+
+    // Merge with custom backdrop worklet if provided
+    if (normalizedAnimationConfig.backdropAnimatedStyle) {
+      const customStyle = normalizedAnimationConfig.backdropAnimatedStyle({
+        animationState: animationMode.value,
+        swipeDirection: activeSwipeDirection.value,
+        progress: progress.value,
+        offsetX: offsetX.value,
+        offsetY: offsetY.value,
+        screenWidth: SCREEN_WIDTH,
+        screenHeight: SCREEN_HEIGHT,
+      });
+      return { ...defaultStyle, ...customStyle };
+    }
+
+    return defaultStyle;
   });
 
   /**
    * Animated style for the modal content (slide/fade/scale/gesture transforms).
    */
-  const contentAnimatedStyle = useAnimatedStyle(() => {
+  const contentAnimatedStyle = useAnimatedStyle<ViewStyle>(() => {
+    let defaultStyle: ViewStyle = {};
+
+    // Handle swipe gestures (applies to all animation types)
     if (activeSwipeDirection.value) {
       const baseOpacity =
         normalizedAnimationConfig.type === 'fade' ? progress.value : 1;
-      return {
+      defaultStyle = {
         opacity: baseOpacity,
         transform: [
           { translateX: offsetX.value },
           { translateY: offsetY.value },
         ],
       };
+    } else {
+      // Default preset animations
+      switch (normalizedAnimationConfig.type) {
+        case 'fade': {
+          defaultStyle = {
+            opacity: progress.value,
+            transform: [{ translateX: 0 }, { translateY: 0 }],
+          };
+          break;
+        }
+        case 'scale': {
+          const scaleConfig =
+            normalizedAnimationConfig as ModalAnimationConfig<'scale'>;
+          const scaleFactor =
+            scaleConfig.scaleFactor || DEFAULT_MODAL_SCALE_FACTOR;
+          const scale = interpolate(progress.value, [0, 1], [scaleFactor, 1]);
+          defaultStyle = {
+            opacity: progress.value,
+            transform: [{ translateX: 0 }, { translateY: 0 }, { scale }],
+          };
+          break;
+        }
+        case 'slide': {
+          const slideIn = (direction: SwipeDirection) => {
+            switch (direction) {
+              case 'up':
+                return { x: 0, y: -SCREEN_HEIGHT };
+              case 'down':
+                return { x: 0, y: SCREEN_HEIGHT };
+              case 'left':
+                return { x: -SCREEN_WIDTH, y: 0 };
+              case 'right':
+                return { x: SCREEN_WIDTH, y: 0 };
+            }
+          };
+          const entryPos = slideIn(slideInDirection);
+          defaultStyle = {
+            opacity: 1,
+            transform: [
+              {
+                translateX: interpolate(
+                  progress.value,
+                  [0, 1],
+                  [entryPos.x, 0]
+                ),
+              },
+              {
+                translateY: interpolate(
+                  progress.value,
+                  [0, 1],
+                  [entryPos.y, 0]
+                ),
+              },
+            ],
+          };
+          break;
+        }
+        case 'custom':
+        default: {
+          // For custom type without worklet, return minimal style
+          defaultStyle = {
+            opacity: progress.value,
+            transform: [{ translateX: 0 }, { translateY: 0 }],
+          };
+          break;
+        }
+      }
     }
 
-    switch (normalizedAnimationConfig.type) {
-      case 'fade': {
+    // Merge with custom content worklet if provided
+    if (normalizedAnimationConfig.contentAnimatedStyle) {
+      const customStyle = normalizedAnimationConfig.contentAnimatedStyle({
+        animationState: animationMode.value,
+        swipeDirection: activeSwipeDirection.value,
+        progress: progress.value,
+        offsetX: offsetX.value,
+        offsetY: offsetY.value,
+        screenWidth: SCREEN_WIDTH,
+        screenHeight: SCREEN_HEIGHT,
+      });
+
+      // Merge transform arrays if both exist
+      if (!!defaultStyle.transform && !!customStyle.transform) {
         return {
-          opacity: progress.value,
-          transform: [{ translateX: 0 }, { translateY: 0 }],
-        };
-      }
-      case 'scale': {
-        const scaleConfig =
-          normalizedAnimationConfig as ModalAnimationConfig<'scale'>;
-        const scaleFactor =
-          scaleConfig.scaleFactor || DEFAULT_MODAL_SCALE_FACTOR;
-        const scale = interpolate(progress.value, [0, 1], [scaleFactor, 1]);
-        return {
-          opacity: progress.value,
-          transform: [{ translateX: 0 }, { translateY: 0 }, { scale }],
-        };
-      }
-      case 'slide':
-      default: {
-        const slideIn = (direction: SwipeDirection) => {
-          switch (direction) {
-            case 'up':
-              return { x: 0, y: -SCREEN_HEIGHT };
-            case 'down':
-              return { x: 0, y: SCREEN_HEIGHT };
-            case 'left':
-              return { x: -SCREEN_WIDTH, y: 0 };
-            case 'right':
-              return { x: SCREEN_WIDTH, y: 0 };
-          }
-        };
-        const entryPos = slideIn(slideInDirection);
-        return {
-          opacity: 1,
+          ...defaultStyle,
+          ...customStyle,
           transform: [
-            {
-              translateX: interpolate(progress.value, [0, 1], [entryPos.x, 0]),
-            },
-            {
-              translateY: interpolate(progress.value, [0, 1], [entryPos.y, 0]),
-            },
-          ],
+            ...defaultStyle.transform,
+            ...customStyle.transform,
+          ] as ViewStyle['transform'],
         };
       }
+
+      return { ...defaultStyle, ...customStyle };
     }
+
+    return defaultStyle;
   });
 
   /**
@@ -542,7 +598,7 @@ export const Modal: FC<ModalProps> = ({
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       () => {
-        if (shouldRenderValue && animationModeValue === AnimationMode.None) {
+        if (shouldRenderValue && !animationModeValue) {
           handleClose();
           return true;
         }
