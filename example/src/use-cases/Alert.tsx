@@ -11,12 +11,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLayoutEffect, useMemo } from 'react';
 import Animated, {
   interpolate,
-  runOnJS,
   useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
 const TIMER_MS = 5 * 1e3;
 
@@ -52,7 +52,7 @@ export default function AlertModal({
     () => progress.value,
     (value) => {
       if (progressVisible.value < 1 || !visible || value < 1) return;
-      runOnJS(setVisible)(false);
+      scheduleOnRN(setVisible, true);
     }
   );
   useLayoutEffect(() => {
