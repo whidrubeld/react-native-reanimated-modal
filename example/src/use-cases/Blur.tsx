@@ -19,7 +19,7 @@ export default function BlurModal({
       backdrop={
         <BlurView
           tint="systemThickMaterialDark"
-          experimentalBlurMethod="dimezisBlurView"
+          blurMethod="dimezisBlurView"
           intensity={30}
           style={StyleSheet.absoluteFillObject}
         />

@@ -177,7 +177,8 @@ export interface ModalSwipeConfig {
  * Allows you to flexibly customize animation, gestures, backdrop and appearance of the modal window.
  */
 export interface ModalProps
-  extends Pick<ModalPropsIOS, 'onOrientationChange' | 'supportedOrientations'>,
+  extends
+    Pick<ModalPropsIOS, 'onOrientationChange' | 'supportedOrientations'>,
     Pick<
       ModalPropsAndroid,
       | 'hardwareAccelerated'
