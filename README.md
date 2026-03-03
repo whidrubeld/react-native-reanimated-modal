@@ -1,7 +1,7 @@
 [![documentation](https://img.shields.io/badge/documentation-blue.svg)](https://whidrubeld.github.io/react-native-reanimated-modal/)
 [![npm bundle size](https://img.shields.io/bundlephobia/min/react-native-reanimated-modal)](https://www.npmjs.com/package/react-native-reanimated-modal)
 
-A lightweight, scalable, flexible, and high-performance modal component.  Based on the vanilla [Modal](https://reactnative.dev/docs/modal) component for maximum compatibility and native feel. Built with [react-native-reanimated](https://github.com/software-mansion/react-native-reanimated/) and [react-native-gesture-handler](https://github.com/software-mansion/react-native-gesture-handler).
+A lightweight, scalable, flexible, and high-performance modal component. Based on the vanilla [Modal](https://reactnative.dev/docs/modal) component for maximum compatibility and native feel. Built with [react-native-reanimated](https://github.com/software-mansion/react-native-reanimated/) and [react-native-gesture-handler](https://github.com/software-mansion/react-native-gesture-handler).
 
 <img src="https://github.com/whidrubeld/react-native-reanimated-modal/blob/main/.github/images/example.gif?raw=true" width="100%" style="max-width: 500px; height: auto;" alt="React Native Reanimated Modal Demo" />
 
@@ -15,7 +15,6 @@ A lightweight, scalable, flexible, and high-performance modal component.  Based 
 - **🔧 Flexible**: Highly customizable with extensive prop options
 - **📚 TypeScript**: Full TypeScript support out of the box
 - **🔄 Multi-Modal**: Easy integration with React Navigation and support for multiple overlays
-
 
 ## 🎮 Example
 
@@ -31,6 +30,7 @@ A lightweight, scalable, flexible, and high-performance modal component.  Based 
 ## 📚 Documentation
 
 **Full API and usage documentation**: [**🗂️ View Documentation →**](https://whidrubeld.github.io/react-native-reanimated-modal/)
+
 ## 📦 Installation
 
 ```sh
@@ -55,10 +55,32 @@ This library depends on the following peer dependencies:
 
 1. **[react-native-reanimated](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/getting-started/)** (>= 3.0.0)
 2. **[react-native-gesture-handler](https://docs.swmansion.com/react-native-gesture-handler/docs/fundamentals/installation)** (>= 2.0.0)
-3. **[react-native-worklets](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/getting-started/#dependencies)** (>= 0.5.0) - **Required for Reanimated 4.0.0+**
+3. **[react-native-worklets](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/getting-started/#dependencies)** (see compatibility table below)
 
 > **Note**: Make sure to follow the installation guides for all libraries, as they require additional platform-specific setup steps.
 
+### ⚠️ Version Compatibility
+
+> **Important:** Starting from `react-native-reanimated-modal@1.2.5`, support for `react-native-worklets` **0.7.2+** (Expo SDK 55+) is added. This update is **not backward compatible** with older versions of `react-native-worklets`.
+
+| `react-native-reanimated-modal` | `react-native-worklets` | Expo SDK |
+| ------------------------------- | ----------------------- | -------- |
+| **1.2.5+**                      | **0.7.2+**              | 55+      |
+| **1.2.4**                       | **0.5.1**               | 54       |
+
+If you are using **Expo SDK 54 or below** or need to use `react-native-worklets@0.5.1`, you must install version **1.2.4** of this package:
+
+```sh
+npm install react-native-reanimated-modal@1.2.4
+```
+
+For **Expo SDK 55+** (or `react-native-worklets@0.7.2+`), use the latest version (**1.2.5** or above):
+
+```sh
+npm install react-native-reanimated-modal
+```
+
+> **Note:** Using mismatched versions may result in runtime errors or broken modal animations.
 
 ## 🚀 Basic Usage
 
@@ -77,12 +99,14 @@ const App = () => {
         <Button title="Show Modal" onPress={() => setVisible(true)} />
 
         <Modal visible={visible} onHide={() => setVisible(false)}>
-          <View style={{
-            backgroundColor: 'white',
-            padding: 20,
-            borderRadius: 10,
-            margin: 20,
-          }}>
+          <View
+            style={{
+              backgroundColor: 'white',
+              padding: 20,
+              borderRadius: 10,
+              margin: 20,
+            }}
+          >
             <Text>Hello from Modal!</Text>
             <Button title="Close" onPress={() => setVisible(false)} />
           </View>
@@ -122,7 +146,7 @@ const slideConfig: ModalAnimationConfig<'slide'> = {
   type: 'slide',
   duration: 500,
   direction: {
-    start: 'down',        // Slides in from bottom
+    start: 'down', // Slides in from bottom
     end: ['down', 'right'], // Can dismiss by swiping down or right
   },
 };
@@ -222,49 +246,49 @@ const noSwipe: ModalSwipeConfig = {
 
 You can pass custom testID props to key elements for easier testing:
 
-| Prop              | Type     | Default             | Description                                 |
-|-------------------|----------|---------------------|---------------------------------------------|
-| `backdropTestID`  | `string`   | `'modal-backdrop'`    | testID for the backdrop Pressable            |
-| `contentTestID`   | `string`   | `'modal-content'`     | testID for the modal content (Animated.View) |
-| `containerTestID` | `string`   | `'modal-container'`   | testID for the root container View           |
+| Prop              | Type     | Default             | Description                                  |
+| ----------------- | -------- | ------------------- | -------------------------------------------- |
+| `backdropTestID`  | `string` | `'modal-backdrop'`  | testID for the backdrop Pressable            |
+| `contentTestID`   | `string` | `'modal-content'`   | testID for the modal content (Animated.View) |
+| `containerTestID` | `string` | `'modal-container'` | testID for the root container View           |
 
 These props are optional and help you write robust e2e/unit tests.
 
 ### Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `visible` | `boolean` | `false` | Controls the visibility of the modal |
-| `closable` | `boolean` | `true` | Whether the modal can be closed by user actions |
-| `children` | `ReactNode` | - | Content to render inside the modal |
-| `style` | `StyleProp<ViewStyle>` | - | Style for the modal container |
-| `contentContainerStyle` | `StyleProp<ViewStyle>` | - | Style for the content wrapper |
+| Prop                    | Type                   | Default | Description                                     |
+| ----------------------- | ---------------------- | ------- | ----------------------------------------------- |
+| `visible`               | `boolean`              | `false` | Controls the visibility of the modal            |
+| `closable`              | `boolean`              | `true`  | Whether the modal can be closed by user actions |
+| `children`              | `ReactNode`            | -       | Content to render inside the modal              |
+| `style`                 | `StyleProp<ViewStyle>` | -       | Style for the modal container                   |
+| `contentContainerStyle` | `StyleProp<ViewStyle>` | -       | Style for the content wrapper                   |
 
 #### Configuration Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `animation` | `ModalAnimationConfigUnion \| ModalAnimation` | `{ type: 'fade', duration: 300 }` | Animation configuration object or simple animation type string |
-| `swipe` | `ModalSwipeConfig \| false` | `{ enabled: true, directions: ['down'], threshold: 100 }` | Swipe gesture configuration |
+| Prop        | Type                                          | Default                                                   | Description                                                    |
+| ----------- | --------------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------- |
+| `animation` | `ModalAnimationConfigUnion \| ModalAnimation` | `{ type: 'fade', duration: 300 }`                         | Animation configuration object or simple animation type string |
+| `swipe`     | `ModalSwipeConfig \| false`                   | `{ enabled: true, directions: ['down'], threshold: 100 }` | Swipe gesture configuration                                    |
 
 #### Backdrop Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `backdrop` | `ModalBackdropConfig \| ReactNode \| false` | `{ enabled: true, color: 'black', opacity: 0.7 }` | Backdrop configuration: false (no backdrop), ReactNode for custom backdrop, or config object |
-| `onBackdropPress` | `(() => void) \| false` | - | Callback when backdrop is pressed. Set to `false` to prevent backdrop from closing the modal |
+| Prop              | Type                                        | Default                                           | Description                                                                                  |
+| ----------------- | ------------------------------------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `backdrop`        | `ModalBackdropConfig \| ReactNode \| false` | `{ enabled: true, color: 'black', opacity: 0.7 }` | Backdrop configuration: false (no backdrop), ReactNode for custom backdrop, or config object |
+| `onBackdropPress` | `(() => void) \| false`                     | -                                                 | Callback when backdrop is pressed. Set to `false` to prevent backdrop from closing the modal |
 
 #### Other Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
+| Prop          | Type      | Default | Description                                              |
+| ------------- | --------- | ------- | -------------------------------------------------------- |
 | `coverScreen` | `boolean` | `false` | If true, covers entire screen without using native Modal |
 
 #### Event Props
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `onShow` | `() => void` | Called when modal appears |
+| Prop     | Type         | Description                  |
+| -------- | ------------ | ---------------------------- |
+| `onShow` | `() => void` | Called when modal appears    |
 | `onHide` | `() => void` | Called when modal disappears |
 
 #### React Native Modal Props
@@ -283,11 +307,11 @@ The library exports several useful constants for customization:
 
 ```tsx
 import {
-  DEFAULT_MODAL_ANIMATION_DURATION,    // 300
-  DEFAULT_MODAL_SCALE_FACTOR,          // 0.8
-  DEFAULT_MODAL_BACKDROP_CONFIG,       // { enabled: true, color: 'black', opacity: 0.7 }
-  DEFAULT_MODAL_SWIPE_THRESHOLD,       // 100
-  DEFAULT_MODAL_BOUNCE_SPRING_CONFIG,  // { dampingRatio: 0.5, duration: 700 }
+  DEFAULT_MODAL_ANIMATION_DURATION, // 300
+  DEFAULT_MODAL_SCALE_FACTOR, // 0.8
+  DEFAULT_MODAL_BACKDROP_CONFIG, // { enabled: true, color: 'black', opacity: 0.7 }
+  DEFAULT_MODAL_SWIPE_THRESHOLD, // 100
+  DEFAULT_MODAL_BOUNCE_SPRING_CONFIG, // { dampingRatio: 0.5, duration: 700 }
   DEFAULT_MODAL_BOUNCE_OPACITY_THRESHOLD, // 0.05
   DEFAULT_MODAL_SWIPE_DIRECTION, // 'down'
 } from 'react-native-reanimated-modal';
@@ -296,7 +320,7 @@ import {
 const customAnimationConfig = {
   type: 'scale',
   duration: DEFAULT_MODAL_ANIMATION_DURATION * 2, // 600ms
-  scaleFactor: DEFAULT_MODAL_SCALE_FACTOR,         // 0.8
+  scaleFactor: DEFAULT_MODAL_SCALE_FACTOR, // 0.8
 };
 
 const customBackdropConfig = {
@@ -314,28 +338,32 @@ type ModalAnimation = 'fade' | 'slide' | 'scale' | 'custom';
 
 // Animation states for custom worklet functions
 type ModalAnimationState =
-  | 'opening'   // Modal is opening (progress: 0 -> 1)
-  | 'closing'   // Modal is closing (progress: 1 -> 0)
-  | 'sliding'   // User is swiping (offsetX, offsetY active)
-  | 'bouncing'  // Bounce back after failed swipe
+  | 'opening' // Modal is opening (progress: 0 -> 1)
+  | 'closing' // Modal is closing (progress: 1 -> 0)
+  | 'sliding' // User is swiping (offsetX, offsetY active)
+  | 'bouncing'; // Bounce back after failed swipe
 
 // Custom worklet function type
 type ModalAnimatedStyleFunction = (props: {
   animationState: ModalAnimationState | null;
   swipeDirection?: SwipeDirection | null; // Active during 'sliding' state
-  progress: number;        // 0-1 during 'opening'/'closing' states
-  offsetX: number;         // Pixel offset during 'sliding' state
-  offsetY: number;         // Pixel offset during 'sliding' state
-  screenWidth: number;     // Device screen width
-  screenHeight: number;    // Device screen height
+  progress: number; // 0-1 during 'opening'/'closing' states
+  offsetX: number; // Pixel offset during 'sliding' state
+  offsetY: number; // Pixel offset during 'sliding' state
+  screenWidth: number; // Device screen width
+  screenHeight: number; // Device screen height
 }) => ViewStyle;
 
 // Configuration Types
-type ModalAnimationConfig<T extends ModalAnimation> =
-  T extends 'fade' ? FadeAnimationConfig :
-  T extends 'slide' ? SlideAnimationConfig :
-  T extends 'scale' ? ScaleAnimationConfig :
-  T extends 'custom' ? CustomAnimationConfig : never;
+type ModalAnimationConfig<T extends ModalAnimation> = T extends 'fade'
+  ? FadeAnimationConfig
+  : T extends 'slide'
+    ? SlideAnimationConfig
+    : T extends 'scale'
+      ? ScaleAnimationConfig
+      : T extends 'custom'
+        ? CustomAnimationConfig
+        : never;
 
 interface BaseAnimationConfig {
   duration?: number;
@@ -350,10 +378,12 @@ interface FadeAnimationConfig extends BaseAnimationConfig {
 
 interface SlideAnimationConfig extends BaseAnimationConfig {
   type: 'slide';
-  direction?: SwipeDirection | {
-    start: SwipeDirection;
-    end: SwipeDirection | SwipeDirection[];
-  };
+  direction?:
+    | SwipeDirection
+    | {
+        start: SwipeDirection;
+        end: SwipeDirection | SwipeDirection[];
+      };
 }
 
 interface ScaleAnimationConfig extends BaseAnimationConfig {
@@ -480,8 +510,8 @@ const MultiModalExample = () => {
     type: 'slide',
     duration: 500,
     direction: {
-      start: 'down',           // Slides in from bottom
-      end: ['down', 'right'],  // Can dismiss by swiping down or right
+      start: 'down', // Slides in from bottom
+      end: ['down', 'right'], // Can dismiss by swiping down or right
     },
   }}
   swipe={{
