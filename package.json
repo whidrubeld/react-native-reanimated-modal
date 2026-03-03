@@ -72,7 +72,6 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "@babel/plugin-transform-flow-strip-types": "^7.27.1",
     "@commitlint/config-conventional": "^19.6.0",
     "@eslint/compat": "^1.2.7",
     "@eslint/eslintrc": "^3.3.0",
