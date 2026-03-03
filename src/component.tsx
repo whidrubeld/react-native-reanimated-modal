@@ -23,7 +23,6 @@ import {
 import Animated, {
   Easing,
   interpolate,
-  runOnJS,
   useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
@@ -50,6 +49,7 @@ import {
   DEFAULT_MODAL_BOUNCE_SPRING_CONFIG,
   DEFAULT_MODAL_BOUNCE_OPACITY_THRESHOLD,
 } from './config';
+import { scheduleOnRN } from 'react-native-worklets';
 
 /**
  * Modal component with smooth, customizable animations and gesture support.
@@ -147,7 +147,7 @@ export const Modal: FC<ModalProps> = ({
   useAnimatedReaction(
     () => shouldRender.value,
     (current) => {
-      runOnJS(setShouldRenderValue)(current);
+      scheduleOnRN(setShouldRenderValue, current);
     },
     []
   );
@@ -155,7 +155,7 @@ export const Modal: FC<ModalProps> = ({
   useAnimatedReaction(
     () => animationMode.value,
     (current) => {
-      runOnJS(setAnimationModeValue)(current);
+      scheduleOnRN(setAnimationModeValue, current);
     },
     []
   );
@@ -213,7 +213,7 @@ export const Modal: FC<ModalProps> = ({
       { duration: animationDuration, easing: Easing.out(Easing.ease) },
       () => {
         animationMode.value = null;
-        if (onShow) runOnJS(onShow)();
+        if (onShow) scheduleOnRN(onShow);
       }
     );
   }, [animationDuration, progress, onShow, shouldRender, animationMode]);
@@ -222,7 +222,7 @@ export const Modal: FC<ModalProps> = ({
     'worklet';
     shouldRender.value = false;
     resetAnimationState();
-    if (onHide) runOnJS(onHide)();
+    if (onHide) scheduleOnRN(onHide);
   }, [onHide, resetAnimationState, shouldRender]);
 
   /**
