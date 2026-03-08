@@ -1,0 +1,103 @@
+name: NPM Publish
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to publish (e.g., v1.2.3)"
+        required: true
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.tag }}
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Verify version matches tag
+        run: |
+          TAG_VERSION=${{ github.event.release.tag_name || inputs.tag }}
+          PACKAGE_VERSION=$(jq -r '.version' package.json)
+
+          # Remove 'v' prefix from tag if exists
+          TAG_VERSION=${TAG_VERSION#v}
+
+          if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
+            echo "❌ Version mismatch: package.json has $PACKAGE_VERSION but tag is $TAG_VERSION"
+            exit 1
+          fi
+
+          echo "✅ Version match confirmed: $PACKAGE_VERSION"
+
+      - name: Run tests
+        run: |
+          yarn lint
+          yarn typecheck
+          yarn test
+
+      - name: Build package
+        run: yarn prepare
+
+      - name: Check build output
+        run: |
+          if [ ! -d "lib" ]; then
+            echo "❌ Build failed: lib directory not found"
+            exit 1
+          fi
+
+          echo "✅ Build successful"
+          ls -la lib/
+
+      - name: Setup NPM
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
+      - name: Publish to NPM
+        run: |
+          TAG_VERSION=${{ github.event.release.tag_name || inputs.tag }}
+
+          # Check if pre-release
+          if echo "$TAG_VERSION" | grep -E "(alpha|beta|rc)" > /dev/null; then
+            echo "🚀 Publishing pre-release version..."
+            npm publish --tag next
+          else
+            echo "🚀 Publishing stable version..."
+            npm publish
+          fi
+
+      - name: Update GitHub release
+        if: github.event_name == 'release'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const tag = '${{ github.event.release.tag_name }}';
+            const version = tag.replace('v', '');
+
+            // Add npm installation info to release
+            const body = context.payload.release.body + `\n\n## 📦 NPM Installation\n\n\`\`\`bash\nnpm install react-native-reanimated-modal@${version}\n# or\nyarn add react-native-reanimated-modal@${version}\n\`\`\`\n\n🎉 Published to NPM successfully!`;
+
+            await github.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: context.payload.release.id,
+              body: body
+            });
+
+      - name: Notify on success
+        if: success()
+        run: |
+          echo "🎉 Package published successfully!"
+          echo "📦 NPM: https://www.npmjs.com/package/react-native-reanimated-modal"
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ Publication failed!"
+          echo "Check the logs above for details."

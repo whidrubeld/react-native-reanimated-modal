@@ -1,0 +1,72 @@
+name: Changelog Updater
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  update-changelog:
+    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Update CHANGELOG.md
+        run: |
+          # Create or update CHANGELOG.md
+          if [ ! -f CHANGELOG.md ]; then
+            echo "# Changelog" > CHANGELOG.md
+            echo "" >> CHANGELOG.md
+            echo "All notable changes to this project will be documented in this file." >> CHANGELOG.md
+            echo "" >> CHANGELOG.md
+          fi
+
+          # Get information about the latest PR
+          PR_TITLE="${{ github.event.pull_request.title || 'Manual update' }}"
+          PR_NUMBER="${{ github.event.pull_request.number || 'N/A' }}"
+          PR_AUTHOR="${{ github.event.pull_request.user.login || github.actor }}"
+          TODAY=$(date +"%Y-%m-%d")
+
+          # Determine change type by labels or title
+          TYPE="Changed"
+          if echo "$PR_TITLE" | grep -i "^feat\|^add\|feature" > /dev/null; then
+            TYPE="Added"
+          elif echo "$PR_TITLE" | grep -i "^fix\|^bug" > /dev/null; then
+            TYPE="Fixed"
+          elif echo "$PR_TITLE" | grep -i "^break\|BREAKING" > /dev/null; then
+            TYPE="Changed (Breaking)"
+          elif echo "$PR_TITLE" | grep -i "^docs\|documentation" > /dev/null; then
+            TYPE="Documentation"
+          fi
+
+          # Create temporary file with new entry
+          {
+            head -n 4 CHANGELOG.md
+            echo "## [Unreleased] - $TODAY"
+            echo ""
+            echo "### $TYPE"
+            echo "- $PR_TITLE (#$PR_NUMBER by @$PR_AUTHOR)"
+            echo ""
+            tail -n +5 CHANGELOG.md
+          } > CHANGELOG.tmp
+
+          mv CHANGELOG.tmp CHANGELOG.md
+
+      - name: Commit changes
+        run: |
+          git add CHANGELOG.md
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "docs: update CHANGELOG.md [skip ci]"
+            git push
