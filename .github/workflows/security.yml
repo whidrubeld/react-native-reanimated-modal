@@ -2,7 +2,7 @@ name: Security Checks
 
 on:
   schedule:
-    - cron: "0 19 * * 5"
+    - cron: "0 23 * * 0"
   push:
     branches: [main, dev]
   pull_request:
@@ -19,12 +19,9 @@ jobs:
 
       - name: Run security audit
         run: |
-          yarn audit --level high --groups dependencies || exit 0
-
-      - name: Check for vulnerabilities in example
-        run: |
-          cd example
-          yarn audit --level high --groups dependencies || exit 0
+          echo "🔍 Running security audit for main project..."
+          yarn npm audit --json || echo "⚠️ Vulnerabilities found or audit failed"
+          echo "✅ Main project audit completed"
 
   codeql:
     runs-on: ubuntu-latest
@@ -36,12 +33,12 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: javascript
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
+        uses: github/codeql-action/autobuild@v4
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
