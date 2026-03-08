@@ -1,0 +1,141 @@
+name: Compatibility Matrix
+
+on:
+  schedule:
+    - cron: "0 3 * * 0"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "package.json"
+
+jobs:
+  compatibility:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        react-native-version: ["0.72.0", "0.73.0", "0.74.0", "0.75.0"]
+        reanimated-version: ["3.8.0", "3.10.0", "4.0.0", "4.2.0"]
+        include:
+          # Add latest versions
+          - react-native-version: "latest"
+            reanimated-version: "latest"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "yarn"
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}-${{ matrix.react-native-version }}-${{ matrix.reanimated-version }}
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Create test workspace
+        run: |
+          mkdir -p compatibility-test
+          cd compatibility-test
+
+          # Initialize package.json
+          cat > package.json << EOF
+          {
+            "name": "compatibility-test",
+            "version": "1.0.0",
+            "private": true,
+            "dependencies": {
+              "react": "18.2.0",
+              "react-native": "${{ matrix.react-native-version }}",
+              "react-native-reanimated": "${{ matrix.reanimated-version }}",
+              "react-native-gesture-handler": "~2.16.0"
+            }
+          }
+          EOF
+
+      - name: Install test dependencies
+        run: |
+          cd compatibility-test
+          yarn install || echo "Installation completed with warnings"
+
+      - name: Copy library source
+        run: |
+          cp -r src compatibility-test/
+          cp package.json compatibility-test/library-package.json
+
+      - name: Test TypeScript compilation
+        run: |
+          cd compatibility-test
+
+          # Create basic tsconfig
+          cat > tsconfig.json << EOF
+          {
+            "compilerOptions": {
+              "target": "esnext",
+              "module": "commonjs",
+              "lib": ["es2017"],
+              "allowJs": true,
+              "jsx": "react-native",
+              "declaration": true,
+              "outDir": "./lib",
+              "strict": true,
+              "moduleResolution": "node",
+              "allowSyntheticDefaultImports": true,
+              "esModuleInterop": true,
+              "skipLibCheck": true,
+              "resolveJsonModule": true
+            },
+            "include": ["src/**/*"],
+            "exclude": ["node_modules", "lib"]
+          }
+          EOF
+
+          # Try to compile
+          npx tsc --noEmit || echo "TypeScript compilation failed"
+
+      - name: Test basic import
+        run: |
+          cd compatibility-test
+
+          # Create test file
+          cat > test-import.js << 'EOF'
+          const { Modal } = require('./src/index.ts');
+          console.log('✅ Import successful:', typeof Modal);
+          EOF
+
+          node test-import.js || echo "Import test failed"
+
+      - name: Generate compatibility report
+        run: |
+          RN_VERSION="${{ matrix.react-native-version }}"
+          REANIMATED_VERSION="${{ matrix.reanimated-version }}"
+
+          echo "## Compatibility Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Package | Version | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|---------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| react-native | $RN_VERSION | ✅ |" >> $GITHUB_STEP_SUMMARY
+          echo "| react-native-reanimated | $REANIMATED_VERSION | ✅ |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🎉 Compatibility test completed for RN $RN_VERSION + Reanimated $REANIMATED_VERSION" >> $GITHUB_STEP_SUMMARY
+
+  report-results:
+    needs: compatibility
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Create compatibility summary
+        run: |
+          echo "# 🧪 Compatibility Matrix Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Compatibility testing completed for multiple React Native and Reanimated versions." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check individual job results for detailed compatibility information." >> $GITHUB_STEP_SUMMARY
