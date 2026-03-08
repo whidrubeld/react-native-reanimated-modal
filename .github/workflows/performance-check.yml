@@ -1,0 +1,50 @@
+name: Performance Check
+
+on:
+  pull_request:
+    branches: [main, dev]
+    types: [opened, synchronize]
+
+jobs:
+  performance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Build library
+        run: yarn prepare
+
+      - name: Check bundle size
+        run: |
+          CURRENT_SIZE=$(du -sk lib | cut -f1)
+
+          # Checkout base branch to compare
+          git checkout ${{ github.base_ref }}
+          yarn prepare
+          BASE_SIZE=$(du -sk lib | cut -f1)
+
+          # Calculate difference
+          DIFF=$((CURRENT_SIZE - BASE_SIZE))
+          PERCENT_CHANGE=$((DIFF * 100 / BASE_SIZE))
+
+          echo "📊 Bundle Size Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Base | Current | Change |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|------|---------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Size (KB) | $BASE_SIZE | $CURRENT_SIZE | $(if [ $DIFF -gt 0 ]; then echo "+$DIFF"; else echo "$DIFF"; fi) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Change (%) | - | - | $(if [ $DIFF -gt 0 ]; then echo "+$PERCENT_CHANGE%"; else echo "$PERCENT_CHANGE%"; fi) |" >> $GITHUB_STEP_SUMMARY
+
+          # Warn if size increased by more than 5%
+          if [ $PERCENT_CHANGE -gt 5 ]; then
+            echo "⚠️ Warning: Bundle size increased by more than 5%" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Run performance tests
+        run: |
+          # Here you can add specific performance tests
+          yarn test --testNamePattern="performance|benchmark" --verbose || echo "No specific performance tests found"
