@@ -6,8 +6,8 @@ updates:
     target-branch: 'dev'
     schedule:
       interval: 'weekly'
-      day: 'monday'
-      time: '09:00'
+      day: 'friday'
+      time: '16:00'
       timezone: 'Europe/Moscow'
     open-pull-requests-limit: 10
     assignees:
