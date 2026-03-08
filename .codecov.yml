@@ -1,0 +1,37 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 80%
+        threshold: 5%
+        if_not_found: success
+        if_ci_failed: error
+    patch:
+      default:
+        target: 70%
+        threshold: 10%
+        if_not_found: success
+        if_ci_failed: error
+
+comment:
+  layout: 'header,diff,flags,components,footer'
+  behavior: once
+  require_changes: false
+  after_n_builds: 1
+
+github_checks:
+  annotations: true
+
+ignore:
+  - 'example/**/*'
+  - '**/__tests__/**'
+  - '**/*.test.*'
+  - '**/node_modules/**'
+  - 'lib/**'
+  - 'docs/**'
+
+pulls:
+  remove_paths_from_diff:
+    - 'example/**/*'
+    - '**/__tests__/**'
+    - 'docs/**'
