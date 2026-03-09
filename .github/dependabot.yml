@@ -1,0 +1,83 @@
+version: 2
+updates:
+  # root
+  - package-ecosystem: 'npm'
+    directory: '/'
+    target-branch: 'dev'
+    schedule:
+      interval: 'weekly'
+      day: 'friday'
+      time: '16:00'
+      timezone: 'Europe/Moscow'
+    open-pull-requests-limit: 10
+    assignees:
+      - 'whidrubeld'
+    commit-message:
+      prefix: 'deps'
+      prefix-development: 'deps-dev'
+      include: 'scope'
+    groups:
+      # production deps
+      production-dependencies:
+        patterns:
+          - '*'
+        exclude-patterns:
+          - '@types/*'
+          - '*eslint*'
+          - '*prettier*'
+          - '*jest*'
+          - '*babel*'
+          - 'typescript'
+          - 'lefthook'
+          - 'del-cli'
+          - 'release-it'
+          - 'typedoc'
+          - 'react-native-builder-bob'
+      # dev deps
+      development-dependencies:
+        patterns:
+          - '@types/*'
+          - '*eslint*'
+          - '*prettier*'
+          - '*jest*'
+          - '*babel*'
+          - 'typescript'
+          - 'lefthook'
+          - 'del-cli'
+          - 'release-it'
+          - 'typedoc'
+          - 'react-native-builder-bob'
+
+  # example
+  - package-ecosystem: 'npm'
+    directory: '/example'
+    target-branch: 'dev'
+    schedule:
+      interval: 'weekly'
+      day: 'friday'
+      time: '16:00'
+      timezone: 'Europe/Moscow'
+    open-pull-requests-limit: 5
+    assignees:
+      - 'whidrubeld'
+    commit-message:
+      prefix: 'deps(example)'
+      prefix-development: 'deps-dev(example)'
+      include: 'scope'
+    groups:
+      # react native deps
+      react-native-expo:
+        patterns:
+          - 'expo*'
+          - 'react*'
+          - 'react-native*'
+          - '@expo/*'
+      # other deps
+      other-dependencies:
+        patterns:
+          - '*'
+        exclude-patterns:
+          - 'expo*'
+          - 'react*'
+          - 'react-native*'
+          - '@expo/*'

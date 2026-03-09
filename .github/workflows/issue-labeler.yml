@@ -1,0 +1,73 @@
+name: Issue Labeler
+
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Auto-label issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue || context.payload.pull_request;
+            const body = (issue.body || '').toLowerCase();
+            const title = (issue.title || '').toLowerCase();
+
+            const labels = [];
+
+            // Bug detection
+            if (body.includes('bug') || body.includes('error') || body.includes('crash') || title.includes('bug') || title.includes('fix')) {
+              labels.push('bug');
+            }
+
+            // Feature request detection
+            if (body.includes('feature') || body.includes('enhancement') || title.includes('feature') || title.includes('add')) {
+              labels.push('enhancement');
+            }
+
+            // Documentation
+            if (body.includes('documentation') || body.includes('docs') || title.includes('doc')) {
+              labels.push('documentation');
+            }
+
+            // Platform specific
+            if (body.includes('ios') || title.includes('ios')) {
+              labels.push('ios');
+            }
+            if (body.includes('android') || title.includes('android')) {
+              labels.push('android');
+            }
+
+            // Animation related
+            if (body.includes('animation') || body.includes('gesture') || title.includes('animation')) {
+              labels.push('animation');
+            }
+
+            // Performance
+            if (body.includes('performance') || body.includes('lag') || body.includes('slow')) {
+              labels.push('performance');
+            }
+
+            // Question
+            if (title.includes('?') || title.includes('how') || body.includes('question')) {
+              labels.push('question');
+            }
+
+            if (labels.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: labels
+              });
+            }
