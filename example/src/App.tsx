@@ -3,13 +3,16 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { Content } from './Content';
 import { StatusBar } from 'expo-status-bar';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 const App = () => {
   return (
     <GestureHandlerRootView>
       <SafeAreaProvider>
-        <StatusBar style="dark" />
-        <Content />
+        <KeyboardProvider>
+          <StatusBar style="dark" />
+          <Content />
+        </KeyboardProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );
