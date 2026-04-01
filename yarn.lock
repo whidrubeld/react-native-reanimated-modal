@@ -12169,6 +12169,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-keyboard-controller@npm:1.20.7":
+  version: 1.20.7
+  resolution: "react-native-keyboard-controller@npm:1.20.7"
+  dependencies:
+    react-native-is-edge-to-edge: ^1.2.1
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+    react-native-reanimated: ">=3.0.0"
+  checksum: d691d6cd6ba8d017c35b640c61194e71549385c8a5275f2463a015b2727f77915686358449ea6de2e17741387631e75027df2634563ebdeaf86a630da9fe6d45
+  languageName: node
+  linkType: hard
+
 "react-native-monorepo-config@npm:^0.1.9":
   version: 0.1.10
   resolution: "react-native-monorepo-config@npm:0.1.10"
@@ -12205,6 +12218,7 @@ __metadata:
     react-native: 0.83.2
     react-native-builder-bob: ^0.40.8
     react-native-gesture-handler: ~2.30.0
+    react-native-keyboard-controller: 1.20.7
     react-native-monorepo-config: ^0.1.9
     react-native-reanimated: 4.2.1
     react-native-safe-area-context: ~5.6.2
