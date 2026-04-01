@@ -1,14 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { Modal } from 'react-native-reanimated-modal';
 import { baseStyles } from './styles';
-import Animated, {
-  useAnimatedKeyboard,
-  useAnimatedStyle,
-} from 'react-native-reanimated';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { TextInput } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import Button from '../primitives/Button';
+import { useAnimatedKeyboard } from 'react-native-keyboard-controller';
 
 export default function InputModal({
   visible,
