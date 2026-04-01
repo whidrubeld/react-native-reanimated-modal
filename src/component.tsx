@@ -686,6 +686,7 @@ export const Modal: FC<ModalProps> = ({
       supportedOrientations={supportedOrientations}
       // presentationStyle="overFullScreen"
       transparent
+      animationType="none"
       visible={shouldRenderValue}
       onRequestClose={handleClose}
     >
