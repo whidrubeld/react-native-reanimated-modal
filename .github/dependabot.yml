@@ -1,49 +1,31 @@
 version: 2
 updates:
-  # root
+  # root library only
   - package-ecosystem: 'npm'
     directory: '/'
     target-branch: 'dev'
     schedule:
       interval: 'monthly'
       day: 'friday'
-      time: '16:00'
+      time: '18:00'
       timezone: 'Europe/Moscow'
     open-pull-requests-limit: 10
     assignees:
       - 'whidrubeld'
     commit-message:
-      prefix: 'deps'
-      prefix-development: 'deps-dev'
+      prefix: 'deps-dev'
       include: 'scope'
+    # exclude example app deps (update via: npx expo install --fix)
+    ignore:
+      - dependency-name: 'expo'
+      - dependency-name: 'expo-*'
+      - dependency-name: '@expo/*'
+      - dependency-name: 'react-dom'
+      - dependency-name: 'react-native-web'
+      - dependency-name: 'react-native-safe-area-context'
+      - dependency-name: 'react-native-monorepo-config'
     groups:
-      # production deps
-      production-dependencies:
+      # all dev dependencies in one PR
+      all-dev-dependencies:
         patterns:
           - '*'
-        exclude-patterns:
-          - '@types/*'
-          - '*eslint*'
-          - '*prettier*'
-          - '*jest*'
-          - '*babel*'
-          - 'typescript'
-          - 'lefthook'
-          - 'del-cli'
-          - 'release-it'
-          - 'typedoc'
-          - 'react-native-builder-bob'
-      # dev deps
-      development-dependencies:
-        patterns:
-          - '@types/*'
-          - '*eslint*'
-          - '*prettier*'
-          - '*jest*'
-          - '*babel*'
-          - 'typescript'
-          - 'lefthook'
-          - 'del-cli'
-          - 'release-it'
-          - 'typedoc'
-          - 'react-native-builder-bob'
