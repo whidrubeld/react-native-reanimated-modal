@@ -2,7 +2,7 @@ name: Performance Check
 
 on:
   pull_request:
-    branches: [main, dev]
+    branches: [master, dev]
     types: [opened, synchronize]
 
 jobs:

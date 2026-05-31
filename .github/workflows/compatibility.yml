@@ -5,7 +5,7 @@ on:
     - cron: "0 3 * * 0"
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [master]
     paths:
       - "src/**"
       - "package.json"
