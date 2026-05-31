@@ -21,7 +21,7 @@ export default function BlurModal({
           tint="systemThickMaterialDark"
           blurMethod="dimezisBlurView"
           intensity={30}
-          style={StyleSheet.absoluteFillObject}
+          style={StyleSheet.absoluteFill}
         />
       }
       animation="slide"

@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   title: { textAlign: 'left', fontSize: 16, fontWeight: '700' },
   description: { textAlign: 'left' },
   progressWrapper: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     top: undefined,
   },
   progress: {
