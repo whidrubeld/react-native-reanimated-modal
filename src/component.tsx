@@ -1,9 +1,10 @@
 import {
+  forwardRef,
   useCallback,
   useEffect,
+  useImperativeHandle,
   useMemo,
   useState,
-  type FC,
   type ReactNode,
 } from 'react';
 import {
@@ -32,6 +33,7 @@ import Animated, {
 
 import type {
   ModalProps,
+  ModalRef,
   SwipeDirection,
   ModalAnimationConfig,
   ModalAnimationState,
@@ -58,661 +60,685 @@ import { scheduleOnRN } from 'react-native-worklets';
  * @param {ModalProps} props - Props for the modal component.
  * @returns {JSX.Element}
  */
-export const Modal: FC<ModalProps> = ({
-  visible = false,
-  closable = true,
-  children,
-  style,
-  contentContainerStyle,
-  //
-  animation,
-  //
-  backdrop,
-  onBackdropPress,
-  //
-  swipe,
-  //
-  coverScreen = false,
-  //
-  onShow,
-  onHide,
-  //
-  hardwareAccelerated,
-  navigationBarTranslucent,
-  onOrientationChange,
-  statusBarTranslucent,
-  supportedOrientations,
-  // testIDs
-  backdropTestID = 'modal-backdrop',
-  contentTestID = 'modal-content',
-  containerTestID = 'modal-container',
-}) => {
-  const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
-
-  // Normalize configs with defaults
-  const normalizedAnimationConfig = useMemo(
-    () => normalizeAnimationConfig(animation),
-    [animation]
-  );
-
-  const normalizedSwipeConfig = useMemo(
-    () => normalizeSwipeConfig(swipe),
-    [swipe]
-  );
-
-  const normalizedBackdropConfig = useMemo(
-    () => normalizeBackdropConfig(backdrop),
-    [backdrop]
-  );
-
-  // Extract values from configs
-  const { duration: animationDuration = DEFAULT_MODAL_ANIMATION_DURATION } =
-    normalizedAnimationConfig;
-
-  const {
-    enabled: swipeEnabled = true,
-    threshold: swipeThreshold = DEFAULT_MODAL_SWIPE_THRESHOLD,
-    bounceSpringConfig = DEFAULT_MODAL_BOUNCE_SPRING_CONFIG,
-    bounceOpacityThreshold = normalizedSwipeConfig.bounceOpacityThreshold ||
-      DEFAULT_MODAL_BOUNCE_OPACITY_THRESHOLD,
-  } = normalizedSwipeConfig;
-
-  const {
-    enabled: hasBackdrop,
-    isCustom: isCustomBackdrop,
-    config: backdropConfig,
-    customRenderer: customBackdropRenderer,
-  } = normalizedBackdropConfig;
-
-  /**
-   * Shared values for animation progress and gesture state.
-   */
-  const progress = useSharedValue(0);
-  const offsetX = useSharedValue(0);
-  const offsetY = useSharedValue(0);
-  const activeSwipeDirection = useSharedValue<SwipeDirection | null>(null);
-  const animationMode = useSharedValue<ModalAnimationState | null>(null);
-  const shouldRender = useSharedValue(visible);
-
-  /**
-   * React state buffers for shared values (for React hooks dependencies).
-   */
-  const [shouldRenderValue, setShouldRenderValue] = useState(visible);
-  const [animationModeValue, setAnimationModeValue] =
-    useState<ModalAnimationState | null>(null);
-
-  /**
-   * Animated reactions to sync shared values with React state buffers.
-   */
-  useAnimatedReaction(
-    () => shouldRender.value,
-    (current) => {
-      scheduleOnRN(setShouldRenderValue, current);
+export const Modal = forwardRef<ModalRef, ModalProps>(
+  (
+    {
+      visible = false,
+      closable = true,
+      children,
+      style,
+      contentContainerStyle,
+      //
+      animation,
+      //
+      backdrop,
+      onBackdropPress,
+      //
+      swipe,
+      //
+      coverScreen = false,
+      //
+      onShow,
+      onHide,
+      //
+      hardwareAccelerated,
+      navigationBarTranslucent,
+      onOrientationChange,
+      statusBarTranslucent,
+      supportedOrientations,
+      // testIDs
+      backdropTestID = 'modal-backdrop',
+      contentTestID = 'modal-content',
+      containerTestID = 'modal-container',
     },
-    []
-  );
+    ref
+  ) => {
+    const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } =
+      useWindowDimensions();
 
-  useAnimatedReaction(
-    () => animationMode.value,
-    (current) => {
-      scheduleOnRN(setAnimationModeValue, current);
-    },
-    []
-  );
-
-  /**
-   * Memo: determines if modal needs to open
-   */
-  const isNeedOpen = useMemo(() => {
-    return visible && !shouldRenderValue && !animationModeValue;
-  }, [visible, shouldRenderValue, animationModeValue]);
-
-  /**
-   * Memo: determines if modal needs to close
-   */
-  const isNeedClose = useMemo(() => {
-    return !visible && shouldRenderValue && !animationModeValue;
-  }, [visible, shouldRenderValue, animationModeValue]);
-
-  /**
-   * Allowed swipe directions for dismissing the modal.
-   */
-  const swipeDirections = useMemo(
-    () => getSwipeDirections(normalizedSwipeConfig, normalizedAnimationConfig),
-    [normalizedSwipeConfig, normalizedAnimationConfig]
-  );
-
-  /**
-   * Slide-in direction for the modal.
-   */
-  const slideInDirection = useMemo(
-    () => getSlideInDirection(normalizedAnimationConfig),
-    [normalizedAnimationConfig]
-  );
-
-  /**
-   * Resets all animation and gesture state to initial values.
-   */
-  const resetAnimationState = useCallback(() => {
-    'worklet';
-    progress.value = 0;
-    offsetX.value = 0;
-    offsetY.value = 0;
-    activeSwipeDirection.value = null;
-    animationMode.value = null;
-  }, [progress, offsetX, offsetY, activeSwipeDirection, animationMode]);
-
-  /**
-   * Handles modal opening
-   */
-  const handleOpen = useCallback(() => {
-    shouldRender.value = true;
-    animationMode.value = 'opening';
-    progress.value = withTiming(
-      1,
-      { duration: animationDuration, easing: Easing.out(Easing.ease) },
-      () => {
-        animationMode.value = null;
-        if (onShow) scheduleOnRN(onShow);
-      }
+    // Normalize configs with defaults
+    const normalizedAnimationConfig = useMemo(
+      () => normalizeAnimationConfig(animation),
+      [animation]
     );
-  }, [animationDuration, progress, onShow, shouldRender, animationMode]);
 
-  const handleCloseCompletion = useCallback(() => {
-    'worklet';
-    shouldRender.value = false;
-    resetAnimationState();
-    if (onHide) scheduleOnRN(onHide);
-  }, [onHide, resetAnimationState, shouldRender]);
-
-  /**
-   * Handles modal closing
-   */
-  const handleClose = useCallback(() => {
-    if (animationModeValue) return;
-
-    animationMode.value = 'closing';
-    progress.value = withTiming(
-      0,
-      { duration: animationDuration, easing: Easing.in(Easing.ease) },
-      handleCloseCompletion
+    const normalizedSwipeConfig = useMemo(
+      () => normalizeSwipeConfig(swipe),
+      [swipe]
     );
-  }, [
-    animationModeValue,
-    animationMode,
-    progress,
-    animationDuration,
-    handleCloseCompletion,
-  ]);
 
-  /**
-   * Checks if a swipe direction is allowed for dismiss.
-   */
-  const isDirectionAllowed = useCallback(
-    (direction: SwipeDirection): boolean => {
+    const normalizedBackdropConfig = useMemo(
+      () => normalizeBackdropConfig(backdrop),
+      [backdrop]
+    );
+
+    // Extract values from configs
+    const { duration: animationDuration = DEFAULT_MODAL_ANIMATION_DURATION } =
+      normalizedAnimationConfig;
+
+    const {
+      enabled: swipeEnabled = true,
+      threshold: swipeThreshold = DEFAULT_MODAL_SWIPE_THRESHOLD,
+      bounceSpringConfig = DEFAULT_MODAL_BOUNCE_SPRING_CONFIG,
+      bounceOpacityThreshold = normalizedSwipeConfig.bounceOpacityThreshold ||
+        DEFAULT_MODAL_BOUNCE_OPACITY_THRESHOLD,
+    } = normalizedSwipeConfig;
+
+    const {
+      enabled: hasBackdrop,
+      isCustom: isCustomBackdrop,
+      config: backdropConfig,
+      customRenderer: customBackdropRenderer,
+    } = normalizedBackdropConfig;
+
+    /**
+     * Shared values for animation progress and gesture state.
+     */
+    const progress = useSharedValue(0);
+    const offsetX = useSharedValue(0);
+    const offsetY = useSharedValue(0);
+    const activeSwipeDirection = useSharedValue<SwipeDirection | null>(null);
+    const animationMode = useSharedValue<ModalAnimationState | null>(null);
+    const shouldRender = useSharedValue(visible);
+
+    /**
+     * React state buffers for shared values (for React hooks dependencies).
+     */
+    const [shouldRenderValue, setShouldRenderValue] = useState(visible);
+    const [animationModeValue, setAnimationModeValue] =
+      useState<ModalAnimationState | null>(null);
+
+    /**
+     * Animated reactions to sync shared values with React state buffers.
+     */
+    useAnimatedReaction(
+      () => shouldRender.value,
+      (current) => {
+        scheduleOnRN(setShouldRenderValue, current);
+      },
+      []
+    );
+
+    useAnimatedReaction(
+      () => animationMode.value,
+      (current) => {
+        scheduleOnRN(setAnimationModeValue, current);
+      },
+      []
+    );
+
+    /**
+     * Memo: determines if modal needs to open
+     */
+    const isNeedOpen = useMemo(() => {
+      return visible && !shouldRenderValue && !animationModeValue;
+    }, [visible, shouldRenderValue, animationModeValue]);
+
+    /**
+     * Memo: determines if modal needs to close
+     */
+    const isNeedClose = useMemo(() => {
+      return !visible && shouldRenderValue && !animationModeValue;
+    }, [visible, shouldRenderValue, animationModeValue]);
+
+    /**
+     * Allowed swipe directions for dismissing the modal.
+     */
+    const swipeDirections = useMemo(
+      () =>
+        getSwipeDirections(normalizedSwipeConfig, normalizedAnimationConfig),
+      [normalizedSwipeConfig, normalizedAnimationConfig]
+    );
+
+    /**
+     * Slide-in direction for the modal.
+     */
+    const slideInDirection = useMemo(
+      () => getSlideInDirection(normalizedAnimationConfig),
+      [normalizedAnimationConfig]
+    );
+
+    /**
+     * Resets all animation and gesture state to initial values.
+     */
+    const resetAnimationState = useCallback(() => {
       'worklet';
-      return swipeDirections.includes(direction);
-    },
-    [swipeDirections]
-  );
-
-  /**
-   * Calculates swipe progress for gesture-based dismiss.
-   */
-  const calculateSwipeProgress = useCallback(
-    (dx: number, dy: number): number => {
-      'worklet';
-      if (!activeSwipeDirection.value) return 0;
-
-      let dist = 0;
-      switch (activeSwipeDirection.value) {
-        case 'left':
-          dist = Math.abs(dx);
-          break;
-        case 'right':
-          dist = dx;
-          break;
-        case 'up':
-          dist = Math.abs(dy);
-          break;
-        case 'down':
-          dist = dy;
-          break;
-      }
-      return Math.min(1, Math.max(0, dist / swipeThreshold));
-    },
-    [activeSwipeDirection, swipeThreshold]
-  );
-
-  /**
-   * Pan gesture handler for swipe-to-dismiss.
-   */
-  const panGesture = Gesture.Pan()
-    .enabled(swipeEnabled && closable && !!onHide)
-    .onBegin(() => {
-      if (animationMode.value) return;
+      progress.value = 0;
+      offsetX.value = 0;
+      offsetY.value = 0;
       activeSwipeDirection.value = null;
-    })
-    .onUpdate((event) => {
-      // Only set direction once per gesture
-      if (activeSwipeDirection.value == null) {
-        const { translationX, translationY } = event;
-        const absX = Math.abs(translationX);
-        const absY = Math.abs(translationY);
+      animationMode.value = null;
+    }, [progress, offsetX, offsetY, activeSwipeDirection, animationMode]);
 
-        // Require minimum movement to detect direction (prevent false detection at 0,0)
-        if (absX < 1 && absY < 1) return; // Not enough movement to determine direction
+    /**
+     * Handles modal opening
+     */
+    const handleOpen = useCallback(() => {
+      shouldRender.value = true;
+      animationMode.value = 'opening';
+      progress.value = withTiming(
+        1,
+        { duration: animationDuration, easing: Easing.out(Easing.ease) },
+        () => {
+          animationMode.value = null;
+          if (onShow) scheduleOnRN(onShow);
+        }
+      );
+    }, [animationDuration, progress, onShow, shouldRender, animationMode]);
 
-        if (absX > absY) {
-          const dir = translationX > 0 ? 'right' : 'left';
-          if (isDirectionAllowed(dir)) {
-            activeSwipeDirection.value = dir;
-            animationMode.value = 'sliding';
-          }
-        } else {
-          const dir = translationY > 0 ? 'down' : 'up';
-          if (isDirectionAllowed(dir)) {
-            activeSwipeDirection.value = dir;
-            animationMode.value = 'sliding';
+    const handleCloseCompletion = useCallback(() => {
+      'worklet';
+      shouldRender.value = false;
+      resetAnimationState();
+      if (onHide) scheduleOnRN(onHide);
+    }, [onHide, resetAnimationState, shouldRender]);
+
+    /**
+     * Handles modal closing
+     */
+    const handleClose = useCallback(() => {
+      if (animationModeValue) return;
+
+      animationMode.value = 'closing';
+      progress.value = withTiming(
+        0,
+        { duration: animationDuration, easing: Easing.in(Easing.ease) },
+        handleCloseCompletion
+      );
+    }, [
+      animationModeValue,
+      animationMode,
+      progress,
+      animationDuration,
+      handleCloseCompletion,
+    ]);
+
+    /**
+     * Checks if a swipe direction is allowed for dismiss.
+     */
+    const isDirectionAllowed = useCallback(
+      (direction: SwipeDirection): boolean => {
+        'worklet';
+        return swipeDirections.includes(direction);
+      },
+      [swipeDirections]
+    );
+
+    /**
+     * Calculates swipe progress for gesture-based dismiss.
+     */
+    const calculateSwipeProgress = useCallback(
+      (dx: number, dy: number): number => {
+        'worklet';
+        if (!activeSwipeDirection.value) return 0;
+
+        let dist = 0;
+        switch (activeSwipeDirection.value) {
+          case 'left':
+            dist = Math.abs(dx);
+            break;
+          case 'right':
+            dist = dx;
+            break;
+          case 'up':
+            dist = Math.abs(dy);
+            break;
+          case 'down':
+            dist = dy;
+            break;
+        }
+        return Math.min(1, Math.max(0, dist / swipeThreshold));
+      },
+      [activeSwipeDirection, swipeThreshold]
+    );
+
+    /**
+     * Pan gesture handler for swipe-to-dismiss.
+     */
+    const panGesture = Gesture.Pan()
+      .enabled(swipeEnabled && closable && !!onHide)
+      .onBegin(() => {
+        if (animationMode.value) return;
+        activeSwipeDirection.value = null;
+      })
+      .onUpdate((event) => {
+        // Only set direction once per gesture
+        if (activeSwipeDirection.value == null) {
+          const { translationX, translationY } = event;
+          const absX = Math.abs(translationX);
+          const absY = Math.abs(translationY);
+
+          // Require minimum movement to detect direction (prevent false detection at 0,0)
+          if (absX < 1 && absY < 1) return; // Not enough movement to determine direction
+
+          if (absX > absY) {
+            const dir = translationX > 0 ? 'right' : 'left';
+            if (isDirectionAllowed(dir)) {
+              activeSwipeDirection.value = dir;
+              animationMode.value = 'sliding';
+            }
+          } else {
+            const dir = translationY > 0 ? 'down' : 'up';
+            if (isDirectionAllowed(dir)) {
+              activeSwipeDirection.value = dir;
+              animationMode.value = 'sliding';
+            }
           }
         }
-      }
-      // Move only along the chosen direction
-      switch (activeSwipeDirection.value) {
-        case 'left':
-          offsetX.value = Math.min(0, event.translationX);
-          offsetY.value = 0;
-          break;
-        case 'right':
-          offsetX.value = Math.max(0, event.translationX);
-          offsetY.value = 0;
-          break;
-        case 'up':
-          offsetY.value = Math.min(0, event.translationY);
-          offsetX.value = 0;
-          break;
-        case 'down':
-          offsetY.value = Math.max(0, event.translationY);
-          offsetX.value = 0;
-          break;
-      }
-    })
-    .onEnd(() => {
-      if (animationMode.value !== 'sliding' || !activeSwipeDirection.value) {
-        animationMode.value = null;
-        return;
-      }
+        // Move only along the chosen direction
+        switch (activeSwipeDirection.value) {
+          case 'left':
+            offsetX.value = Math.min(0, event.translationX);
+            offsetY.value = 0;
+            break;
+          case 'right':
+            offsetX.value = Math.max(0, event.translationX);
+            offsetY.value = 0;
+            break;
+          case 'up':
+            offsetY.value = Math.min(0, event.translationY);
+            offsetX.value = 0;
+            break;
+          case 'down':
+            offsetY.value = Math.max(0, event.translationY);
+            offsetX.value = 0;
+            break;
+        }
+      })
+      .onEnd(() => {
+        if (animationMode.value !== 'sliding' || !activeSwipeDirection.value) {
+          animationMode.value = null;
+          return;
+        }
 
-      const swipeProg = calculateSwipeProgress(offsetX.value, offsetY.value);
-      if (swipeProg >= 1) {
-        // Close via swipe
-        animationMode.value = 'closing';
-        const finalX =
-          activeSwipeDirection.value === 'left'
-            ? -SCREEN_WIDTH
-            : activeSwipeDirection.value === 'right'
-              ? SCREEN_WIDTH
-              : 0;
-        const finalY =
-          activeSwipeDirection.value === 'up'
-            ? -SCREEN_HEIGHT
-            : activeSwipeDirection.value === 'down'
-              ? SCREEN_HEIGHT
-              : 0;
+        const swipeProg = calculateSwipeProgress(offsetX.value, offsetY.value);
+        if (swipeProg >= 1) {
+          // Close via swipe
+          animationMode.value = 'closing';
+          const finalX =
+            activeSwipeDirection.value === 'left'
+              ? -SCREEN_WIDTH
+              : activeSwipeDirection.value === 'right'
+                ? SCREEN_WIDTH
+                : 0;
+          const finalY =
+            activeSwipeDirection.value === 'up'
+              ? -SCREEN_HEIGHT
+              : activeSwipeDirection.value === 'down'
+                ? SCREEN_HEIGHT
+                : 0;
 
-        let counter = 0;
-        const onComplete = () => {
-          counter += 1;
-          if (counter === 2) handleCloseCompletion();
-        };
+          let counter = 0;
+          const onComplete = () => {
+            counter += 1;
+            if (counter === 2) handleCloseCompletion();
+          };
 
-        offsetX.value = withTiming(
-          finalX,
-          {
-            duration: animationDuration,
-            easing: Easing.out(Easing.ease),
-          },
-          onComplete
-        );
-        offsetY.value = withTiming(
-          finalY,
-          {
-            duration: animationDuration,
-            easing: Easing.out(Easing.ease),
-          },
-          onComplete
-        );
-      } else {
-        // Bounce back
-        animationMode.value = 'bouncing';
+          offsetX.value = withTiming(
+            finalX,
+            {
+              duration: animationDuration,
+              easing: Easing.out(Easing.ease),
+            },
+            onComplete
+          );
+          offsetY.value = withTiming(
+            finalY,
+            {
+              duration: animationDuration,
+              easing: Easing.out(Easing.ease),
+            },
+            onComplete
+          );
+        } else {
+          // Bounce back
+          animationMode.value = 'bouncing';
+          switch (activeSwipeDirection.value) {
+            case 'left':
+            case 'right':
+              offsetX.value = withSpring(0, bounceSpringConfig, () => {
+                animationMode.value = null;
+                activeSwipeDirection.value = null;
+              });
+              break;
+            case 'up':
+            case 'down':
+              offsetY.value = withSpring(0, bounceSpringConfig, () => {
+                animationMode.value = null;
+                activeSwipeDirection.value = null;
+              });
+              break;
+          }
+        }
+      });
+
+    /**
+     * Animated style for the backdrop (opacity, fade, bounce correction).
+     */
+    const backdropAnimatedStyle = useAnimatedStyle<ViewStyle>(() => {
+      // Default backdrop animation logic
+      const computedOpacity = !isCustomBackdrop
+        ? backdropConfig.opacity || 1
+        : 1;
+      let swipeFade = 0;
+      if (activeSwipeDirection.value) {
+        let fullSwipeDistance = 1;
+        let offset = 0;
         switch (activeSwipeDirection.value) {
           case 'left':
           case 'right':
-            offsetX.value = withSpring(0, bounceSpringConfig, () => {
-              animationMode.value = null;
-              activeSwipeDirection.value = null;
-            });
+            fullSwipeDistance = SCREEN_WIDTH;
+            offset = Math.abs(offsetX.value);
             break;
           case 'up':
           case 'down':
-            offsetY.value = withSpring(0, bounceSpringConfig, () => {
-              animationMode.value = null;
-              activeSwipeDirection.value = null;
-            });
+            fullSwipeDistance = SCREEN_HEIGHT;
+            offset = Math.abs(offsetY.value);
             break;
         }
+        swipeFade = Math.min(1, Math.max(0, offset / fullSwipeDistance));
       }
+      let baseOpacity = computedOpacity * (1 - swipeFade);
+      if (
+        animationMode.value === 'bouncing' &&
+        computedOpacity - baseOpacity <= bounceOpacityThreshold
+      ) {
+        baseOpacity = computedOpacity;
+      }
+
+      const defaultStyle = {
+        opacity: interpolate(progress.value, [0, 1], [0, baseOpacity]),
+      };
+
+      // Merge with custom backdrop worklet if provided
+      if (normalizedAnimationConfig.backdropAnimatedStyle) {
+        const customStyle = normalizedAnimationConfig.backdropAnimatedStyle({
+          animationState: animationMode.value,
+          swipeDirection: activeSwipeDirection.value,
+          progress: progress.value,
+          offsetX: offsetX.value,
+          offsetY: offsetY.value,
+          screenWidth: SCREEN_WIDTH,
+          screenHeight: SCREEN_HEIGHT,
+        });
+        return { ...defaultStyle, ...customStyle };
+      }
+
+      return defaultStyle;
     });
 
-  /**
-   * Animated style for the backdrop (opacity, fade, bounce correction).
-   */
-  const backdropAnimatedStyle = useAnimatedStyle<ViewStyle>(() => {
-    // Default backdrop animation logic
-    const computedOpacity = !isCustomBackdrop ? backdropConfig.opacity || 1 : 1;
-    let swipeFade = 0;
-    if (activeSwipeDirection.value) {
-      let fullSwipeDistance = 1;
-      let offset = 0;
-      switch (activeSwipeDirection.value) {
-        case 'left':
-        case 'right':
-          fullSwipeDistance = SCREEN_WIDTH;
-          offset = Math.abs(offsetX.value);
-          break;
-        case 'up':
-        case 'down':
-          fullSwipeDistance = SCREEN_HEIGHT;
-          offset = Math.abs(offsetY.value);
-          break;
-      }
-      swipeFade = Math.min(1, Math.max(0, offset / fullSwipeDistance));
-    }
-    let baseOpacity = computedOpacity * (1 - swipeFade);
-    if (
-      animationMode.value === 'bouncing' &&
-      computedOpacity - baseOpacity <= bounceOpacityThreshold
-    ) {
-      baseOpacity = computedOpacity;
-    }
+    /**
+     * Animated style for the modal content (slide/fade/scale/gesture transforms).
+     */
+    const contentAnimatedStyle = useAnimatedStyle<ViewStyle>(() => {
+      let defaultStyle: ViewStyle = {};
 
-    const defaultStyle = {
-      opacity: interpolate(progress.value, [0, 1], [0, baseOpacity]),
+      // Handle swipe gestures (applies to all animation types)
+      if (activeSwipeDirection.value) {
+        const baseOpacity =
+          normalizedAnimationConfig.type === 'fade' ? progress.value : 1;
+        defaultStyle = {
+          opacity: baseOpacity,
+          transform: [
+            { translateX: offsetX.value },
+            { translateY: offsetY.value },
+          ],
+        };
+      } else {
+        // Default preset animations
+        switch (normalizedAnimationConfig.type) {
+          case 'fade': {
+            defaultStyle = {
+              opacity: progress.value,
+              transform: [{ translateX: 0 }, { translateY: 0 }],
+            };
+            break;
+          }
+          case 'scale': {
+            const scaleConfig =
+              normalizedAnimationConfig as ModalAnimationConfig<'scale'>;
+            const scaleFactor =
+              scaleConfig.scaleFactor || DEFAULT_MODAL_SCALE_FACTOR;
+            const scale = interpolate(progress.value, [0, 1], [scaleFactor, 1]);
+            defaultStyle = {
+              opacity: progress.value,
+              transform: [{ translateX: 0 }, { translateY: 0 }, { scale }],
+            };
+            break;
+          }
+          case 'slide': {
+            const slideIn = (direction: SwipeDirection) => {
+              switch (direction) {
+                case 'up':
+                  return { x: 0, y: -SCREEN_HEIGHT };
+                case 'down':
+                  return { x: 0, y: SCREEN_HEIGHT };
+                case 'left':
+                  return { x: -SCREEN_WIDTH, y: 0 };
+                case 'right':
+                  return { x: SCREEN_WIDTH, y: 0 };
+              }
+            };
+            const entryPos = slideIn(slideInDirection);
+            defaultStyle = {
+              opacity: 1,
+              transform: [
+                {
+                  translateX: interpolate(
+                    progress.value,
+                    [0, 1],
+                    [entryPos.x, 0]
+                  ),
+                },
+                {
+                  translateY: interpolate(
+                    progress.value,
+                    [0, 1],
+                    [entryPos.y, 0]
+                  ),
+                },
+              ],
+            };
+            break;
+          }
+          case 'custom':
+          default: {
+            // For custom type without worklet, return minimal style
+            defaultStyle = {
+              opacity: progress.value,
+              transform: [{ translateX: 0 }, { translateY: 0 }],
+            };
+            break;
+          }
+        }
+      }
+
+      // Merge with custom content worklet if provided
+      if (normalizedAnimationConfig.contentAnimatedStyle) {
+        const customStyle = normalizedAnimationConfig.contentAnimatedStyle({
+          animationState: animationMode.value,
+          swipeDirection: activeSwipeDirection.value,
+          progress: progress.value,
+          offsetX: offsetX.value,
+          offsetY: offsetY.value,
+          screenWidth: SCREEN_WIDTH,
+          screenHeight: SCREEN_HEIGHT,
+        });
+
+        // Merge transform arrays if both exist
+        if (!!defaultStyle.transform && !!customStyle.transform) {
+          return {
+            ...defaultStyle,
+            ...customStyle,
+            transform: [
+              ...defaultStyle.transform,
+              ...customStyle.transform,
+            ] as ViewStyle['transform'],
+          };
+        }
+
+        return { ...defaultStyle, ...customStyle };
+      }
+
+      return defaultStyle;
+    });
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        open: () => {
+          if (!shouldRenderValue && !animationModeValue) handleOpen();
+        },
+        close: () => {
+          if (shouldRenderValue && !animationModeValue) handleClose();
+        },
+      }),
+      [shouldRenderValue, animationModeValue, handleOpen, handleClose]
+    );
+
+    /**
+     * Effect: handles visible=true on initial mount (progress=0 but shouldRenderValue already true)
+     */
+    useEffect(() => {
+      if (!visible) return;
+      handleOpen();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    /**
+     * Effect: handles modal opening
+     */
+    useEffect(() => {
+      if (!isNeedOpen) return;
+      handleOpen();
+    }, [isNeedOpen, handleOpen]);
+
+    /**
+     * Effect: handles modal closing
+     */
+    useEffect(() => {
+      if (!isNeedClose) return;
+      handleClose();
+    }, [isNeedClose, handleClose]);
+
+    /**
+     * Effect: handles hardware back button for Android.
+     */
+    useEffect(() => {
+      if (!closable || !shouldRenderValue || !onHide) return;
+
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        () => {
+          if (shouldRenderValue && !animationModeValue) {
+            handleClose();
+            return true;
+          }
+          return false;
+        }
+      );
+
+      return () => backHandler.remove();
+    }, [shouldRenderValue, handleClose, closable, animationModeValue, onHide]);
+
+    /**
+     * Renders the modal content, optionally wrapped with gesture detector.
+     * @returns {ReactNode}
+     */
+    const renderContent = (): ReactNode => {
+      const content = (
+        <Animated.View
+          testID={contentTestID}
+          style={[contentContainerStyle, contentAnimatedStyle]}
+        >
+          {children}
+        </Animated.View>
+      );
+      if (swipeEnabled && swipeDirections.length > 0) {
+        return (
+          <GestureDetector gesture={panGesture}>{content}</GestureDetector>
+        );
+      }
+      return content;
     };
 
-    // Merge with custom backdrop worklet if provided
-    if (normalizedAnimationConfig.backdropAnimatedStyle) {
-      const customStyle = normalizedAnimationConfig.backdropAnimatedStyle({
-        animationState: animationMode.value,
-        swipeDirection: activeSwipeDirection.value,
-        progress: progress.value,
-        offsetX: offsetX.value,
-        offsetY: offsetY.value,
-        screenWidth: SCREEN_WIDTH,
-        screenHeight: SCREEN_HEIGHT,
-      });
-      return { ...defaultStyle, ...customStyle };
-    }
-
-    return defaultStyle;
-  });
-
-  /**
-   * Animated style for the modal content (slide/fade/scale/gesture transforms).
-   */
-  const contentAnimatedStyle = useAnimatedStyle<ViewStyle>(() => {
-    let defaultStyle: ViewStyle = {};
-
-    // Handle swipe gestures (applies to all animation types)
-    if (activeSwipeDirection.value) {
-      const baseOpacity =
-        normalizedAnimationConfig.type === 'fade' ? progress.value : 1;
-      defaultStyle = {
-        opacity: baseOpacity,
-        transform: [
-          { translateX: offsetX.value },
-          { translateY: offsetY.value },
-        ],
-      };
-    } else {
-      // Default preset animations
-      switch (normalizedAnimationConfig.type) {
-        case 'fade': {
-          defaultStyle = {
-            opacity: progress.value,
-            transform: [{ translateX: 0 }, { translateY: 0 }],
-          };
-          break;
-        }
-        case 'scale': {
-          const scaleConfig =
-            normalizedAnimationConfig as ModalAnimationConfig<'scale'>;
-          const scaleFactor =
-            scaleConfig.scaleFactor || DEFAULT_MODAL_SCALE_FACTOR;
-          const scale = interpolate(progress.value, [0, 1], [scaleFactor, 1]);
-          defaultStyle = {
-            opacity: progress.value,
-            transform: [{ translateX: 0 }, { translateY: 0 }, { scale }],
-          };
-          break;
-        }
-        case 'slide': {
-          const slideIn = (direction: SwipeDirection) => {
-            switch (direction) {
-              case 'up':
-                return { x: 0, y: -SCREEN_HEIGHT };
-              case 'down':
-                return { x: 0, y: SCREEN_HEIGHT };
-              case 'left':
-                return { x: -SCREEN_WIDTH, y: 0 };
-              case 'right':
-                return { x: SCREEN_WIDTH, y: 0 };
-            }
-          };
-          const entryPos = slideIn(slideInDirection);
-          defaultStyle = {
-            opacity: 1,
-            transform: [
-              {
-                translateX: interpolate(
-                  progress.value,
-                  [0, 1],
-                  [entryPos.x, 0]
-                ),
-              },
-              {
-                translateY: interpolate(
-                  progress.value,
-                  [0, 1],
-                  [entryPos.y, 0]
-                ),
-              },
-            ],
-          };
-          break;
-        }
-        case 'custom':
-        default: {
-          // For custom type without worklet, return minimal style
-          defaultStyle = {
-            opacity: progress.value,
-            transform: [{ translateX: 0 }, { translateY: 0 }],
-          };
-          break;
-        }
-      }
-    }
-
-    // Merge with custom content worklet if provided
-    if (normalizedAnimationConfig.contentAnimatedStyle) {
-      const customStyle = normalizedAnimationConfig.contentAnimatedStyle({
-        animationState: animationMode.value,
-        swipeDirection: activeSwipeDirection.value,
-        progress: progress.value,
-        offsetX: offsetX.value,
-        offsetY: offsetY.value,
-        screenWidth: SCREEN_WIDTH,
-        screenHeight: SCREEN_HEIGHT,
-      });
-
-      // Merge transform arrays if both exist
-      if (!!defaultStyle.transform && !!customStyle.transform) {
-        return {
-          ...defaultStyle,
-          ...customStyle,
-          transform: [
-            ...defaultStyle.transform,
-            ...customStyle.transform,
-          ] as ViewStyle['transform'],
-        };
-      }
-
-      return { ...defaultStyle, ...customStyle };
-    }
-
-    return defaultStyle;
-  });
-
-  /**
-   * Effect: handles visible=true on initial mount (progress=0 but shouldRenderValue already true)
-   */
-  useEffect(() => {
-    if (!visible) return;
-    handleOpen();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  /**
-   * Effect: handles modal opening
-   */
-  useEffect(() => {
-    if (!isNeedOpen) return;
-    handleOpen();
-  }, [isNeedOpen, handleOpen]);
-
-  /**
-   * Effect: handles modal closing
-   */
-  useEffect(() => {
-    if (!isNeedClose) return;
-    handleClose();
-  }, [isNeedClose, handleClose]);
-
-  /**
-   * Effect: handles hardware back button for Android.
-   */
-  useEffect(() => {
-    if (!closable || !shouldRenderValue || !onHide) return;
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      () => {
-        if (shouldRenderValue && !animationModeValue) {
-          handleClose();
-          return true;
-        }
-        return false;
-      }
-    );
-
-    return () => backHandler.remove();
-  }, [shouldRenderValue, handleClose, closable, animationModeValue, onHide]);
-
-  /**
-   * Renders the modal content, optionally wrapped with gesture detector.
-   * @returns {ReactNode}
-   */
-  const renderContent = (): ReactNode => {
-    const content = (
-      <Animated.View
-        testID={contentTestID}
-        style={[contentContainerStyle, contentAnimatedStyle]}
-      >
-        {children}
-      </Animated.View>
-    );
-    if (swipeEnabled && swipeDirections.length > 0) {
-      return <GestureDetector gesture={panGesture}>{content}</GestureDetector>;
-    }
-    return content;
-  };
-
-  /**
-   * Renders the backdrop component if enabled or custom.
-   * @returns {ReactNode|null}
-   */
-  const renderBackdropInternal = (): ReactNode | null => {
-    if (!hasBackdrop) return null;
-    return (
-      <Pressable
-        testID={backdropTestID}
-        style={styles.absolute}
-        onPress={
-          closable && onBackdropPress !== false
-            ? () => {
-                if (onBackdropPress) onBackdropPress();
-                else handleClose();
-              }
-            : undefined
-        }
-      >
-        <Animated.View
-          style={[
-            styles.absolute,
-            !isCustomBackdrop && {
-              backgroundColor: backdropConfig.color,
-            },
-            backdropAnimatedStyle,
-          ]}
+    /**
+     * Renders the backdrop component if enabled or custom.
+     * @returns {ReactNode|null}
+     */
+    const renderBackdropInternal = (): ReactNode | null => {
+      if (!hasBackdrop) return null;
+      return (
+        <Pressable
+          testID={backdropTestID}
+          style={styles.absolute}
+          onPress={
+            closable && onBackdropPress !== false
+              ? () => {
+                  if (onBackdropPress) onBackdropPress();
+                  else handleClose();
+                }
+              : undefined
+          }
         >
-          {isCustomBackdrop && !!customBackdropRenderer
-            ? customBackdropRenderer
-            : null}
-        </Animated.View>
-      </Pressable>
-    );
-  };
+          <Animated.View
+            style={[
+              styles.absolute,
+              !isCustomBackdrop && {
+                backgroundColor: backdropConfig.color,
+              },
+              backdropAnimatedStyle,
+            ]}
+          >
+            {isCustomBackdrop && !!customBackdropRenderer
+              ? customBackdropRenderer
+              : null}
+          </Animated.View>
+        </Pressable>
+      );
+    };
 
-  if (coverScreen && shouldRenderValue) {
-    return (
-      <View
-        testID={containerTestID}
-        style={[styles.absolute, styles.root, style]}
-        pointerEvents="box-none"
-      >
-        {renderBackdropInternal()}
-        {renderContent()}
-      </View>
-    );
-  }
-
-  return (
-    <RNModal
-      hardwareAccelerated={hardwareAccelerated}
-      navigationBarTranslucent={navigationBarTranslucent}
-      statusBarTranslucent={statusBarTranslucent}
-      onOrientationChange={onOrientationChange}
-      supportedOrientations={supportedOrientations}
-      // presentationStyle="overFullScreen"
-      transparent
-      animationType="none"
-      visible={shouldRenderValue}
-      onRequestClose={handleClose}
-    >
-      {Platform.OS === 'android' ? (
-        <GestureHandlerRootView
+    if (coverScreen && shouldRenderValue) {
+      return (
+        <View
           testID={containerTestID}
-          style={[styles.root, style]}
+          style={[styles.absolute, styles.root, style]}
+          pointerEvents="box-none"
         >
-          {renderBackdropInternal()}
-          {renderContent()}
-        </GestureHandlerRootView>
-      ) : (
-        <View testID={containerTestID} style={[styles.root, style]}>
           {renderBackdropInternal()}
           {renderContent()}
         </View>
-      )}
-    </RNModal>
-  );
-};
+      );
+    }
+
+    return (
+      <RNModal
+        hardwareAccelerated={hardwareAccelerated}
+        navigationBarTranslucent={navigationBarTranslucent}
+        statusBarTranslucent={statusBarTranslucent}
+        onOrientationChange={onOrientationChange}
+        supportedOrientations={supportedOrientations}
+        // presentationStyle="overFullScreen"
+        transparent
+        animationType="none"
+        visible={shouldRenderValue}
+        onRequestClose={handleClose}
+      >
+        {Platform.OS === 'android' ? (
+          <GestureHandlerRootView
+            testID={containerTestID}
+            style={[styles.root, style]}
+          >
+            {renderBackdropInternal()}
+            {renderContent()}
+          </GestureHandlerRootView>
+        ) : (
+          <View testID={containerTestID} style={[styles.root, style]}>
+            {renderBackdropInternal()}
+            {renderContent()}
+          </View>
+        )}
+      </RNModal>
+    );
+  }
+);

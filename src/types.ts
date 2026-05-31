@@ -171,6 +171,20 @@ export interface ModalSwipeConfig {
 }
 
 /**
+ * Imperative handle exposed via ref on the Modal component.
+ */
+export interface ModalRef {
+  /**
+   * Opens the modal with animation. No-op if already open or animating.
+   */
+  open: () => void;
+  /**
+   * Closes the modal with animation. No-op if already closed or animating.
+   */
+  close: () => void;
+}
+
+/**
  * Props for the Modal component.
  *
  * @remarks

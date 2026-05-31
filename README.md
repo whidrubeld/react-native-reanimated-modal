@@ -15,6 +15,7 @@ A lightweight, scalable, flexible, and high-performance modal component. Based o
 - **🔧 Flexible**: Highly customizable with extensive prop options
 - **📚 TypeScript**: Full TypeScript support out of the box
 - **🔄 Multi-Modal**: Easy integration with React Navigation and support for multiple overlays
+- **🎯 Imperative API**: Optional `ref` support with `open()` / `close()` methods for programmatic control
 
 ## 🎮 Example
 
@@ -242,6 +243,32 @@ const noSwipe: ModalSwipeConfig = {
 </Modal>
 ```
 
+### Ref API
+
+The modal accepts a `ref` (via `forwardRef`) that exposes imperative `open` and `close` methods. This is useful when you mount the component with `visible={true}` from the start and need to trigger the close animation programmatically.
+
+```tsx
+import { useRef } from 'react';
+import { Modal, type ModalRef } from 'react-native-reanimated-modal';
+
+function MyModal({ onDismiss }: { onDismiss: () => void }) {
+  const modalRef = useRef<ModalRef>(null);
+
+  return (
+    <Modal ref={modalRef} visible onHide={onDismiss}>
+      <Button title="Close" onPress={() => modalRef.current?.close()} />
+    </Modal>
+  );
+}
+```
+
+| Method    | Description                                              |
+| --------- | -------------------------------------------------------- |
+| `open()`  | Opens the modal with animation. No-op if already open.   |
+| `close()` | Closes the modal with animation. No-op if already closed. |
+
+> **Important**: `close()` must be paired with an `onHide` callback that sets `visible` to `false`. Otherwise the component will re-open itself after the close animation completes, since `visible` remains `true`.
+
 ### Test IDs
 
 You can pass custom testID props to key elements for easier testing:
@@ -415,6 +442,11 @@ type ModalAnimationConfigUnion =
   | SlideAnimationConfig
   | ScaleAnimationConfig
   | CustomAnimationConfig;
+
+interface ModalRef {
+  open: () => void;
+  close: () => void;
+}
 ```
 
 ## 🔄 React Navigation support
