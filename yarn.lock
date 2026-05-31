@@ -6856,6 +6856,56 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-dev-client@npm:~56.0.18":
+  version: 56.0.18
+  resolution: "expo-dev-client@npm:56.0.18"
+  dependencies:
+    expo-dev-launcher: ~56.0.18
+    expo-dev-menu: ~56.0.16
+    expo-dev-menu-interface: ~56.0.0
+    expo-manifests: ~56.0.4
+    expo-updates-interface: ~56.0.1
+  peerDependencies:
+    expo: "*"
+  checksum: 3414cf761060d52eff4fbc95fa4760a09e7d369b8b1e670dc6f0407e0c9e1586a2bb2f5bcea732e987e05a6f21bbf4433ed2b8502d340b73d51b311da73d9f54
+  languageName: node
+  linkType: hard
+
+"expo-dev-launcher@npm:~56.0.18":
+  version: 56.0.18
+  resolution: "expo-dev-launcher@npm:56.0.18"
+  dependencies:
+    "@expo/schema-utils": ^56.0.0
+    expo-dev-menu: ~56.0.16
+    expo-manifests: ~56.0.4
+  peerDependencies:
+    expo: "*"
+    react-native: "*"
+  checksum: 8bc81d2be89f71695fc8b2c535fa32850fe2438b0a0b37821bac88fd5f17e0cf2a2b7a1654950ae639c570f8fd82704e195b3b9c2d9aadf422954f0a7c656205
+  languageName: node
+  linkType: hard
+
+"expo-dev-menu-interface@npm:~56.0.0":
+  version: 56.0.1
+  resolution: "expo-dev-menu-interface@npm:56.0.1"
+  peerDependencies:
+    expo: "*"
+  checksum: 4c825b458c65524c7c6d238703ade5fb223a26bc384f65325d4b823af5458daf86773b58808440b080f586d0a7ec24be7e642941fcc3a1a7ff086328a2c99ad9
+  languageName: node
+  linkType: hard
+
+"expo-dev-menu@npm:~56.0.16":
+  version: 56.0.16
+  resolution: "expo-dev-menu@npm:56.0.16"
+  dependencies:
+    expo-dev-menu-interface: ~56.0.0
+  peerDependencies:
+    expo: "*"
+    react-native: "*"
+  checksum: ad3b895856ea40fe3aa3fb1ea7c9e209c2b6d9ae079cca671015d777dc2418e6d74c436cd8ea0a3468744f3da6380eb5e72abad0bda763a30ce5a10545060f54
+  languageName: node
+  linkType: hard
+
 "expo-eas-client@npm:~56.0.0":
   version: 56.0.1
   resolution: "expo-eas-client@npm:56.0.1"
@@ -11707,12 +11757,12 @@ __metadata:
     "@expo/vector-icons": ^15.0.3
     expo: ^56.0.0
     expo-blur: ~56.0.3
+    expo-dev-client: ~56.0.18
     expo-status-bar: ~56.0.4
     expo-updates: ~56.0.17
     react: 19.2.3
     react-dom: 19.2.3
     react-native: 0.85.3
-    react-native-builder-bob: ^0.40.8
     react-native-gesture-handler: ~2.31.1
     react-native-keyboard-controller: 1.21.6
     react-native-monorepo-config: ^0.1.9

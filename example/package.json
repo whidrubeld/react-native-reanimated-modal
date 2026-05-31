@@ -13,6 +13,7 @@
     "@expo/vector-icons": "^15.0.3",
     "expo": "^56.0.0",
     "expo-blur": "~56.0.3",
+    "expo-dev-client": "~56.0.18",
     "expo-status-bar": "~56.0.4",
     "expo-updates": "~56.0.17",
     "react": "19.2.3",
