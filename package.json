@@ -79,6 +79,7 @@
     "@evilmartians/lefthook": "^1.5.0",
     "@react-native/babel-preset": "0.85.3",
     "@react-native/eslint-config": "0.85.3",
+    "@react-native/jest-preset": "0.85.3",
     "@release-it/conventional-changelog": "^9.0.2",
     "@testing-library/react-native": "^13.2.0",
     "@types/jest": "^30.0.0",
@@ -113,7 +114,7 @@
   ],
   "packageManager": "yarn@3.6.1",
   "jest": {
-    "preset": "react-native",
+    "preset": "@react-native/jest-preset",
     "setupFilesAfterEnv": [
       "<rootDir>/jest-setup.js"
     ],
@@ -179,5 +180,9 @@
     "languages": "js",
     "type": "library",
     "version": "0.52.0"
+  },
+  "resolutions": {
+    "jest-mock": "^30.4.1",
+    "jest-environment-node": "^30.4.1"
   }
 }
