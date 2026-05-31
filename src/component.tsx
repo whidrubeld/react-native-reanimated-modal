@@ -574,6 +574,15 @@ export const Modal: FC<ModalProps> = ({
   });
 
   /**
+   * Effect: handles visible=true on initial mount (progress=0 but shouldRenderValue already true)
+   */
+  useEffect(() => {
+    if (!visible) return;
+    handleOpen();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /**
    * Effect: handles modal opening
    */
   useEffect(() => {
