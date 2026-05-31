@@ -3,7 +3,7 @@
 
 A lightweight, scalable, flexible, and high-performance modal component. Based on the vanilla [Modal](https://reactnative.dev/docs/modal) component for maximum compatibility and native feel. Built with [react-native-reanimated](https://github.com/software-mansion/react-native-reanimated/) and [react-native-gesture-handler](https://github.com/software-mansion/react-native-gesture-handler).
 
-<img src="https://github.com/whidrubeld/react-native-reanimated-modal/blob/main/.github/images/example.gif?raw=true" width="100%" style="max-width: 500px; height: auto;" alt="React Native Reanimated Modal Demo" />
+<img src="https://github.com/whidrubeld/react-native-reanimated-modal/blob/master/.github/images/example.gif?raw=true" width="100%" style="max-width: 500px; height: auto;" alt="React Native Reanimated Modal Demo" />
 
 ## ✨ Features
 
@@ -19,14 +19,14 @@ A lightweight, scalable, flexible, and high-performance modal component. Based o
 
 ## 🎮 Example
 
-<img src="https://github.com/whidrubeld/react-native-reanimated-modal/blob/main/.github/images/eas-update.svg?raw=true" alt="Expo QR Code" width="200" height="200" />
+<img src="https://github.com/whidrubeld/react-native-reanimated-modal/blob/master/.github/images/eas-update.svg?raw=true" alt="Expo QR Code" width="200" height="200" />
 
 1. Install [Expo Go](https://expo.dev/client) on your phone
 2. Scan the QR code with your camera
 3. Open the link in Expo Go
 4. Explore example app!
 
-**Or browse the code**: [**📂 View Example Code →**](https://github.com/whidrubeld/react-native-reanimated-modal/tree/main/example)
+**Or browse the code**: [**📂 View Example Code →**](https://github.com/whidrubeld/react-native-reanimated-modal/tree/master/example)
 
 ## 📚 Documentation
 
@@ -262,9 +262,9 @@ function MyModal({ onDismiss }: { onDismiss: () => void }) {
 }
 ```
 
-| Method    | Description                                              |
-| --------- | -------------------------------------------------------- |
-| `open()`  | Opens the modal with animation. No-op if already open.   |
+| Method    | Description                                               |
+| --------- | --------------------------------------------------------- |
+| `open()`  | Opens the modal with animation. No-op if already open.    |
 | `close()` | Closes the modal with animation. No-op if already closed. |
 
 > **Important**: `close()` must be paired with an `onHide` callback that sets `visible` to `false`. Otherwise the component will re-open itself after the close animation completes, since `visible` remains `true`.
