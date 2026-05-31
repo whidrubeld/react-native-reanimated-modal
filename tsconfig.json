@@ -23,6 +23,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
+    "types": ["jest"],
     "target": "ESNext",
     "verbatimModuleSyntax": true
   }
