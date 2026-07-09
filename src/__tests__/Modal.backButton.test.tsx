@@ -12,7 +12,8 @@ describe('Modal hardware back button (Android)', () => {
     jest
       .spyOn(BackHandler, 'addEventListener')
       .mockImplementation((event, handler) => {
-        if (event === 'hardwareBackPress') backPressHandler = handler;
+        if (event === 'hardwareBackPress')
+          backPressHandler = handler as () => boolean | null | undefined;
         return { remove: jest.fn() };
       });
   });
