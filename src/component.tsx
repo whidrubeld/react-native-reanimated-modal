@@ -227,6 +227,9 @@ export const Modal = forwardRef<ModalRef, ModalProps>(
       );
     }, [animationDuration, progress, onShow, shouldRender, animationMode]);
 
+    /**
+     * Finalizes closing: hides the modal and resets animation/gesture state.
+     */
     const handleCloseCompletion = useCallback(() => {
       'worklet';
       shouldRender.value = false;
@@ -244,7 +247,13 @@ export const Modal = forwardRef<ModalRef, ModalProps>(
       progress.value = withTiming(
         0,
         { duration: animationDuration, easing: Easing.in(Easing.ease) },
-        handleCloseCompletion
+        (finished) => {
+          'worklet';
+          // Ignore cancellations. Resetting `progress` inside handleCloseCompletion
+          // re-fires this callback with finished=false; running it again would
+          // recurse infinitely (stack overflow crash under Reanimated 4.5+).
+          if (finished) handleCloseCompletion();
+        }
       );
     }, [
       animationModeValue,
@@ -370,7 +379,11 @@ export const Modal = forwardRef<ModalRef, ModalProps>(
                 : 0;
 
           let counter = 0;
-          const onComplete = () => {
+          const onComplete = (finished?: boolean) => {
+            'worklet';
+            // Ignore cancellations: handleCloseCompletion resets offsetX/offsetY,
+            // which re-fires these callbacks with finished=false.
+            if (!finished) return;
             counter += 1;
             if (counter === 2) handleCloseCompletion();
           };
