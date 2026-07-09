@@ -52,7 +52,7 @@ export default function AlertModal({
     () => progress.value,
     (value) => {
       if (progressVisible.value < 1 || !visible || value < 1) return;
-      scheduleOnRN(setVisible, true);
+      scheduleOnRN(setVisible, false);
     }
   );
   useLayoutEffect(() => {
