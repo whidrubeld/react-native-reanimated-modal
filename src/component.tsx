@@ -623,8 +623,11 @@ export const Modal = forwardRef<ModalRef, ModalProps>(
 
     /**
      * Effect: handles hardware back button for Android.
+     * BackHandler is only available on Android; it is unsupported on web
+     * (react-native-web) and irrelevant on iOS.
      */
     useEffect(() => {
+      if (Platform.OS !== 'android') return;
       if (!closable || !shouldRenderValue || !onHide) return;
 
       const backHandler = BackHandler.addEventListener(
