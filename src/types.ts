@@ -282,4 +282,13 @@ export interface ModalProps
    * Called when the modal disappears.
    */
   onHide?: () => void;
+  /**
+   * Called when the Android hardware back button is pressed while the modal is visible.
+   * When provided, it intercepts the back press and replaces the default close behavior,
+   * so you can show a confirmation dialog, run cleanup, or conditionally dismiss the modal.
+   * If omitted, the back button closes the modal as before.
+   *
+   * Only fires on Android; it is unsupported on web and irrelevant on iOS.
+   */
+  onBackButtonPress?: () => void;
 }

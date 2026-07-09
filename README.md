@@ -313,10 +313,11 @@ These props are optional and help you write robust e2e/unit tests.
 
 #### Event Props
 
-| Prop     | Type         | Description                  |
-| -------- | ------------ | ---------------------------- |
-| `onShow` | `() => void` | Called when modal appears    |
-| `onHide` | `() => void` | Called when modal disappears |
+| Prop                | Type         | Description                                                                                                                           |
+| ------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `onShow`            | `() => void` | Called when modal appears                                                                                                            |
+| `onHide`            | `() => void` | Called when modal disappears                                                                                                         |
+| `onBackButtonPress` | `() => void` | Android only. Intercepts the hardware back button while visible, replacing the default close (e.g. to show a confirmation dialog) |
 
 #### React Native Modal Props
 

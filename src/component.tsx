@@ -80,6 +80,7 @@ export const Modal = forwardRef<ModalRef, ModalProps>(
       //
       onShow,
       onHide,
+      onBackButtonPress,
       //
       hardwareAccelerated,
       navigationBarTranslucent,
@@ -628,13 +629,17 @@ export const Modal = forwardRef<ModalRef, ModalProps>(
      */
     useEffect(() => {
       if (Platform.OS !== 'android') return;
-      if (!closable || !shouldRenderValue || !onHide) return;
+      if (!shouldRenderValue) return;
+      // A custom interceptor works regardless of `closable`; the default close
+      // path still requires the modal to be closable and to have an `onHide`.
+      if (!onBackButtonPress && (!closable || !onHide)) return;
 
       const backHandler = BackHandler.addEventListener(
         'hardwareBackPress',
         () => {
           if (shouldRenderValue && !animationModeValue) {
-            handleClose();
+            if (onBackButtonPress) onBackButtonPress();
+            else handleClose();
             return true;
           }
           return false;
@@ -642,7 +647,14 @@ export const Modal = forwardRef<ModalRef, ModalProps>(
       );
 
       return () => backHandler.remove();
-    }, [shouldRenderValue, handleClose, closable, animationModeValue, onHide]);
+    }, [
+      shouldRenderValue,
+      handleClose,
+      closable,
+      animationModeValue,
+      onHide,
+      onBackButtonPress,
+    ]);
 
     /**
      * Renders the modal content, optionally wrapped with gesture detector.
@@ -725,7 +737,11 @@ export const Modal = forwardRef<ModalRef, ModalProps>(
         transparent
         animationType="none"
         visible={shouldRenderValue}
-        onRequestClose={handleClose}
+        onRequestClose={
+          Platform.OS === 'android' && onBackButtonPress
+            ? onBackButtonPress
+            : handleClose
+        }
       >
         {Platform.OS === 'android' ? (
           <GestureHandlerRootView
