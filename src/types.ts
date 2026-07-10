@@ -10,10 +10,7 @@ import type { SpringConfig } from 'react-native-reanimated/lib/typescript/animat
 export type ModalAnimation = 'fade' | 'slide' | 'scale' | 'custom';
 export type SwipeDirection = 'up' | 'down' | 'left' | 'right';
 export type ModalAnimationState =
-  | 'opening'
-  | 'sliding'
-  | 'bouncing'
-  | 'closing';
+  'opening' | 'sliding' | 'bouncing' | 'closing';
 
 export type ModalAnimatedStyleFunction = (props: {
   animationState: ModalAnimationState | null;

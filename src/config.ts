@@ -110,9 +110,7 @@ export function normalizeAnimationConfig(
  */
 export function normalizeBackdropConfig(
   backdrop:
-    | ModalBackdropConfig
-    | ReactNode
-    | false = DEFAULT_MODAL_BACKDROP_CONFIG
+    ModalBackdropConfig | ReactNode | false = DEFAULT_MODAL_BACKDROP_CONFIG
 ): {
   enabled: boolean;
   isCustom: boolean;
