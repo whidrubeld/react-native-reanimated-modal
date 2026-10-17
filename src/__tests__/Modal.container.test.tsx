@@ -1,10 +1,10 @@
-import { render, within } from '@testing-library/react-native';
+import { render, within } from './test-utils';
 import { Text } from 'react-native';
 import { Modal } from '../index';
 
 describe('Modal container', () => {
-  it('applies containerTestID to root View', () => {
-    const { getByTestId } = render(
+  it('applies containerTestID to root View', async () => {
+    const { getByTestId } = await render(
       <Modal visible={true} containerTestID="custom-container-test-id">
         <TestContent />
       </Modal>

@@ -1,10 +1,10 @@
-import { render, within } from '@testing-library/react-native';
+import { render, within } from './test-utils';
 import { Text } from 'react-native';
 import { Modal } from '../index';
 
 describe('Modal basic', () => {
-  it('does not render content when visible is false', () => {
-    const { queryByTestId } = render(
+  it('does not render content when visible is false', async () => {
+    const { queryByTestId } = await render(
       <Modal visible={false}>
         <TestContent />
       </Modal>
@@ -12,8 +12,8 @@ describe('Modal basic', () => {
     expect(queryByTestId('modal-content')).toBeNull();
   });
 
-  it('renders children when visible is true', () => {
-    const { getByTestId } = render(
+  it('renders children when visible is true', async () => {
+    const { getByTestId } = await render(
       <Modal visible={true}>
         <TestContent />
       </Modal>

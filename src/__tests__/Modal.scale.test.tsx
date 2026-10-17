@@ -1,9 +1,9 @@
-import { render } from '@testing-library/react-native';
+import { render } from './test-utils';
 import { Modal } from '../component';
 
 describe('Modal Scale Animation', () => {
-  it('should render modal with scale animation', () => {
-    const { getByTestId } = render(
+  it('should render modal with scale animation', async () => {
+    const { getByTestId } = await render(
       <Modal visible={true} animation={{ type: 'scale' }}>
         <></>
       </Modal>
@@ -13,8 +13,8 @@ describe('Modal Scale Animation', () => {
     expect(getByTestId('modal-content')).toBeTruthy();
   });
 
-  it('should apply scale animation properties', () => {
-    const { getByTestId } = render(
+  it('should apply scale animation properties', async () => {
+    const { getByTestId } = await render(
       <Modal visible={true} animation={{ type: 'scale', duration: 500 }}>
         <></>
       </Modal>
@@ -24,8 +24,8 @@ describe('Modal Scale Animation', () => {
     expect(content).toBeTruthy();
   });
 
-  it('should support scale animation with custom duration', () => {
-    const { getByTestId } = render(
+  it('should support scale animation with custom duration', async () => {
+    const { getByTestId } = await render(
       <Modal
         visible={true}
         animation={{ type: 'scale', duration: 600 }}

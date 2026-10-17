@@ -1,10 +1,10 @@
-import { render, within } from '@testing-library/react-native';
+import { render, within } from './test-utils';
 import { Text } from 'react-native';
 import { Modal } from '../index';
 
 describe('Modal content', () => {
-  it('applies contentTestID to Animated.View', () => {
-    const { getByTestId } = render(
+  it('applies contentTestID to Animated.View', async () => {
+    const { getByTestId } = await render(
       <Modal visible={true} contentTestID="custom-content-test-id">
         <TestContent />
       </Modal>

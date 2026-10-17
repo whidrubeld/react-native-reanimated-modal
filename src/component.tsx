@@ -156,16 +156,14 @@ export const Modal = forwardRef<ModalRef, ModalProps>(
       () => shouldRender.value,
       (current) => {
         scheduleOnRN(setShouldRenderValue, current);
-      },
-      []
+      }
     );
 
     useAnimatedReaction(
       () => animationMode.value,
       (current) => {
         scheduleOnRN(setAnimationModeValue, current);
-      },
-      []
+      }
     );
 
     /**

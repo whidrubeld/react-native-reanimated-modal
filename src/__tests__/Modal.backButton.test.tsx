@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react-native';
+import { render, waitFor } from './test-utils';
 import { Text, BackHandler, Platform } from 'react-native';
 import { Modal } from '../index';
 
@@ -23,41 +23,41 @@ describe('Modal hardware back button (Android)', () => {
     jest.restoreAllMocks();
   });
 
-  it('calls onBackButtonPress instead of the default close when provided', () => {
+  it('calls onBackButtonPress instead of the default close when provided', async () => {
     const onBackButtonPress = jest.fn();
     const onHide = jest.fn();
-    render(
+    await render(
       <Modal visible onBackButtonPress={onBackButtonPress} onHide={onHide}>
         <TestContent />
       </Modal>
     );
 
     expect(backPressHandler).toBeDefined();
-    const handled = backPressHandler!();
+    // Back presses are only intercepted once the opening animation has
+    // finished; until then the handler returns false without side effects.
+    await waitFor(() => expect(backPressHandler!()).toBe(true));
 
-    expect(handled).toBe(true);
     expect(onBackButtonPress).toHaveBeenCalledTimes(1);
     expect(onHide).not.toHaveBeenCalled();
   });
 
-  it('registers a back handler and intercepts even when closable is false', () => {
+  it('registers a back handler and intercepts even when closable is false', async () => {
     const onBackButtonPress = jest.fn();
-    render(
+    await render(
       <Modal visible closable={false} onBackButtonPress={onBackButtonPress}>
         <TestContent />
       </Modal>
     );
 
     expect(backPressHandler).toBeDefined();
-    const handled = backPressHandler!();
+    await waitFor(() => expect(backPressHandler!()).toBe(true));
 
-    expect(handled).toBe(true);
     expect(onBackButtonPress).toHaveBeenCalledTimes(1);
   });
 
-  it('does not register a back handler on non-Android platforms', () => {
+  it('does not register a back handler on non-Android platforms', async () => {
     Platform.OS = 'ios';
-    render(
+    await render(
       <Modal visible onBackButtonPress={jest.fn()} onHide={jest.fn()}>
         <TestContent />
       </Modal>
