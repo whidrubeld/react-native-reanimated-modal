@@ -23,11 +23,18 @@ jobs:
         run: |
           CURRENT_SIZE=$(du -sk lib | cut -f1)
 
-          # Checkout base branch to compare
-          git checkout ${{ github.base_ref }}
-          pnpm install --frozen-lockfile
-          pnpm prepare
-          BASE_SIZE=$(du -sk lib | cut -f1)
+          # Build the base branch in a worktree of its own: the checkout of
+          # this PR stays as it is for the steps after this one
+          BASE_DIR="$RUNNER_TEMP/base"
+          git worktree add "$BASE_DIR" "origin/${{ github.base_ref }}"
+          if [ ! -f "$BASE_DIR/pnpm-lock.yaml" ]; then
+            echo "📊 Bundle Size Report" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Skipped: \`${{ github.base_ref }}\` is not on pnpm yet. Current size: ${CURRENT_SIZE} KB." >> $GITHUB_STEP_SUMMARY
+            exit 0
+          fi
+          (cd "$BASE_DIR" && pnpm install --frozen-lockfile && pnpm prepare)
+          BASE_SIZE=$(du -sk "$BASE_DIR/lib" | cut -f1)
 
           # Calculate difference
           DIFF=$((CURRENT_SIZE - BASE_SIZE))

@@ -13,6 +13,9 @@ const root = path.resolve(__dirname, '..');
 const config = withMetroConfig(getDefaultConfig(__dirname), {
   root,
   dirname: __dirname,
+  // pnpm lists the packages in pnpm-workspace.yaml, not in package.json's
+  // `workspaces`; the library itself (the root) is added by its name
+  workspaces: ['example'],
 });
 
 config.resolver.unstable_enablePackageExports = true;
