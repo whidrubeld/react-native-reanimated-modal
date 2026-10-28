@@ -46,10 +46,10 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Build library
-        run: yarn prepare
+        run: pnpm prepare
 
       - name: Run tests
-        run: yarn test
+        run: pnpm test
 
       - name: Generate changelog
         id: changelog
@@ -76,7 +76,7 @@ jobs:
             ```bash
             npm install react-native-reanimated-modal@${{ needs.check-version.outputs.new-version }}
             # or
-            yarn add react-native-reanimated-modal@${{ needs.check-version.outputs.new-version }}
+            pnpm add react-native-reanimated-modal@${{ needs.check-version.outputs.new-version }}
             ```
           draft: false
           prerelease: ${{ contains(needs.check-version.outputs.new-version, 'alpha') || contains(needs.check-version.outputs.new-version, 'beta') || contains(needs.check-version.outputs.new-version, 'rc') }}

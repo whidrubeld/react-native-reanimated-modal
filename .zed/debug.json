@@ -1,0 +1,32 @@
+// Zed debugger (JavaScript adapter). The browser ones attach to a dev server
+// started by its task (tasks.json) and open Chrome on it.
+[
+  {
+    "label": "Jest: current file",
+    "adapter": "JavaScript",
+    "type": "pwa-node",
+    "request": "launch",
+    "program": "$ZED_WORKTREE_ROOT/node_modules/jest/bin/jest.js",
+    "args": ["--runInBand", "$ZED_FILE"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "smartStep": true,
+    "console": "integratedTerminal",
+    "skipFiles": ["<node_internals>/**", "**/node_modules/**"]
+  },
+  {
+    "label": "Chrome: example on the web (task example: web)",
+    "adapter": "JavaScript",
+    "type": "chrome",
+    "request": "launch",
+    "url": "http://localhost:8081",
+    "webRoot": "$ZED_WORKTREE_ROOT/example"
+  },
+  {
+    "label": "Chrome: docs (task docs: dev)",
+    "adapter": "JavaScript",
+    "type": "chrome",
+    "request": "launch",
+    "url": "http://localhost:4321/react-native-reanimated-modal/",
+    "webRoot": "$ZED_WORKTREE_ROOT/docs"
+  }
+]

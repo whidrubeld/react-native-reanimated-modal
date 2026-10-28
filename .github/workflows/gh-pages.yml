@@ -5,22 +5,28 @@ on:
     branches:
       - master
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
 
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      # Astro Starlight: the pages, their Markdown twins, llms.txt
       - name: Build docs
-        run: |
-          yarn
-          yarn docs
+        run: pnpm docs build
+
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
           branch: gh-pages
-          folder: docs
+          folder: docs/dist

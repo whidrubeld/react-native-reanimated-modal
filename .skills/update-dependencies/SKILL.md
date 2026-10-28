@@ -1,11 +1,11 @@
 ---
 name: update-dependencies
-description: Update dependencies of the library (root package.json) and the Expo example app (example/package.json) together - Expo SDK upgrades, React Native / Reanimated / Gesture Handler / Worklets bumps, dev tooling bumps, triaging Dependabot PRs. Use when asked to update, bump, upgrade, refresh or "актуализировать" dependencies, move the example to a new Expo SDK, or check what is outdated.
+description: Update dependencies of the library (root package.json), the Expo example app (example/package.json) and the docs site (docs/package.json) together - Expo SDK upgrades, React Native / Reanimated / Gesture Handler / Worklets bumps, dev tooling bumps, triaging Dependabot PRs. Use when asked to update, bump, upgrade, refresh or "актуализировать" dependencies, move the example to a new Expo SDK, or check what is outdated.
 ---
 
 # Update dependencies
 
-Layout: the root `package.json` is the published library (only `devDependencies`; `peerDependencies` are `*`). `example/` is an Expo app and a Yarn 3 workspace (`nmHoistingLimits: workspaces`). Both share one `yarn.lock`.
+Layout: one pnpm workspace (pnpm 12, pinned by `packageManager`), one `pnpm-lock.yaml`. The root `package.json` is the published library (only `devDependencies`; `peerDependencies` are `*`). `example/` is an Expo app, `docs/` the Astro Starlight site; both are workspace packages (`pnpm-workspace.yaml`, which also sets `nodeLinker: hoisted`, `allowBuilds` and `overrides`).
 
 ## Version rules
 
@@ -20,8 +20,8 @@ Apply in this order; a higher rule wins.
    npm view <pkg>@<version> peerDependencies engines
    ```
    Known blockers. Re-check them every time, because they get lifted:
-   - `eslint`, `@eslint/js`: stay on the major allowed by the `@react-native/eslint-config` peer range (`^8 || ^9` as of 0.88). Yarn prints eslint 9 as deprecated; that is expected until RN supports 10.
-   - `typescript`: stay within the `typedoc` peer range (`<= 6.0.x` as of typedoc 0.28.20). The Expo template's TypeScript version (`npm view expo-template-blank-typescript@sdk-<N> devDependencies`) is a good reference.
+   - `eslint`, `@eslint/js`: stay on the major allowed by the `@react-native/eslint-config` peer range (`^8 || ^9` as of 0.88). pnpm prints eslint 9 as deprecated; that is expected until RN supports 10.
+   - `typescript`: stay on `~6.0`: TypeScript 7 (the native compiler) ships no JS compiler API, and `@astrojs/check` (docs) and typescript-eslint take `^5 || ^6`. Keep the same line in `docs/package.json`. The Expo template's TypeScript version (`npm view expo-template-blank-typescript@sdk-<N> devDependencies`) is a good reference.
    - `@babel/core` in the example: the Expo and RN toolchain is on Babel 7 (`babel-preset-expo` and `@react-native/babel-preset` depend on `@babel/core ^7`). Do not move to Babel 8 until they do.
 6. **Node.** `.nvmrc` must satisfy `engines.node` of `react-native`, `expo` and the tooling (the report script prints these). CI reads `.nvmrc` through `.github/actions/setup`.
 7. **Library source stays compatible with older peers.** Peers are `*`, so consumers may still be on older majors. Don't migrate `src/*.tsx` to APIs that exist only in the new major (for example the Gesture Handler 3 hook API `usePanGesture`) as part of a dependency update. Deprecated-but-working APIs are acceptable; report the deprecation to the user instead. Small fixes that work on old and new versions alike (such as dropping an ignored argument that now triggers a warning) are fine. Test files (`src/__tests__`) and the example app may use new APIs.
@@ -35,12 +35,12 @@ npm pack create-react-native-library@latest   # then read package/templates/**
 
 ## Procedure
 
-Run local tools through `yarn <bin>` (`yarn prettier`, `yarn eslint`), not `npx <bin>`: the Yarn 3 node-modules linker can leave bin files without the execute bit, and `npx` then fails with "Permission denied".
+Run local tools through `pnpm exec <bin>` (`pnpm exec prettier`, `pnpm exec eslint`), not `npx <bin>`, so that the workspace's own versions run.
 
 ### 1. Prepare
 
 - Start from a clean tree on `dev`, the branch Dependabot targets. Don't commit unless the user asks.
-- Record a baseline: `yarn typecheck && yarn lint && yarn test`. Note any failures that exist before the update so they aren't blamed on it.
+- Record a baseline: `pnpm validate`. Note any failures that exist before the update so they aren't blamed on it.
 
 ### 2. Report
 
@@ -64,23 +64,24 @@ For every `MAJOR` you plan to take, read the migration guide or changelog. The n
 
 - `example/package.json`: set `expo` to the target SDK (keep the existing `^NN.0.0` style) and every SDK-managed package to the exact specifier from `bundledNativeModules.json`. Bump non-SDK deps per rule 5.
 - `package.json`: mirror the shared packages (rule 2), pin the RN- and React-tied packages (rules 3 and 4), bump tooling per rule 5. Keep the existing specifier style per package (exact pins stay exact, `^` stays `^`).
+- `docs/package.json`: Astro, `@astrojs/starlight` and its plugins move together — check the plugins' peer ranges (`starlight-llm-actions`, `starlight-links-validator`) before a major; `starlight-llm-actions`' optional peers (`unified`, `rehype-*`, `remark-*`, `unist-util-remove`, `hast-util-select`) stay listed. three-map-terrain's `docs/package.json` (`../../web/three-map-terrain`) runs the same stack and is a good reference.
 - `.nvmrc`: bump if rule 6 requires it.
-- Root `resolutions` are workarounds; find out why each exists (`git log -S'"<pkg>"' -- package.json`) before touching it. `jest-mock`/`jest-environment-node` force Jest 30 because `@react-native/jest-preset` still depends on `jest-environment-node ^29`; keep them on the same version as `jest` for as long as that's true.
+- `overrides` in `pnpm-workspace.yaml` are workarounds (they were Yarn `resolutions` before); find out why each exists (`git log -S'jest-mock' -- package.json pnpm-workspace.yaml`) before touching it. `jest-mock`/`jest-environment-node` force Jest 30 because `@react-native/jest-preset` still depends on `jest-environment-node ^29`; keep them on the same version as `jest` for as long as that's true.
 
 Both manifests round-trip through `JSON.stringify(pkg, null, 2) + '\n'` without formatting changes, so a small Node script is the cleanest way to edit many versions at once.
 
 ### 4. Install and align
 
 ```sh
-yarn install
-yarn example expo install --check   # must say "Dependencies are up to date"; fix with --fix
-yarn dedupe
-yarn install --immutable            # what CI runs; must not change the lockfile
+pnpm install
+pnpm example exec expo install --check   # must say "Dependencies are up to date"; fix with --fix
+pnpm dedupe
+pnpm install --frozen-lockfile           # what CI runs; must not change the lockfile
 ```
 
-Check the lockfile has exactly one version of each shared package (`grep -E '^"?react(-native)?@npm:' yarn.lock`). Two physical copies (`node_modules` and `example/node_modules`) of the same version are expected with `nmHoistingLimits: workspaces`.
+Check the lockfile has exactly one version of each shared package (`grep -E "^  '?react(-native)?@[0-9]" pnpm-lock.yaml`, and `pnpm why react-native`).
 
-Read the `yarn install` peer warnings (`YN0060` incompatible, `YN0002` missing) for the packages you touched; `yarn explain peer-requirements <hash>` shows who asks for what. Many warnings are long-standing noise (for example `eslint-plugin-ft-flow` wanting eslint 8, or `@babel/core` missing for `react-native-worklets`); only act on new ones caused by the update.
+Read the peer issues for the packages you touched: `pnpm peers check`. Some are long-standing noise (for example `eslint-plugin-ft-flow` wanting eslint 8); only act on new ones caused by the update. A new dependency whose install script pnpm blocks gets a placeholder in `allowBuilds` (`pnpm-workspace.yaml`): set it to `true` or `false`.
 
 ### 5. Migrate code and config
 
@@ -91,31 +92,27 @@ Apply what the migration guides require: test code, eslint, jest, babel, metro, 
 Everything must pass:
 
 ```sh
-yarn typecheck
-yarn lint
-yarn test
-yarn prepare                                          # bob build into lib/
-yarn docs --out <scratch dir>/docs                    # typedoc
-yarn example expo export --platform web --output-dir <scratch dir>/web                         # CI build-web
-yarn example expo export --platform ios --platform android --output-dir <scratch dir>/native   # Metro resolves native code paths
-(cd example && npx --yes expo-doctor@latest)          # must pass all checks
-yarn lefthook run pre-commit --all-files              # git hooks still work
-echo "chore(deps): test" | yarn commitlint
+pnpm validate                                          # typecheck, lint, test, bob build into lib/
+pnpm docs build                                        # astro check, the site, links validated
+pnpm example exec expo export --platform web --output-dir <scratch dir>/web                         # CI build-web
+pnpm example exec expo export --platform ios --platform android --output-dir <scratch dir>/native   # Metro resolves native code paths
+(cd example && pnpm dlx expo-doctor@latest)            # must pass all checks
+pnpm exec lefthook run pre-commit --all-files          # git hooks still work
+echo "chore(deps): test" | pnpm exec commitlint
 ```
 
-- Build docs into a scratch directory. A `docs/` folder in the repo is gitignored but not eslint-ignored, and `yarn lint` crashes on it with `RangeError: Invalid string length`.
-- `expo-doctor` failures about missing peer dependencies are fixed with `yarn example expo install <pkg>`. It may add a config plugin to `example/app.json`; keep the file's formatting (single-line arrays).
-- If test, animation or gesture libraries changed, run the suite the way CI does several times to catch races: `for i in $(seq 1 10); do yarn test --maxWorkers=2 --coverage || break; done`, then delete `coverage/`.
+- `expo-doctor` failures about missing peer dependencies are fixed with `pnpm example exec expo install <pkg>`. It may add a config plugin to `example/app.json`; keep the file's formatting (single-line arrays).
+- If test, animation or gesture libraries changed, run the suite the way CI does several times to catch races: `for i in $(seq 1 10); do pnpm test --maxWorkers=2 --coverage || break; done`, then delete `coverage/`.
 
-Unit tests can't verify gestures or animations on a device. If the RN, Reanimated, Worklets or Gesture Handler versions changed, tell the user to smoke-test the example (`yarn example ios` / `yarn example android`: swipe-to-dismiss in all directions, backdrop press, Android back button).
+Unit tests can't verify gestures or animations on a device. If the RN, Reanimated, Worklets or Gesture Handler versions changed, tell the user to smoke-test the example (`pnpm example ios` / `pnpm example android`: swipe-to-dismiss in all directions, backdrop press, Android back button).
 
 ### 7. Bookkeeping
 
 - `.github/dependabot.yml`: add newly introduced Expo-managed packages to `ignore` (`expo-*` and `@expo/*` are covered by patterns already).
-- README "Version Compatibility" table: update it only if the library's own compatibility changed (for example, a new minimum `react-native-worklets`).
-- After an Expo SDK upgrade, the EAS Update QR code in the README (`.github/images/eas-update.svg`) has to be regenerated once an update is published for the new runtime. Remind the user; it can't be done from here.
+- The "Version compatibility" table (`docs/src/content/docs/getting-started.md`, summarized in the README) and the tested versions under it: update the table only if the library's own compatibility changed (for example, a new minimum `react-native-worklets`).
+- After an Expo SDK upgrade, the EAS Update QR code (`docs/public/images/eas-update.svg`, shown by the README and the docs' Example app page) has to be regenerated once an update is published for the new runtime. Remind the user; it can't be done from here.
 - Dependabot PRs made obsolete by the update: list them for the user to close.
-- Remove anything you generated inside the repo (`docs/`, `coverage/`, `example/dist/`). `lib/` is rebuilt by `yarn prepare` and is gitignored.
+- Remove anything you generated inside the repo (`coverage/`, `example/dist/`). `lib/`, `docs/dist/` and `docs/.astro/` are rebuilt by `pnpm prepare` / `pnpm docs build` and are gitignored.
 
 ### 8. Report and commit
 

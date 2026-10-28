@@ -1,719 +1,107 @@
-[![documentation](https://img.shields.io/badge/documentation-blue.svg)](https://whidrubeld.github.io/react-native-reanimated-modal/)
-[![npm bundle size](https://img.shields.io/bundlephobia/min/react-native-reanimated-modal)](https://www.npmjs.com/package/react-native-reanimated-modal)
+<div align="center">
 
-A lightweight, scalable, flexible, and high-performance modal component. Based on the vanilla [Modal](https://reactnative.dev/docs/modal) component for maximum compatibility and native feel. Built with [react-native-reanimated](https://github.com/software-mansion/react-native-reanimated/) and [react-native-gesture-handler](https://github.com/software-mansion/react-native-gesture-handler).
+# react-native-reanimated-modal
 
-<img src="https://github.com/whidrubeld/react-native-reanimated-modal/blob/master/.github/images/example.gif?raw=true" width="100%" style="max-width: 500px; height: auto;" alt="React Native Reanimated Modal Demo" />
+**A lightweight, performant modal for React Native — animations on the UI thread, swipe to dismiss in any direction, on top of the native Modal.**<br>
+Built on React Native's own [`Modal`](https://reactnative.dev/docs/modal), so it behaves like one on every platform, with its animations and gestures in [Reanimated](https://docs.swmansion.com/react-native-reanimated/) and [Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler/).
 
-## ✨ Features
+[![npm](https://img.shields.io/npm/v/react-native-reanimated-modal?style=flat-square&color=000&labelColor=000)](https://www.npmjs.com/package/react-native-reanimated-modal)
+[![CI](https://img.shields.io/github/actions/workflow/status/whidrubeld/react-native-reanimated-modal/ci.yml?branch=master&style=flat-square&label=ci&color=000&labelColor=000)](https://github.com/whidrubeld/react-native-reanimated-modal/actions/workflows/ci.yml)
+[![bundle size](https://img.shields.io/bundlephobia/min/react-native-reanimated-modal?style=flat-square&color=000&labelColor=000)](https://bundlephobia.com/package/react-native-reanimated-modal)
+[![types](https://img.shields.io/npm/types/react-native-reanimated-modal?style=flat-square&color=000&labelColor=000)](src/types.ts)
+[![license](https://img.shields.io/npm/l/react-native-reanimated-modal?style=flat-square&color=000&labelColor=000)](LICENSE)
 
-- **🚀 Performance**: Built with react-native-reanimated for 60fps animations that run on the UI thread
-- **🎨 Smooth Animations**: Supports fade, slide, and scale animations with customizable configs
-- **👆 Gesture Support**: Interactive swipe-to-dismiss in any direction (up, down, left, right)
-- **🪶 Lightweight**: Minimal dependencies and smaller bundle size compared to alternatives
-- **📱 Native Feel**: Uses React Native's Modal component as foundation for platform consistency
-- **🔧 Flexible**: Highly customizable with extensive prop options
-- **📚 TypeScript**: Full TypeScript support out of the box
-- **🔄 Multi-Modal**: Easy integration with React Navigation and support for multiple overlays
-- **🎯 Imperative API**: Optional `ref` support with `open()` / `close()` methods for programmatic control
+[**Documentation**](https://whidrubeld.github.io/react-native-reanimated-modal/) · [Getting started](https://whidrubeld.github.io/react-native-reanimated-modal/getting-started/) · [Animations](https://whidrubeld.github.io/react-native-reanimated-modal/animations/) · [Swipe](https://whidrubeld.github.io/react-native-reanimated-modal/swipe/) · [API](https://whidrubeld.github.io/react-native-reanimated-modal/api/modal/) · [Example app](https://whidrubeld.github.io/react-native-reanimated-modal/example/)
 
-## 🎮 Example
+<img src="docs/public/images/example.gif" alt="The example app: modals fading, sliding and scaling in, dismissed with a swipe, over a dimmed and a blurred backdrop" width="100%" style="max-width: 500px">
 
-<img src="https://github.com/whidrubeld/react-native-reanimated-modal/blob/master/.github/images/eas-update.svg?raw=true" alt="Expo QR Code" width="200" height="200" />
+</div>
 
-1. Install [Expo Go](https://expo.dev/client) on your phone
-2. Scan the QR code with your camera
-3. Open the link in Expo Go
-4. Explore example app!
+## Features
 
-**Or browse the code**: [**📂 View Example Code →**](https://github.com/whidrubeld/react-native-reanimated-modal/tree/master/example)
+- **[Animations](https://whidrubeld.github.io/react-native-reanimated-modal/animations/)** — `fade`, `slide` from any edge and `scale`, at 60 fps on the UI thread.
+- **[Your own animations](https://whidrubeld.github.io/react-native-reanimated-modal/custom-animations/)** — worklets for the content and the backdrop, on top of a preset or on their own.
+- **[Swipe to dismiss](https://whidrubeld.github.io/react-native-reanimated-modal/swipe/)** — up, down, left, right, with a threshold and a spring back.
+- **[Backdrop](https://whidrubeld.github.io/react-native-reanimated-modal/backdrop/)** — a color, your component (a blur), or none; presses close, call your handler, or do nothing.
+- **[Declarative or imperative](https://whidrubeld.github.io/react-native-reanimated-modal/ref/)** — `visible` + `onHide`, or `ref.current.close()`.
+- **[Several at once](https://whidrubeld.github.io/react-native-reanimated-modal/multiple-modals/)** — `coverScreen` stacks modals and works in React Navigation's `FullWindowOverlay`.
+- **[Native behaviour](https://whidrubeld.github.io/react-native-reanimated-modal/platforms/)** — the Android back button, translucent bars, iOS orientations.
+- **Small** — one component in TypeScript, no dependencies of its own.
 
-## 📚 Documentation
-
-**Full API and usage documentation**: [**🗂️ View Documentation →**](https://whidrubeld.github.io/react-native-reanimated-modal/)
-
-## 📦 Installation
+## Install
 
 ```sh
 npm install react-native-reanimated-modal
 ```
 
-```sh
-yarn add react-native-reanimated-modal
-```
+Peers: [`react-native-reanimated`](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/getting-started/), [`react-native-worklets`](https://docs.swmansion.com/react-native-worklets/docs/) and [`react-native-gesture-handler`](https://docs.swmansion.com/react-native-gesture-handler/docs/fundamentals/installation) — with Expo, `npx expo install react-native-reanimated react-native-worklets react-native-gesture-handler`.
 
-```sh
-pnpm add react-native-reanimated-modal
-```
+> Version 1.2.5 and later need `react-native-worklets` 0.7.2+ (Expo SDK 55+). On Expo SDK 54 or Worklets 0.5.1, install `react-native-reanimated-modal@1.2.4`. [Version compatibility](https://whidrubeld.github.io/react-native-reanimated-modal/getting-started/#version-compatibility)
 
-```sh
-bun add react-native-reanimated-modal
-```
-
-### Required Dependencies
-
-This library depends on the following peer dependencies:
-
-1. **[react-native-reanimated](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/getting-started/)** (>= 3.0.0)
-2. **[react-native-gesture-handler](https://docs.swmansion.com/react-native-gesture-handler/docs/fundamentals/installation)** (>= 2.0.0)
-3. **[react-native-worklets](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/getting-started/#dependencies)** (see compatibility table below)
-
-> **Note**: Make sure to follow the installation guides for all libraries, as they require additional platform-specific setup steps.
-
-### ⚠️ Version Compatibility
-
-> **Important:** Starting from `react-native-reanimated-modal@1.2.5`, support for `react-native-worklets` **0.7.2+** (Expo SDK 55+) is added. This update is **not backward compatible** with older versions of `react-native-worklets`.
-
-| `react-native-reanimated-modal` | `react-native-worklets` | Expo SDK |
-| ------------------------------- | ----------------------- | -------- |
-| **1.2.5+**                      | **0.7.2+**              | 55+      |
-| **1.2.4**                       | **0.5.1**               | 54       |
-
-If you are using **Expo SDK 54 or below** or need to use `react-native-worklets@0.5.1`, you must install version **1.2.4** of this package:
-
-```sh
-npm install react-native-reanimated-modal@1.2.4
-```
-
-For **Expo SDK 55+** (or `react-native-worklets@0.7.2+`), use the latest version (**1.2.5** or above):
-
-```sh
-npm install react-native-reanimated-modal
-```
-
-> **Note:** Using mismatched versions may result in runtime errors or broken modal animations.
-
-## 🚀 Basic Usage
+## Quick start
 
 ```tsx
-import React, { useState } from 'react';
-import { View, Text, Button } from 'react-native';
+import { useState } from 'react';
+import { Button, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Modal } from 'react-native-reanimated-modal';
 
-const App = () => {
+export default function App() {
   const [visible, setVisible] = useState(false);
 
   return (
-    <GestureHandlerRootView>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Button title="Show Modal" onPress={() => setVisible(true)} />
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Button title="Show modal" onPress={() => setVisible(true)} />
 
-        <Modal visible={visible} onHide={() => setVisible(false)}>
-          <View
-            style={{
-              backgroundColor: 'white',
-              padding: 20,
-              borderRadius: 10,
-              margin: 20,
-            }}
-          >
-            <Text>Hello from Modal!</Text>
-            <Button title="Close" onPress={() => setVisible(false)} />
-          </View>
-        </Modal>
-      </View>
+      <Modal
+        visible={visible}
+        onHide={() => setVisible(false)}
+        animation={{ type: 'slide', direction: 'down' }}
+        swipe={{ directions: ['down'] }}
+      >
+        <View
+          style={{
+            margin: 20,
+            padding: 20,
+            borderRadius: 12,
+            backgroundColor: 'white',
+          }}
+        >
+          <Text>Hello from the modal!</Text>
+        </View>
+      </Modal>
     </GestureHandlerRootView>
   );
-};
-```
-
-## 📖 API Documentation
-
-### New Configuration-Based API (Recommended)
-
-Starting from v1.1.0, we recommend using the new configuration-based API for better type safety and cleaner code:
-
-#### Animation Configurations
-
-```tsx
-import type { ModalAnimationConfig } from 'react-native-reanimated-modal';
-
-// Scale animation with custom settings
-const scaleConfig: ModalAnimationConfig<'scale'> = {
-  type: 'scale',
-  duration: 400,
-  scaleFactor: 0.8, // Start from 80% size
-};
-
-// Fade animation
-const fadeConfig: ModalAnimationConfig<'fade'> = {
-  type: 'fade',
-  duration: 300,
-};
-
-// Slide animation with complex directions
-const slideConfig: ModalAnimationConfig<'slide'> = {
-  type: 'slide',
-  duration: 500,
-  direction: {
-    start: 'down', // Slides in from bottom
-    end: ['down', 'right'], // Can dismiss by swiping down or right
-  },
-};
-
-// Simple slide animation
-const simpleSlideConfig: ModalAnimationConfig<'slide'> = {
-  type: 'slide',
-  duration: 400,
-  direction: 'up', // Both slide-in and dismiss direction
-};
-```
-
-#### Swipe Configurations
-
-```tsx
-import type { ModalSwipeConfig } from 'react-native-reanimated-modal';
-
-// Basic swipe config
-const basicSwipe: ModalSwipeConfig = {
-  enabled: true,
-  directions: ['down', 'left', 'right'], // Allow swiping in these directions
-  threshold: 120,
-};
-
-// Advanced swipe config with custom bounce
-const advancedSwipe: ModalSwipeConfig = {
-  enabled: true,
-  directions: ['up', 'down'], // Only vertical swipes
-  threshold: 80,
-  bounceSpringConfig: {
-    dampingRatio: 0.7,
-    duration: 400,
-  },
-  bounceOpacityThreshold: 0.1,
-};
-
-// Disabled swipe
-const noSwipe: ModalSwipeConfig = {
-  enabled: false,
-};
-```
-
-#### Usage Examples
-
-```tsx
-<Modal
-  visible={visible}
-  animation={scaleConfig}
-  swipe={advancedSwipe}
->
-  {/* Your content */}
-</Modal>
-
-// Or with inline configs
-<Modal
-  visible={visible}
-  animation={{
-    type: 'scale',
-    duration: 600,
-    scaleFactor: 0.9,
-  }}
-  swipe={{
-    enabled: true,
-    threshold: 100,
-  }}
->
-  {/* Your content */}
-</Modal>
-
-// Backdrop examples
-<Modal
-  visible={visible}
-  onBackdropPress={false} // Prevent backdrop from closing modal
-  onHide={() => setVisible(false)} // Only programmatic close allowed
->
-  {/* Your content */}
-</Modal>
-
-<Modal
-  visible={visible}
-  backdrop={{ color: 'red', opacity: 0.8 }} // Custom backdrop styling
-  onBackdropPress={() => console.log('Backdrop pressed!')} // Custom handler
->
-  {/* Your content */}
-</Modal>
-
-// Legacy string syntax still supported
-<Modal
-  visible={visible}
-  animation="fade" // Equivalent to { type: 'fade', duration: 300 }
->
-  {/* Your content */}
-</Modal>
-```
-
-### Ref API
-
-The modal accepts a `ref` (via `forwardRef`) that exposes imperative `open` and `close` methods. This is useful when you mount the component with `visible={true}` from the start and need to trigger the close animation programmatically.
-
-```tsx
-import { useRef } from 'react';
-import { Modal, type ModalRef } from 'react-native-reanimated-modal';
-
-function MyModal({ onDismiss }: { onDismiss: () => void }) {
-  const modalRef = useRef<ModalRef>(null);
-
-  return (
-    <Modal ref={modalRef} visible onHide={onDismiss}>
-      <Button title="Close" onPress={() => modalRef.current?.close()} />
-    </Modal>
-  );
 }
 ```
 
-| Method    | Description                                               |
-| --------- | --------------------------------------------------------- |
-| `open()`  | Opens the modal with animation. No-op if already open.    |
-| `close()` | Closes the modal with animation. No-op if already closed. |
+Always pass `onHide` and set `visible` to `false` there: the modal calls it once the user has closed it — backdrop, swipe or back button — and its animation has finished.
 
-> **Important**: `close()` must be paired with an `onHide` callback that sets `visible` to `false`. Otherwise the component will re-open itself after the close animation completes, since `visible` remains `true`.
+Next: [the presets and their options](https://whidrubeld.github.io/react-native-reanimated-modal/animations/), [swipe directions](https://whidrubeld.github.io/react-native-reanimated-modal/swipe/), [every prop](https://whidrubeld.github.io/react-native-reanimated-modal/api/modal/).
 
-### Test IDs
+## Example app
 
-You can pass custom testID props to key elements for easier testing:
+<img src="docs/public/images/eas-update.svg" alt="QR code of the example app's EAS Update" width="160" height="160" align="right">
 
-| Prop              | Type     | Default             | Description                                  |
-| ----------------- | -------- | ------------------- | -------------------------------------------- |
-| `backdropTestID`  | `string` | `'modal-backdrop'`  | testID for the backdrop Pressable            |
-| `contentTestID`   | `string` | `'modal-content'`   | testID for the modal content (Animated.View) |
-| `containerTestID` | `string` | `'modal-container'` | testID for the root container View           |
+Scan the QR code with [Expo Go](https://expo.dev/go) to open the [example app](example) on your phone: a basic modal, a bottom sheet, full screen, blur, scroll, keyboard input, a toast and stacked modals. Or run it from the repository — `pnpm install && pnpm example start`.
 
-These props are optional and help you write robust e2e/unit tests.
+<br clear="right">
 
-### Props
+## For AI assistants
 
-| Prop                    | Type                   | Default | Description                                     |
-| ----------------------- | ---------------------- | ------- | ----------------------------------------------- |
-| `visible`               | `boolean`              | `false` | Controls the visibility of the modal            |
-| `closable`              | `boolean`              | `true`  | Whether the modal can be closed by user actions |
-| `children`              | `ReactNode`            | -       | Content to render inside the modal              |
-| `style`                 | `StyleProp<ViewStyle>` | -       | Style for the modal container                   |
-| `contentContainerStyle` | `StyleProp<ViewStyle>` | -       | Style for the content wrapper                   |
+Every page of the docs is also Markdown — [`llms.txt`](https://whidrubeld.github.io/react-native-reanimated-modal/llms.txt), [`llms-full.txt`](https://whidrubeld.github.io/react-native-reanimated-modal/llms-full.txt), [more](https://whidrubeld.github.io/react-native-reanimated-modal/llms/).
 
-#### Configuration Props
+## Development
 
-| Prop        | Type                                          | Default                                                   | Description                                                    |
-| ----------- | --------------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------- |
-| `animation` | `ModalAnimationConfigUnion \| ModalAnimation` | `{ type: 'fade', duration: 300 }`                         | Animation configuration object or simple animation type string |
-| `swipe`     | `ModalSwipeConfig \| false`                   | `{ enabled: true, directions: ['down'], threshold: 100 }` | Swipe gesture configuration                                    |
-
-#### Backdrop Props
-
-| Prop              | Type                                        | Default                                           | Description                                                                                  |
-| ----------------- | ------------------------------------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `backdrop`        | `ModalBackdropConfig \| ReactNode \| false` | `{ enabled: true, color: 'black', opacity: 0.7 }` | Backdrop configuration: false (no backdrop), ReactNode for custom backdrop, or config object |
-| `onBackdropPress` | `(() => void) \| false`                     | -                                                 | Callback when backdrop is pressed. Set to `false` to prevent backdrop from closing the modal |
-
-#### Other Props
-
-| Prop          | Type      | Default | Description                                              |
-| ------------- | --------- | ------- | -------------------------------------------------------- |
-| `coverScreen` | `boolean` | `false` | If true, covers entire screen without using native Modal |
-
-#### Event Props
-
-| Prop                | Type         | Description                                                                                                                           |
-| ------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `onShow`            | `() => void` | Called when modal appears                                                                                                            |
-| `onHide`            | `() => void` | Called when modal disappears                                                                                                         |
-| `onBackButtonPress` | `() => void` | Android only. Intercepts the hardware back button while visible, replacing the default close (e.g. to show a confirmation dialog) |
-
-#### React Native Modal Props
-
-The component also accepts these props from React Native's Modal:
-
-- `hardwareAccelerated` (Android)
-- `navigationBarTranslucent` (Android)
-- `statusBarTranslucent` (Android)
-- `onOrientationChange` (iOS)
-- `supportedOrientations` (iOS)
-
-### Constants
-
-The library exports several useful constants for customization:
-
-```tsx
-import {
-  DEFAULT_MODAL_ANIMATION_DURATION, // 300
-  DEFAULT_MODAL_SCALE_FACTOR, // 0.8
-  DEFAULT_MODAL_BACKDROP_CONFIG, // { enabled: true, color: 'black', opacity: 0.7 }
-  DEFAULT_MODAL_SWIPE_THRESHOLD, // 100
-  DEFAULT_MODAL_BOUNCE_SPRING_CONFIG, // { dampingRatio: 0.5, duration: 700 }
-  DEFAULT_MODAL_BOUNCE_OPACITY_THRESHOLD, // 0.05
-  DEFAULT_MODAL_SWIPE_DIRECTION, // 'down'
-} from 'react-native-reanimated-modal';
-
-// Use in your custom configurations
-const customAnimationConfig = {
-  type: 'scale',
-  duration: DEFAULT_MODAL_ANIMATION_DURATION * 2, // 600ms
-  scaleFactor: DEFAULT_MODAL_SCALE_FACTOR, // 0.8
-};
-
-const customBackdropConfig = {
-  ...DEFAULT_MODAL_BACKDROP_CONFIG,
-  color: 'rgba(0, 0, 0, 0.8)', // Darker backdrop
-  opacity: 0.9,
-};
+```sh
+pnpm install          # the library, example/ and docs/ (one pnpm workspace)
+pnpm example start    # the Expo example, on the library's source
+pnpm validate         # typecheck, lint, unit tests, build
+pnpm docs dev         # the documentation on http://localhost:4321/react-native-reanimated-modal/
 ```
 
-### Types
+The workflow, conventions and releases are in [CONTRIBUTING.md](CONTRIBUTING.md); architecture notes for coding agents in [AGENTS.md](AGENTS.md).
 
-```tsx
-type SwipeDirection = 'up' | 'down' | 'left' | 'right';
-type ModalAnimation = 'fade' | 'slide' | 'scale' | 'custom';
+## License
 
-// Animation states for custom worklet functions
-type ModalAnimationState =
-  | 'opening' // Modal is opening (progress: 0 -> 1)
-  | 'closing' // Modal is closing (progress: 1 -> 0)
-  | 'sliding' // User is swiping (offsetX, offsetY active)
-  | 'bouncing'; // Bounce back after failed swipe
-
-// Custom worklet function type
-type ModalAnimatedStyleFunction = (props: {
-  animationState: ModalAnimationState | null;
-  swipeDirection?: SwipeDirection | null; // Active during 'sliding' state
-  progress: number; // 0-1 during 'opening'/'closing' states
-  offsetX: number; // Pixel offset during 'sliding' state
-  offsetY: number; // Pixel offset during 'sliding' state
-  screenWidth: number; // Device screen width
-  screenHeight: number; // Device screen height
-}) => ViewStyle;
-
-// Configuration Types
-type ModalAnimationConfig<T extends ModalAnimation> = T extends 'fade'
-  ? FadeAnimationConfig
-  : T extends 'slide'
-    ? SlideAnimationConfig
-    : T extends 'scale'
-      ? ScaleAnimationConfig
-      : T extends 'custom'
-        ? CustomAnimationConfig
-        : never;
-
-interface BaseAnimationConfig {
-  duration?: number;
-  // Custom worklet functions (optional for all animation types)
-  contentAnimatedStyle?: ModalAnimatedStyleFunction;
-  backdropAnimatedStyle?: ModalAnimatedStyleFunction;
-}
-
-interface FadeAnimationConfig extends BaseAnimationConfig {
-  type: 'fade';
-}
-
-interface SlideAnimationConfig extends BaseAnimationConfig {
-  type: 'slide';
-  direction?:
-    | SwipeDirection
-    | {
-        start: SwipeDirection;
-        end: SwipeDirection | SwipeDirection[];
-      };
-}
-
-interface ScaleAnimationConfig extends BaseAnimationConfig {
-  type: 'scale';
-  scaleFactor?: number; // 0-1, default: 0.8
-}
-
-interface CustomAnimationConfig extends BaseAnimationConfig {
-  type: 'custom';
-  // No preset animation - relies entirely on contentAnimatedStyle
-}
-
-interface ModalSwipeConfig {
-  enabled?: boolean;
-  directions?: SwipeDirection[];
-  threshold?: number;
-  bounceSpringConfig?: SpringConfig;
-  bounceOpacityThreshold?: number;
-}
-
-interface ModalBackdropConfig {
-  enabled?: boolean;
-  color?: string;
-  opacity?: number;
-}
-
-type ModalAnimationConfigUnion =
-  | FadeAnimationConfig
-  | SlideAnimationConfig
-  | ScaleAnimationConfig
-  | CustomAnimationConfig;
-
-interface ModalRef {
-  open: () => void;
-  close: () => void;
-}
-```
-
-## 🔄 React Navigation support
-
-When using multiple modals simultaneously with `@react-navigation/native-stack`, you can leverage iOS's `FullWindowOverlay` for better layering:
-
-```tsx
-import React from 'react';
-import { Platform } from 'react-native';
-import { FullWindowOverlay } from 'react-native-screens';
-import { Modal } from 'react-native-reanimated-modal';
-
-const isIOS = Platform.OS === 'ios';
-
-const withOverlay = (element: React.ReactNode) =>
-  isIOS ? <FullWindowOverlay>{element}</FullWindowOverlay> : element;
-
-const MultiModalExample = () => {
-  const [firstModalVisible, setFirstModalVisible] = useState(false);
-  const [secondModalVisible, setSecondModalVisible] = useState(false);
-
-  return withOverlay(
-    <>
-      <Modal
-        visible={firstModalVisible}
-        coverScreen // Important: excludes native Modal usage
-        onHide={() => setFirstModalVisible(false)}
-      >
-        {/* First modal content */}
-      </Modal>
-
-      <Modal
-        visible={secondModalVisible}
-        coverScreen // Important: excludes native Modal usage
-        onHide={() => setSecondModalVisible(false)}
-      >
-        {/* Second modal content */}
-      </Modal>
-    </>
-  );
-};
-```
-
-> **Important**: When using multiple modals with `FullWindowOverlay`, always set `coverScreen={true}` prop to exclude the usage of React Native's native Modal component and ensure proper layering.
-
-## 🎨 Advanced Examples
-
-### Fade Animation with Custom Duration
-
-```tsx
-<Modal
-  visible={visible}
-  animation={{
-    type: 'fade',
-    duration: 400,
-  }}
-  swipe={{
-    directions: ['down', 'right'],
-    threshold: 100,
-  }}
-  onHide={() => setVisible(false)}
->
-  {/* Modal content */}
-</Modal>
-```
-
-### Scale Animation with Custom Duration
-
-```tsx
-<Modal
-  visible={visible}
-  animation={{
-    type: 'scale',
-    duration: 400,
-    scaleFactor: 0.8,
-  }}
-  swipe={{
-    directions: ['down', 'right'],
-    threshold: 100,
-  }}
-  onHide={() => setVisible(false)}
->
-  {/* Modal content */}
-</Modal>
-```
-
-### Custom Slide Animation with Swipe Directions
-
-```tsx
-<Modal
-  visible={visible}
-  animation={{
-    type: 'slide',
-    duration: 500,
-    direction: {
-      start: 'down', // Slides in from bottom
-      end: ['down', 'right'], // Can dismiss by swiping down or right
-    },
-  }}
-  swipe={{
-    threshold: 150,
-    bounceSpringConfig: {
-      dampingRatio: 0.8,
-      duration: 400,
-    },
-  }}
-  onHide={() => setVisible(false)}
->
-  {/* Modal content */}
-</Modal>
-```
-
-> **Note**: When using slide animation with complex directions, the `start` property determines the initial slide-in direction, while the `end` property (array or single direction) defines the available swipe-to-dismiss directions.
-
-### Full Screen Modal
-
-```tsx
-<Modal
-  visible={visible}
-  contentContainerStyle={{ flex: 1 }}
-  animation={{
-    type: 'slide',
-    duration: 300,
-    direction: 'down',
-  }}
-  swipe={{
-    directions: ['down'],
-    threshold: 80,
-  }}
-  backdrop={false} // No backdrop for full screen
-  onHide={() => setVisible(false)}
->
-  {/* Modal content */}
-</Modal>
-```
-
-### Custom Animation Worklets
-
-You can create fully custom animations by providing worklet functions that run on the UI thread. These functions receive animation state information and return style objects that get merged with the default preset animations.
-
-```tsx
-// Custom slide animation with rotation and color changes
-<Modal
-  visible={visible}
-  animation={{
-    type: 'slide',
-    duration: 500,
-    direction: 'down',
-    contentAnimatedStyle: ({ progress, animationState }) => {
-      'worklet';
-      return {
-        // Add rotation during slide animation
-        transform: [{ rotate: `${progress * 360}deg` }],
-        // Change background color based on progress
-        backgroundColor: `rgba(255, 0, 0, ${progress * 0.5})`,
-      };
-    },
-    backdropAnimatedStyle: ({ progress }) => {
-      'worklet';
-      return {
-        // Custom backdrop with color transition
-        backgroundColor: `rgba(0, 255, 0, ${progress * 0.3})`,
-      };
-    }
-  }}
->
-  {/* Modal content */}
-</Modal>
-
-// Custom animation type without any presets
-<Modal
-  visible={visible}
-  animation={{
-    type: 'custom',
-    duration: 800,
-    contentAnimatedStyle: ({ progress, offsetX, offsetY, animationState }) => {
-      'worklet';
-
-      if (animationState === 'sliding') {
-        // During swipe gestures
-        return {
-          opacity: 1 - Math.abs(offsetX) / 200,
-          transform: [
-            { translateX: offsetX },
-            { scale: 1 - Math.abs(offsetX) / 400 }
-          ],
-        };
-      }
-
-      // During open/close animations
-      return {
-        opacity: progress,
-        transform: [
-          { scale: 0.5 + progress * 0.5 },
-          { rotateY: `${(1 - progress) * 180}deg` }
-        ],
-      };
-    }
-  }}
->
-  {/* Modal content */}
-</Modal>
-
-// Enhance existing animations with custom effects
-<Modal
-  visible={visible}
-  animation={{
-    type: 'fade', // Use fade preset
-    duration: 600,
-    contentAnimatedStyle: ({ progress }) => {
-      'worklet';
-      // Add elastic scale effect to fade animation
-      const elasticScale = 1 + Math.sin(progress * Math.PI * 2) * 0.1;
-      return {
-        transform: [{ scale: elasticScale }]
-      };
-    }
-  }}
->
-  {/* Modal content */}
-</Modal>
-```
-
-### Custom Backdrop Examples
-
-```tsx
-// Disable backdrop completely
-<Modal visible={visible} backdrop={false}>
-  {/* Modal content */}
-</Modal>
-
-// Custom backdrop configuration
-<Modal
-  visible={visible}
-  backdrop={{
-    enabled: true,
-    color: 'rgba(255, 0, 0, 0.3)',
-    opacity: 0.8
-  }}
->
-  {/* Modal content */}
-</Modal>
-
-// Custom backdrop renderer (e.g., BlurView)
-<Modal
-  visible={visible}
-  backdrop={
-    <BlurView
-      style={StyleSheet.absoluteFill}
-      blurType="light"
-      blurAmount={10}
-    />
-  }
->
-  {/* Modal content */}
-</Modal>
-```
-
-## 🤝 Contributing
-
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
-
-## 📄 License
-
-MIT
-
----
-
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
+[MIT](LICENSE)

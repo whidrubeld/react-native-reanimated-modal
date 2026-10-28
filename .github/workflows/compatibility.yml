@@ -26,20 +26,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "18"
-          cache: "yarn"
-
-      - name: Cache node_modules
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}-${{ matrix.react-native-version }}-${{ matrix.reanimated-version }}
-
-      - name: Install dependencies
-        run: yarn install --immutable
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Create test workspace
         run: |
@@ -64,7 +52,8 @@ jobs:
       - name: Install test dependencies
         run: |
           cd compatibility-test
-          yarn install || echo "Installation completed with warnings"
+          # a standalone project, outside the pnpm workspace
+          npm install --no-package-lock || echo "Installation completed with warnings"
 
       - name: Copy library source
         run: |

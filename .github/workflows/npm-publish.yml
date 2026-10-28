@@ -38,12 +38,12 @@ jobs:
 
       - name: Run tests
         run: |
-          yarn lint
-          yarn typecheck
-          yarn test
+          pnpm lint
+          pnpm typecheck
+          pnpm test
 
       - name: Build package
-        run: yarn prepare
+        run: pnpm prepare
 
       - name: Check build output
         run: |
@@ -81,7 +81,7 @@ jobs:
             const version = tag.replace('v', '');
 
             // Add npm installation info to release
-            const body = context.payload.release.body + `\n\n## 📦 NPM Installation\n\n\`\`\`bash\nnpm install react-native-reanimated-modal@${version}\n# or\nyarn add react-native-reanimated-modal@${version}\n\`\`\`\n\n🎉 Published to NPM successfully!`;
+            const body = context.payload.release.body + `\n\n## 📦 NPM Installation\n\n\`\`\`bash\nnpm install react-native-reanimated-modal@${version}\n# or\npnpm add react-native-reanimated-modal@${version}\n\`\`\`\n\n🎉 Published to NPM successfully!`;
 
             await github.rest.repos.updateRelease({
               owner: context.repo.owner,

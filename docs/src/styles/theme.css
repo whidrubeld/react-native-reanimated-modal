@@ -1,0 +1,841 @@
+/*
+ * The look of three-map-terrain's docs (and GPX Terrain's): black and white,
+ * square, labels in mono capitals, a dot matrix, pixel corner brackets.
+ * Starlight's styles are in cascade layers: these, outside any, win.
+ */
+
+:root {
+  --sl-font: 'Geist Variable';
+  --sl-font-mono: 'JetBrains Mono Variable';
+  --font-dot:
+    'Doto Variable', 'JetBrains Mono Variable', ui-monospace, monospace;
+  --tracking-hud: 0.16em;
+  --sl-content-width: 46rem;
+  --sl-line-height: 1.7;
+}
+
+/* dark: Starlight's default */
+:root,
+::backdrop {
+  --bg: #0a0a0a;
+  --fg: #f4f4f4;
+  --muted: #8f8f8f;
+  --line: rgb(255 255 255 / 0.12);
+  --line-strong: rgb(255 255 255 / 0.3);
+  --dot: rgb(255 255 255 / 0.08);
+  --panel: #101010;
+
+  --sl-color-white: var(--fg);
+  --sl-color-gray-1: #e4e4e4;
+  --sl-color-gray-2: #c2c2c2;
+  --sl-color-gray-3: var(--muted);
+  --sl-color-gray-4: #5c5c5c;
+  --sl-color-gray-5: #2a2a2a;
+  --sl-color-gray-6: #151515;
+  --sl-color-black: var(--bg);
+}
+
+:root[data-theme='light'],
+[data-theme='light'] ::backdrop {
+  --bg: #f2f2f2;
+  --fg: #0a0a0a;
+  --muted: #686868;
+  --line: rgb(0 0 0 / 0.12);
+  --line-strong: rgb(0 0 0 / 0.32);
+  --dot: rgb(0 0 0 / 0.09);
+  --panel: #f8f8f8;
+
+  --sl-color-white: var(--fg);
+  --sl-color-gray-1: #161616;
+  --sl-color-gray-2: #333;
+  --sl-color-gray-3: var(--muted);
+  --sl-color-gray-4: #9a9a9a;
+  --sl-color-gray-5: #c6c6c6;
+  --sl-color-gray-6: #e4e4e4;
+  --sl-color-gray-7: #ebebeb;
+  --sl-color-black: var(--bg);
+}
+
+:root,
+:root[data-theme='light'] {
+  --sl-color-accent-low: var(--sl-color-gray-6);
+  --sl-color-accent: var(--fg);
+  --sl-color-accent-high: var(--fg);
+  --sl-color-text-accent: var(--fg);
+  --sl-color-text-invert: var(--bg);
+  --sl-color-bg: var(--bg);
+  --sl-color-bg-nav: var(--bg);
+  --sl-color-bg-sidebar: var(--bg);
+  --sl-color-bg-inline-code: var(--sl-color-gray-6);
+  --sl-color-bg-accent: var(--fg);
+  --sl-color-hairline: var(--line);
+  --sl-color-hairline-light: var(--line);
+  --sl-color-hairline-shade: var(--line);
+  --sl-shadow-sm: none;
+  --sl-shadow-md: none;
+  --sl-shadow-lg: none;
+}
+
+/* the page actions (Copy page): their tokens are set on their root, scoped */
+:root .sl-llm-actions[class] {
+  --llm-font: var(--__sl-font-mono);
+  --llm-text-sm: 0.75rem;
+  --llm-radius: 0;
+  --llm-shadow: none;
+  --llm-trigger-border: 1px solid var(--line-strong);
+}
+
+::selection {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+:focus-visible {
+  outline: 1px solid var(--fg);
+  outline-offset: 2px;
+}
+
+/* code as typed: no => drawn as an arrow */
+code,
+kbd,
+pre,
+.expressive-code {
+  font-variant-ligatures: none;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+/* ------------------------------------------------------------ pieces */
+
+/* a label of the instruments: mono capitals, spaced */
+.hud,
+.sidebar-content summary .large,
+.right-sidebar h2,
+.sl-markdown-content th {
+  font-family: var(--__sl-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: var(--tracking-hud);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+:is(.hud, .sl-markdown-content th, .sl-markdown-content h2) code {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* pixel corner brackets */
+.ticks {
+  position: relative;
+}
+
+.ticks::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  --t: 7px;
+  background:
+    linear-gradient(var(--fg), var(--fg)) top left / var(--t) 1px no-repeat,
+    linear-gradient(var(--fg), var(--fg)) top left / 1px var(--t) no-repeat,
+    linear-gradient(var(--fg), var(--fg)) top right / var(--t) 1px no-repeat,
+    linear-gradient(var(--fg), var(--fg)) top right / 1px var(--t) no-repeat,
+    linear-gradient(var(--fg), var(--fg)) bottom left / var(--t) 1px no-repeat,
+    linear-gradient(var(--fg), var(--fg)) bottom left / 1px var(--t) no-repeat,
+    linear-gradient(var(--fg), var(--fg)) bottom right / var(--t) 1px no-repeat,
+    linear-gradient(var(--fg), var(--fg)) bottom right / 1px var(--t) no-repeat;
+}
+
+/* a dotted rule filling the width left */
+.rule {
+  flex: 1;
+  min-width: 12px;
+  height: 1px;
+  background-image: linear-gradient(
+    to right,
+    var(--line-strong) 1px,
+    transparent 1px
+  );
+  background-size: 4px 1px;
+}
+
+.dot-matrix {
+  background-color: var(--bg);
+  background-image: radial-gradient(var(--dot) 1px, transparent 1.2px);
+  background-size: 16px 16px;
+}
+
+/* ------------------------------------------------------------ chrome */
+
+.site-title {
+  gap: 0.75rem;
+  color: var(--fg);
+  font-family: var(--font-dot);
+  font-size: 1.5rem;
+  font-weight: 800;
+  font-variation-settings: 'ROND' 100;
+  letter-spacing: 0.02em;
+}
+
+.site-title img {
+  height: 1.125rem;
+}
+
+@media (max-width: 50rem) {
+  .site-title {
+    font-size: 1.125rem;
+  }
+}
+
+/* the header's controls on a phone: search and menu, two equal squares */
+:root {
+  --sl-menu-button-size: 2.25rem;
+}
+
+.sl-menu-button {
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
+  padding: 0.5rem;
+  background: var(--bg);
+  color: var(--fg);
+  box-shadow: none;
+}
+
+.sl-menu-button:hover,
+.sl-menu-button:has(~ :popover-open) {
+  border-color: var(--fg);
+  background: var(--fg);
+  color: var(--bg);
+}
+
+@media (max-width: 50rem) {
+  site-search button[data-open-modal] {
+    justify-content: center;
+    width: var(--sl-menu-button-size);
+    height: var(--sl-menu-button-size);
+    padding: 0;
+  }
+}
+
+#starlight__on-this-page--mobile {
+  font-family: var(--__sl-font-mono);
+  font-size: 0.75rem;
+}
+
+#starlight__on-this-page--mobile .toggle {
+  border-color: var(--line-strong);
+  border-radius: 0;
+}
+
+site-search button[data-open-modal] {
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--__sl-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+site-search button[data-open-modal]:hover {
+  border-color: var(--fg);
+}
+
+site-search kbd,
+site-search kbd kbd {
+  border-radius: 0;
+  font-family: var(--__sl-font-mono);
+}
+
+site-search dialog {
+  border-radius: 0;
+}
+
+/* the search: a square field, square results */
+#starlight__search {
+  --pagefind-ui-border: var(--line-strong);
+  --pagefind-ui-border-radius: 0;
+  --sl-search-corners: 0px;
+}
+
+/* focused, the field's border turns black: no outline around it too */
+#starlight__search .pagefind-ui__search-input:focus-visible {
+  outline: none;
+}
+
+/* the field's clear button, muted: apart from the close button beside it */
+#starlight__search .pagefind-ui__search-clear::before {
+  background-color: var(--muted);
+}
+
+#starlight__search .pagefind-ui__search-clear:hover::before {
+  background-color: var(--fg);
+}
+
+/* on a phone, the search closes with a square as tall as the field, beside
+   it, with Starlight's close icon (the text, "Cancel", stays its name) */
+@media (max-width: 50rem) {
+  #starlight__search {
+    --sl-search-cancel-space: calc(64px * var(--pagefind-ui-scale) + 0.5rem);
+  }
+}
+
+site-search button[data-close-modal] {
+  justify-content: center;
+  width: calc(64px * var(--pagefind-ui-scale));
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 0;
+}
+
+site-search button[data-close-modal]:hover {
+  border-color: var(--fg);
+}
+
+site-search button[data-close-modal]::before {
+  content: '';
+  width: 1.25rem;
+  height: 1.25rem;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m13.41 12 6.3-6.29a1 1 0 1 0-1.42-1.42L12 10.59l-6.29-6.3a1 1 0 0 0-1.42 1.42l6.3 6.29-6.3 6.29a1 1 0 0 0 .33 1.64 1 1 0 0 0 1.09-.22l6.29-6.3 6.29 6.3a1 1 0 0 0 1.64-.33 1 1 0 0 0-.22-1.09L13.41 12Z'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+}
+
+/* set inline by Starlight for its own font */
+starlight-theme-select label {
+  --sl-select-width: 7.5em !important;
+}
+
+starlight-theme-select select {
+  font-family: var(--__sl-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.sidebar-content {
+  font-family: var(--__sl-font-mono);
+}
+
+.sidebar-content a,
+.sidebar-content a .large {
+  border-radius: 0;
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+
+.sidebar-content ul ul li {
+  border-inline-start: 1px dotted var(--line-strong);
+}
+
+.right-sidebar a {
+  font-family: var(--__sl-font-mono);
+  font-size: 0.75rem;
+}
+
+.right-sidebar a[aria-current='true'] {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+.pagination-links a {
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.pagination-links a:hover {
+  border-color: var(--fg);
+}
+
+.pagination-links .link-title {
+  font-family: var(--__sl-font-mono);
+  font-size: 0.9375rem;
+}
+
+.sl-link-button {
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
+  font-family: var(--__sl-font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.sl-link-button.primary {
+  border-color: var(--fg);
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.sl-link-button.primary:hover {
+  background: transparent;
+  color: var(--fg);
+}
+
+.sl-link-button.minimal {
+  padding-inline: 1.25rem;
+}
+
+.sl-link-button.minimal:hover {
+  border-color: var(--fg);
+  background: var(--fg);
+  color: var(--bg);
+}
+
+/* ------------------------------------------------------------ content */
+
+h1#_top,
+.hero h1 {
+  color: var(--fg);
+  font-family: var(--font-dot);
+  font-weight: 800;
+  font-variation-settings: 'ROND' 100;
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+}
+
+h1#_top {
+  font-size: clamp(2.25rem, 1.5rem + 3vw, 3.25rem);
+}
+
+.sl-markdown-content {
+  counter-reset: section;
+}
+
+.sl-markdown-content a:not(:where(.not-content *)) {
+  color: var(--fg);
+  text-decoration-color: var(--line-strong);
+  text-decoration-style: dotted;
+  text-underline-offset: 0.22em;
+}
+
+.sl-markdown-content a:not(:where(.not-content *)):hover {
+  text-decoration-color: var(--fg);
+  text-decoration-style: solid;
+}
+
+.sl-markdown-content code:not(:where(.not-content *)) {
+  border: 1px solid var(--line);
+  border-radius: 0;
+}
+
+/* sections: SECTION 01 ·········· */
+.sl-markdown-content .sl-heading-wrapper.level-h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 3rem;
+  counter-increment: section;
+}
+
+.sl-markdown-content .sl-heading-wrapper.level-h2::after {
+  content: '';
+  order: 3;
+  flex: 1;
+  min-width: 12px;
+  height: 1px;
+  background-image: linear-gradient(
+    to right,
+    var(--line-strong) 1px,
+    transparent 1px
+  );
+  background-size: 4px 1px;
+}
+
+.sl-markdown-content h2:not(:where(.not-content *)) {
+  color: var(--fg);
+  font-family: var(--__sl-font-mono);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.sl-markdown-content h2:not(:where(.not-content *))::after {
+  content: counter(section, decimal-leading-zero);
+  margin-inline-start: 0.75em;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.sl-markdown-content :is(h2, h3) code:not(:where(.not-content *)) {
+  border: 0;
+  padding: 0;
+  background: none;
+}
+
+.sl-markdown-content .sl-heading-wrapper .sl-anchor-link {
+  order: 2;
+  color: var(--muted);
+}
+
+.sl-markdown-content .sl-heading-wrapper .sl-anchor-link:hover {
+  color: var(--fg);
+}
+
+/* the page title and its actions (Copy page): side by side, the actions
+   under the title on a phone */
+.starlight-llm-actions-row {
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+@media (max-width: 50rem) {
+  .starlight-llm-actions-row {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  /* the button on the left: its menu opens to the right, inside the page */
+  .sl-llm-actions[class] .page-actions-menu {
+    right: auto;
+    left: 0;
+    max-width: calc(100vw - 2rem);
+  }
+}
+
+.sl-markdown-content h3:not(:where(.not-content *)) {
+  color: var(--fg);
+  font-family: var(--__sl-font-mono);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.sl-markdown-content ul:not(:where(.not-content *)) {
+  list-style: square;
+}
+
+.sl-markdown-content li::marker {
+  color: var(--muted);
+}
+
+.sl-markdown-content strong {
+  color: var(--fg);
+}
+
+.sl-markdown-content :is(th, td):not(:where(.not-content *)) {
+  border-bottom: 1px solid var(--line);
+}
+
+.sl-markdown-content th:not(:where(.not-content *)) {
+  border-bottom-color: var(--line-strong);
+  text-align: start;
+}
+
+.sl-markdown-content td:not(:where(.not-content *)) {
+  font-size: 0.9375rem;
+}
+
+/* a name linked in a first column (a file, a page) stays on one line */
+.sl-markdown-content td:first-child > a > code {
+  white-space: nowrap;
+}
+
+/* tables on a phone: a row is a card, its values labelled by their column
+   (data-label, from src/rehype-table-labels.mjs) */
+@media (max-width: 50rem) {
+  .sl-markdown-content table:not(:where(.not-content *)) {
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .sl-markdown-content thead:not(:where(.not-content *)) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .sl-markdown-content :is(tbody, tr):not(:where(.not-content *)) {
+    display: block;
+  }
+
+  .sl-markdown-content tr:not(:where(.not-content *)) {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .sl-markdown-content td:not(:where(.not-content *)) {
+    display: block;
+    padding: 0;
+    border: 0;
+  }
+
+  .sl-markdown-content td + td:not(:where(.not-content *)) {
+    margin-top: 0.4rem;
+  }
+
+  .sl-markdown-content td[data-label]:not(:first-child)::before {
+    content: attr(data-label);
+    display: block;
+    color: var(--muted);
+    font-family: var(--__sl-font-mono);
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: var(--tracking-hud);
+    text-transform: uppercase;
+  }
+}
+
+/* a fold: a bordered box, its summary a label */
+.sl-markdown-content details:not(:where(.not-content *)) {
+  border: 1px solid var(--line);
+  padding: 0;
+}
+
+.sl-markdown-content details > summary:not(:where(.not-content *)) {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  color: var(--fg);
+  cursor: pointer;
+  font-family: var(--__sl-font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.sl-markdown-content details > summary:hover {
+  background: var(--sl-color-gray-6);
+}
+
+.sl-markdown-content details[open] > summary {
+  border-bottom: 1px solid var(--line);
+}
+
+.sl-markdown-content details > .expressive-code {
+  margin: 0;
+}
+
+.sl-markdown-content details .expressive-code .frame pre {
+  border: 0;
+}
+
+/* code: square frames, the file name a label */
+.expressive-code .frame {
+  box-shadow: none;
+}
+
+/* Copied!: Expressive Code centres it as if it were the button's sibling,
+   but it sits in a wrapper (a live region) as tall as the button */
+.expressive-code .copy > div:has(> .feedback) {
+  display: flex;
+  align-items: center;
+}
+
+.expressive-code .copy .feedback {
+  border-radius: 0;
+  font-family: var(--__sl-font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.expressive-code .copy button {
+  border-radius: 0;
+}
+
+/* the first section right under the title */
+.sl-markdown-content > .sl-heading-wrapper.level-h2:first-child {
+  margin-top: 0;
+}
+
+/* ------------------------------------------------------------ home */
+
+body:has(.hero) {
+  background-image: radial-gradient(var(--dot) 1px, transparent 1.2px);
+  background-size: 16px 16px;
+}
+
+body:has(.hero) .main-frame {
+  background: transparent;
+}
+
+.hero {
+  grid-template-columns: 100%;
+}
+
+@media (min-width: 50rem) {
+  .hero {
+    grid-template-columns: 3fr 2fr;
+  }
+}
+
+.hero h1 {
+  font-size: clamp(2.75rem, 1rem + 7vw, 5.25rem);
+}
+
+/* the actions on a phone: the first across, the others side by side */
+@media (max-width: 50rem) {
+  .hero .actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .hero .actions .sl-link-button {
+    justify-content: center;
+    margin: 0;
+  }
+
+  .hero .actions .sl-link-button:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* the logo over the name — the header leaves both to the hero here */
+.hero-logo {
+  display: block;
+  width: clamp(4.5rem, 3rem + 6vw, 7.5rem);
+  margin: 0 auto 1.5rem;
+}
+
+.hero-logo svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (min-width: 50rem) {
+  .hero-logo {
+    margin-inline: 0;
+  }
+}
+
+body:has(.hero) .site-title {
+  visibility: hidden;
+}
+
+.hero .tagline {
+  color: var(--sl-color-gray-2);
+  font-size: clamp(1rem, 0.9rem + 0.5vw, 1.1875rem);
+}
+
+/* the spec sheet next to the title, under it on a phone */
+.hero > .hero-html {
+  order: 2;
+  width: 100%;
+}
+
+.spec {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  font-family: var(--__sl-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.spec-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--fg);
+  font-weight: 700;
+  letter-spacing: var(--tracking-hud);
+}
+
+.spec-head .count {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.spec dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.45rem 1.25rem;
+  margin: 0;
+  padding: 0.8rem 0.9rem;
+}
+
+.spec dt {
+  color: var(--muted);
+}
+
+.spec dd {
+  margin: 0;
+  color: var(--fg);
+  text-align: end;
+}
+
+.figure {
+  display: block;
+  margin-block: 1rem 0;
+  border: 1px solid var(--line);
+}
+
+.figure img {
+  display: block;
+  width: 100%;
+}
+
+.figure-caption {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.6rem;
+}
+
+.figure-caption > :last-child {
+  color: var(--fg);
+}
+
+/* the features: a list in the source, a grid of cards on the page */
+.features ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 1px;
+  padding: 0;
+  border: 1px solid var(--line);
+  background: var(--line);
+  list-style: none;
+  counter-reset: feature;
+}
+
+.sl-markdown-content .features li {
+  margin: 0;
+  padding: 1rem 1.1rem 1.1rem;
+  background: var(--bg);
+  counter-increment: feature;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.sl-markdown-content .features li > p {
+  margin: 0;
+}
+
+.sl-markdown-content .features li > p:first-child {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-family: var(--__sl-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: var(--tracking-hud);
+  text-transform: uppercase;
+}
+
+.sl-markdown-content .features li > p:first-child::after {
+  content: counter(feature, decimal-leading-zero);
+  color: var(--muted);
+}
+
+.sl-markdown-content .features li > p:first-child a {
+  text-decoration: none;
+}
+
+.sl-markdown-content .features li > p:first-child a:hover {
+  text-decoration: underline;
+}

@@ -17,7 +17,7 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Build library
-        run: yarn prepare
+        run: pnpm prepare
 
       - name: Check bundle size
         run: |
@@ -25,7 +25,8 @@ jobs:
 
           # Checkout base branch to compare
           git checkout ${{ github.base_ref }}
-          yarn prepare
+          pnpm install --frozen-lockfile
+          pnpm prepare
           BASE_SIZE=$(du -sk lib | cut -f1)
 
           # Calculate difference
@@ -47,4 +48,4 @@ jobs:
       - name: Run performance tests
         run: |
           # Here you can add specific performance tests
-          yarn test --testNamePattern="performance|benchmark" --verbose || echo "No specific performance tests found"
+          pnpm test --testNamePattern="performance|benchmark" --verbose || echo "No specific performance tests found"
