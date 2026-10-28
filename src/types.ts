@@ -147,7 +147,8 @@ export interface ModalSwipeConfig {
   enabled?: boolean;
   /**
    * Array of swipe directions that should close the modal.
-   * @default []
+   * When empty, the slide animation's direction (its `end`) is used.
+   * @default ['down']
    */
   directions?: SwipeDirection[];
   /**
@@ -157,7 +158,7 @@ export interface ModalSwipeConfig {
   threshold?: number;
   /**
    * Spring config for bounce-back animation after failed swipe.
-   * @default { stiffness: 200, dampingRatio: 0.5, duration: 700 }
+   * @default { dampingRatio: 0.5, duration: 700 }
    */
   bounceSpringConfig?: SpringConfig;
   /**
@@ -239,7 +240,7 @@ export interface ModalProps
   /**
    * Animation configuration for modal appearance.
    * Can be a simple animation type string or a detailed config object.
-   * @default { type: 'slide', duration: 300 }
+   * @default { type: 'fade', duration: 300 }
    */
   animation?: ModalAnimationConfigUnion | ModalAnimation;
 
@@ -258,8 +259,8 @@ export interface ModalProps
 
   // Swipe configuration
   /**
-   * Swipe gesture configuration.
-   * @default { enabled: true, threshold: 100 }
+   * Swipe gesture configuration. Requires `onHide`.
+   * @default { enabled: true, directions: ['down'], threshold: 100 }
    */
   swipe?: ModalSwipeConfig | false;
 

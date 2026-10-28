@@ -6,44 +6,37 @@ We want this community to be friendly and respectful to each other. Please follo
 
 ## Development workflow
 
-This project is a monorepo managed using [Yarn workspaces](https://yarnpkg.com/features/workspaces). It contains the following packages:
+The repository is a [pnpm workspace](https://pnpm.io/workspaces) with one lockfile, `pnpm-lock.yaml`:
 
-- The library package in the root directory.
-- An example app in the `example/` directory.
+- the library in the root directory;
+- the Expo example app in `example/`;
+- the documentation site (Astro Starlight) in `docs/`.
 
-To get started with the project, run `yarn` in the root directory to install the required dependencies for each package:
-
-```sh
-yarn
-```
-
-> Since the project relies on Yarn workspaces, you cannot use [`npm`](https://github.com/npm/cli) for development.
-
-The [example app](/example/) demonstrates usage of the library. You need to run it to test any changes you make.
-
-It is configured to use the local version of the library, so any changes you make to the library's source code will be reflected in the example app. Changes to the library's JavaScript code will be reflected in the example app without a rebuild, but native code changes will require a rebuild of the example app.
-
-You can use various commands from the root directory to work with the project.
-
-To start the packager:
+pnpm is pinned by `packageManager` in `package.json` and Node by `.nvmrc`. Install everything from the root:
 
 ```sh
-yarn example start
+pnpm install
 ```
 
-To run the example app on Android:
+> The workspace uses pnpm's `nodeLinker: hoisted` (a flat `node_modules`, as Metro and the React Native Jest preset expect). Use pnpm, not npm or Yarn, for development.
+
+The [example app](/example/) demonstrates usage of the library. You need to run it to test any changes you make. It uses the library's source (`src/`) through Metro, so changes to the library's JavaScript show up without a rebuild; native code changes need a rebuild of the example app.
+
+Start the packager:
 
 ```sh
-yarn example android
+pnpm example start
 ```
 
-To run the example app on iOS:
+Run the example app on Android, iOS or the web:
 
 ```sh
-yarn example ios
+pnpm example android
+pnpm example ios
+pnpm example web
 ```
 
-To confirm that the app is running with the new architecture, you can check the Metro logs for a message like this:
+To confirm that the app is running with the new architecture, check the Metro logs for a message like this:
 
 ```sh
 Running "ReanimatedModalExample" with {"fabric":true,"initialProps":{"concurrentRoot":true},"rootTag":1}
@@ -51,30 +44,41 @@ Running "ReanimatedModalExample" with {"fabric":true,"initialProps":{"concurrent
 
 Note the `"fabric":true` and `"concurrentRoot":true` properties.
 
-To run the example app on Web:
+Make sure your code passes TypeScript and ESLint:
 
 ```sh
-yarn example web
+pnpm typecheck
+pnpm lint
 ```
 
-Make sure your code passes TypeScript and ESLint. Run the following to verify:
+To fix formatting errors:
 
 ```sh
-yarn typecheck
-yarn lint
+pnpm lint --fix
 ```
 
-To fix formatting errors, run the following:
+Remember to add tests for your change if possible. Run the unit tests with:
 
 ```sh
-yarn lint --fix
+pnpm test
 ```
 
-Remember to add tests for your change if possible. Run the unit tests by:
+`pnpm validate` runs all of it — typecheck, lint, tests and the build — as CI does.
+
+### Documentation
+
+The documentation is [`docs/`](docs), <https://whidrubeld.github.io/react-native-reanimated-modal/>. A change of the public API or of what users see updates its page there:
 
 ```sh
-yarn test
+pnpm docs dev     # http://localhost:4321/react-native-reanimated-modal/
+pnpm docs build   # astro check, the site, internal links validated
 ```
+
+The README is the storefront — features, install, quick start, links — and points to the docs for the rest.
+
+### Editor
+
+The repository ships a [Zed](https://zed.dev) setup in `.zed/`: format on save with Prettier and ESLint fixes, tasks for every script (`task: spawn`), Jest runnables in test files, and debug configurations for Jest, the example on the web and the docs.
 
 ### Commit message convention
 
@@ -83,19 +87,17 @@ We follow the [conventional commits specification](https://www.conventionalcommi
 - `fix`: bug fixes, e.g. fix crash due to deprecated method.
 - `feat`: new features, e.g. add new method to the module.
 - `refactor`: code refactor, e.g. migrate from class components to hooks.
-- `docs`: changes into documentation, e.g. add usage example for the module..
+- `docs`: changes into documentation, e.g. add usage example for the module.
 - `test`: adding or updating tests, e.g. add integration tests using detox.
 - `chore`: tooling changes, e.g. change CI config.
 
-Our pre-commit hooks verify that your commit message matches this format when committing.
+Our pre-commit hooks ([lefthook](https://lefthook.dev), installed by `pnpm install`) verify that your commit message matches this format when committing.
 
 ### Linting and tests
 
-[ESLint](https://eslint.org/), [Prettier](https://prettier.io/), [TypeScript](https://www.typescriptlang.org/)
-
 We use [TypeScript](https://www.typescriptlang.org/) for type checking, [ESLint](https://eslint.org/) with [Prettier](https://prettier.io/) for linting and formatting the code, and [Jest](https://jestjs.io/) for testing.
 
-Our pre-commit hooks verify that the linter and tests pass when committing.
+Our pre-commit hooks verify that the linter and the type checker pass when committing.
 
 ### Publishing to npm
 
@@ -104,20 +106,21 @@ We use [release-it](https://github.com/release-it/release-it) to make it easier 
 To publish new versions, run the following:
 
 ```sh
-yarn release
+pnpm release
 ```
 
 ### Scripts
 
 The `package.json` file contains various scripts for common tasks:
 
-- `yarn`: setup project by installing dependencies.
-- `yarn typecheck`: type-check files with TypeScript.
-- `yarn lint`: lint files with ESLint.
-- `yarn test`: run unit tests with Jest.
-- `yarn example start`: start the Metro server for the example app.
-- `yarn example android`: run the example app on Android.
-- `yarn example ios`: run the example app on iOS.
+- `pnpm install`: set up the project by installing dependencies.
+- `pnpm typecheck`: type-check files with TypeScript.
+- `pnpm lint`: lint files with ESLint.
+- `pnpm test`: run unit tests with Jest.
+- `pnpm prepare`: build the library into `lib/` with react-native-builder-bob.
+- `pnpm validate`: all of the above, as CI runs them.
+- `pnpm example <script>`: run a script of the example app — `start`, `android`, `ios`, `web`.
+- `pnpm docs <script>`: run a script of the docs — `dev`, `build`, `preview`.
 
 ### Sending a pull request
 

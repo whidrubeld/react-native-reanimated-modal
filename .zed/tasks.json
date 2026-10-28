@@ -1,0 +1,50 @@
+// Zed tasks (`task: spawn`). The library's scripts run in the root; the
+// example app resolves the library from src/ through Metro, so it needs no
+// build; docs/ is a package of the same pnpm workspace.
+[
+  { "label": "install: the workspace", "command": "pnpm install" },
+  { "label": "typecheck", "command": "pnpm typecheck", "save": "all" },
+  { "label": "lint", "command": "pnpm lint", "save": "all" },
+  { "label": "lint: fix", "command": "pnpm lint --fix", "save": "all" },
+  { "label": "test", "command": "pnpm test", "save": "all" },
+  { "label": "test: watch", "command": "pnpm test --watch" },
+  {
+    "label": "test: coverage",
+    "command": "pnpm test --coverage",
+    "save": "all"
+  },
+  { "label": "build", "command": "pnpm prepare", "save": "all" },
+  { "label": "validate", "command": "pnpm validate", "save": "all" },
+  {
+    "label": "test: $ZED_RELATIVE_FILE",
+    "command": "pnpm exec jest \"$ZED_RELATIVE_FILE\"",
+    "save": "current"
+  },
+  {
+    // Zed's runnables for `it`/`test`/`describe` in a test file
+    "label": "test: $ZED_CUSTOM_TYPESCRIPT_JEST_TEST_NAME",
+    "command": "pnpm exec jest \"$ZED_RELATIVE_FILE\" -t \"$ZED_CUSTOM_TYPESCRIPT_JEST_TEST_NAME\"",
+    "save": "current",
+    "tags": ["ts-test", "js-test"]
+  },
+  { "label": "example: start", "command": "pnpm example start", "save": "all" },
+  { "label": "example: ios", "command": "pnpm example ios", "save": "all" },
+  {
+    "label": "example: android",
+    "command": "pnpm example android",
+    "save": "all"
+  },
+  { "label": "example: web", "command": "pnpm example web", "save": "all" },
+  {
+    "label": "example: doctor",
+    "command": "pnpm dlx expo-doctor@latest",
+    "cwd": "$ZED_WORKTREE_ROOT/example"
+  },
+  { "label": "docs: dev", "command": "pnpm docs dev", "save": "all" },
+  { "label": "docs: build", "command": "pnpm docs build", "save": "all" },
+  {
+    "label": "lefthook: pre-commit",
+    "command": "pnpm exec lefthook run pre-commit --all-files",
+    "save": "all"
+  }
+]

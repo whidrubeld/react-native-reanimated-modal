@@ -5,8 +5,9 @@
 # XDE
 .expo/
 
-# VSCode
+# Editors
 jsconfig.json
+.vscode/
 
 # Xcode
 #
@@ -51,22 +52,15 @@ example/vendor/
 #
 node_modules/
 npm-debug.log
-yarn-debug.log
-yarn-error.log
+pnpm-debug.log
+package-lock.json
+yarn.lock
 
 # BUCK
 buck-out/
 \.buckd/
 android/app/libs
 android/keystores/debug.keystore
-
-# Yarn
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
 
 # Expo
 .expo/
@@ -84,5 +78,9 @@ android/generated
 # React Native Nitro Modules
 nitrogen/
 
-# Typedoc
-docs/
+# Jest
+coverage/
+
+# Astro (docs/)
+docs/dist/
+docs/.astro/

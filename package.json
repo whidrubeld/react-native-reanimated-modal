@@ -1,6 +1,6 @@
 {
   "name": "react-native-reanimated-modal",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "A lightweight and performant modal component. Designed for smooth animations, flexibility, and minimal footprint.",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
@@ -32,14 +32,15 @@
     "!**/.*"
   ],
   "scripts": {
-    "example": "yarn workspace react-native-reanimated-modal-example",
+    "example": "pnpm --filter react-native-reanimated-modal-example",
+    "docs": "pnpm --filter react-native-reanimated-modal-docs",
     "test": "jest",
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "validate": "pnpm typecheck && pnpm lint && pnpm test && pnpm prepare",
     "clean": "del-cli lib",
     "prepare": "bob build",
-    "release": "release-it --only-version",
-    "docs": "typedoc"
+    "release": "release-it --only-version"
   },
   "keywords": [
     "react-native",
@@ -99,8 +100,6 @@
     "react-native-worklets": "0.13.0",
     "release-it": "^21.1.1",
     "test-renderer": "~1.3.1",
-    "typedoc": "^0.28.20",
-    "typedoc-theme-oxide": "^0.3.0",
     "typescript": "~6.0.3"
   },
   "peerDependencies": {
@@ -109,10 +108,7 @@
     "react-native-gesture-handler": "*",
     "react-native-reanimated": "*"
   },
-  "workspaces": [
-    "example"
-  ],
-  "packageManager": "yarn@3.6.1",
+  "packageManager": "pnpm@12.4.2",
   "jest": {
     "preset": "@react-native/jest-preset",
     "resolver": "react-native-reanimated/jest/resolver",
@@ -184,9 +180,5 @@
     "languages": "js",
     "type": "library",
     "version": "0.52.0"
-  },
-  "resolutions": {
-    "jest-mock": "^30.5.2",
-    "jest-environment-node": "^30.5.2"
   }
 }

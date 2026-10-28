@@ -1,0 +1,22 @@
+# The library is the root; example/ (Expo) resolves it from src/ through
+# Metro (react-native-monorepo-config), docs/ is the Astro Starlight site
+packages:
+  - example
+  - docs
+
+# Metro, Expo autolinking and the React Native Jest preset expect a flat
+# node_modules: one copy of react, react-native, reanimated and gesture
+# handler for the library, its tests and the example
+nodeLinker: hoisted
+
+# dependencies whose install scripts may run (pnpm blocks the others):
+# lefthook installs the git hooks, the rest fetch or check native binaries
+allowBuilds:
+  '@evilmartians/lefthook': true
+  '@parcel/watcher': true
+  sharp: true
+  unrs-resolver: true
+
+overrides:
+  jest-mock: ^30.5.2
+  jest-environment-node: ^30.5.2

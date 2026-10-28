@@ -20,7 +20,7 @@ jobs:
       - name: Run security audit
         run: |
           echo "🔍 Running security audit for main project..."
-          yarn npm audit --json || echo "⚠️ Vulnerabilities found or audit failed"
+          pnpm audit --json || echo "⚠️ Vulnerabilities found or audit failed"
           echo "✅ Main project audit completed"
 
   codeql:

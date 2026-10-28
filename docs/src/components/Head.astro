@@ -1,0 +1,30 @@
+---
+// The head, and the fonts: their latin files only, preloaded and blocking —
+// a page never shows a fallback font first (with fontsource's `swap` every
+// navigation did, then jumped). Glyphs beyond latin come from the system
+// fonts of the stacks.
+import Default from '@astrojs/starlight/components/Head.astro'
+import doto from '@fontsource-variable/doto/files/doto-latin-full-normal.woff2?url'
+import geist from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url'
+import mono from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url'
+
+const faces = [
+  ['Geist Variable', geist],
+  ['JetBrains Mono Variable', mono],
+  ['Doto Variable', doto]
+]
+const css = faces
+  .map(
+    ([family, url]) =>
+      `@font-face{font-family:'${family}';font-style:normal;font-weight:100 900;font-display:block;src:url(${url}) format('woff2-variations')}`
+  )
+  .join('')
+---
+
+<Default><slot /></Default>
+{
+  faces.map(([, url]) => (
+    <link rel='preload' href={url} as='font' type='font/woff2' crossorigin />
+  ))
+}
+<style is:inline set:html={css} />

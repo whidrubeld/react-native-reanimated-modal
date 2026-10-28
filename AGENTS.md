@@ -25,15 +25,75 @@ This document provides specialized configurations for AI coding assistants worki
 │   ├── styles.ts                # Styling definitions
 │   ├── index.ts                 # Public API exports
 │   └── __tests__/               # Unit tests
-├── example/                     # Expo example application
+├── example/                     # Expo example application (workspace package)
 │   ├── src/
 │   │   ├── App.tsx              # Main app component
 │   │   ├── Content.tsx          # Example showcase component
 │   │   ├── use-cases/           # Usage examples
 │   │   └── primitives/          # UI components
 │   └── package.json             # Example app dependencies
+├── docs/                        # Documentation site: Astro Starlight (workspace package)
+│   ├── src/content/docs/        # The pages (Markdown / MDX)
+│   ├── astro.config.mjs         # Sidebar, plugins, the order of llms.txt
+│   └── public/images/           # example.gif, eas-update.svg (README uses them too)
+├── .zed/                        # Zed editor: settings, tasks, debug configurations
+├── pnpm-workspace.yaml          # Workspace packages, nodeLinker, allowBuilds, overrides
 └── package.json                 # Library dependencies
 ```
+
+## Commands (pnpm 12, Node from `.nvmrc`)
+
+```bash
+pnpm install          # the whole workspace: library, example/, docs/
+pnpm typecheck        # tsc
+pnpm lint             # eslint (+ prettier through eslint-plugin-prettier)
+pnpm test             # jest
+pnpm prepare          # bob build into lib/
+pnpm validate         # typecheck + lint + test + prepare
+pnpm example start    # the Expo example (also: ios, android, web)
+pnpm docs dev         # docs on http://localhost:4321/react-native-reanimated-modal/
+pnpm docs build       # astro check + the site in docs/dist/, links validated
+```
+
+One pnpm workspace, one `pnpm-lock.yaml`; pnpm is pinned by `packageManager`.
+`nodeLinker: hoisted` keeps `node_modules` flat for Metro, Expo autolinking and
+the React Native Jest preset. `pnpm example <cmd>` / `pnpm docs <cmd>` run a
+package's script (`pnpm example exec expo …` for its binaries). Dependencies
+with install scripts need an `allowBuilds` entry in `pnpm-workspace.yaml`;
+version overrides live there too (`overrides`). Run local tools with
+`pnpm exec <bin>`, not `npx`.
+
+## Documentation (`docs/`)
+
+The user documentation is the site, <https://whidrubeld.github.io/react-native-reanimated-modal/>;
+the README is its storefront (features, install, quick start, links). The
+setup follows three-map-terrain's docs (same look, same plugins).
+
+- **Pages** (`docs/src/content/docs/`): one topic each, Markdown with a
+  `title` and a `description` (the description is the page's line in
+  `llms.txt`). The guide explains, `api/` is the reference, `llms` is for
+  AI assistants. The sidebar and the order of `llms.txt` are in
+  `astro.config.mjs` (`GUIDE`, `REFERENCE`): a new page goes there.
+- **Truth**: pages describe what `src/` does, not what it was meant to do —
+  check defaults in `config.ts` and behaviour in `component.tsx`. A change
+  of the public API or of what users see updates its page (and the JSDoc
+  in `types.ts`, which is what users see in their editor).
+- **Links** between pages are absolute with the base,
+  `/react-native-reanimated-modal/swipe/#directions`;
+  `starlight-links-validator` fails the build on a dead page or anchor.
+  Files in the repo are GitHub URLs.
+- **For LLMs** (`starlight-llm-actions`): every page has a `.md` twin
+  (Copy page, `<link rel="alternate">`), `llms.txt` and `llms-full.txt`;
+  its optional peers (`unified`, `rehype-*`, `remark-*`, `unist-util-remove`,
+  `hast-util-select`) are listed in `docs/package.json`.
+- **Markdown** runs on Astro 7's Sätteri processor; `src/table-labels.mjs`
+  gives table cells their column's name so rows stack into cards on a phone.
+- **Look**: black and white, square, JetBrains Mono / Geist / Doto, pixel
+  corner brackets (`.ticks`), HUD labels (`.hud`) — `src/styles/theme.css`
+  over Starlight's cascade layers; fonts preloaded in `src/components/Head.astro`.
+- **Deploy** (`gh-pages.yml`, from master): `pnpm docs build`, `docs/dist`
+  to the `gh-pages` branch; `public/.nojekyll` keeps `_astro/`. CI builds
+  the docs on every push and pull request.
 
 ## Core Features
 
@@ -169,7 +229,7 @@ const gesture = Gesture.Pan()
 ### Documentation Agent
 
 **Focus**: API documentation, usage examples, migration guides
-**Strengths**: TypeDoc integration, example creation, architectural documentation
+**Strengths**: Astro Starlight docs (`docs/`), example creation, architectural documentation
 **Use Cases**: README updates, API references, tutorial creation
 
 ### Performance Agent
