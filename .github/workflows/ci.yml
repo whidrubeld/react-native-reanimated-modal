@@ -80,4 +80,4 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Build docs
-        run: pnpm docs build
+        run: pnpm run docs build

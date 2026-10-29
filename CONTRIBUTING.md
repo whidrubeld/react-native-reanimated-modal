@@ -101,12 +101,25 @@ Our pre-commit hooks verify that the linter and the type checker pass when commi
 
 ### Publishing to npm
 
-We use [release-it](https://github.com/release-it/release-it) to make it easier to publish new versions. It handles common tasks like bumping version based on semver, creating tags and releases etc.
-
-To publish new versions, run the following:
+The version in the root `package.json` is the release. Bump it and push the change
+to `master`:
 
 ```sh
-pnpm release
+pnpm release # release-it --only-version: only the version in package.json
+```
+
+A push to `master` that changes the version runs `.github/workflows/publish.yml`:
+it lints, type-checks, tests, builds, publishes to npm and creates the GitHub
+release — the changelog since the previous tag, the tag itself. A push that
+leaves the version alone publishes nothing.
+
+npm authenticates with OIDC through the package's Trusted Publisher on
+npmjs.com (`publish.yml`), so there is no `NPM_TOKEN` and nothing to rotate.
+To publish a version whose commit is already in `master` — a failed run, a
+backfill:
+
+```sh
+gh workflow run publish.yml -f tag=v1.3.3
 ```
 
 ### Scripts
@@ -120,7 +133,8 @@ The `package.json` file contains various scripts for common tasks:
 - `pnpm prepare`: build the library into `lib/` with react-native-builder-bob.
 - `pnpm validate`: all of the above, as CI runs them.
 - `pnpm example <script>`: run a script of the example app — `start`, `android`, `ios`, `web`.
-- `pnpm docs <script>`: run a script of the docs — `dev`, `build`, `preview`.
+- `pnpm run docs <script>`: run a script of the docs — `dev`, `build`, `preview`. The `run`
+  is needed: pnpm has a built-in `pnpm docs <package>` that would shadow it.
 
 ### Sending a pull request
 

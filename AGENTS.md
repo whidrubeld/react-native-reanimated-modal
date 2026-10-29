@@ -51,17 +51,18 @@ pnpm test             # jest
 pnpm prepare          # bob build into lib/
 pnpm validate         # typecheck + lint + test + prepare
 pnpm example start    # the Expo example (also: ios, android, web)
-pnpm docs dev         # docs on http://localhost:4321/react-native-reanimated-modal/
-pnpm docs build       # astro check + the site in docs/dist/, links validated
+pnpm run docs dev     # docs on http://localhost:4321/react-native-reanimated-modal/
+pnpm run docs build   # astro check + the site in docs/dist/, links validated
 ```
 
 One pnpm workspace, one `pnpm-lock.yaml`; pnpm is pinned by `packageManager`.
 `nodeLinker: hoisted` keeps `node_modules` flat for Metro, Expo autolinking and
-the React Native Jest preset. `pnpm example <cmd>` / `pnpm docs <cmd>` run a
-package's script (`pnpm example exec expo …` for its binaries). Dependencies
-with install scripts need an `allowBuilds` entry in `pnpm-workspace.yaml`;
-version overrides live there too (`overrides`). Run local tools with
-`pnpm exec <bin>`, not `npx`.
+the React Native Jest preset. `pnpm example <cmd>` / `pnpm run docs <cmd>` run a
+package's script (`pnpm example exec expo …` for its binaries); `docs` needs the
+`run` because pnpm 12 has a built-in `pnpm docs <package>` that would shadow it.
+Dependencies with install scripts need an `allowBuilds` entry in
+`pnpm-workspace.yaml`; version overrides live there too (`overrides`). Run local
+tools with `pnpm exec <bin>`, not `npx`.
 
 ## Documentation (`docs/`)
 
@@ -91,9 +92,31 @@ setup follows three-map-terrain's docs (same look, same plugins).
 - **Look**: black and white, square, JetBrains Mono / Geist / Doto, pixel
   corner brackets (`.ticks`), HUD labels (`.hud`) — `src/styles/theme.css`
   over Starlight's cascade layers; fonts preloaded in `src/components/Head.astro`.
-- **Deploy** (`gh-pages.yml`, from master): `pnpm docs build`, `docs/dist`
+- **Deploy** (`gh-pages.yml`, from master): `pnpm run docs build`, `docs/dist`
   to the `gh-pages` branch; `public/.nojekyll` keeps `_astro/`. CI builds
   the docs on every push and pull request.
+
+## Releases (`publish.yml`)
+
+The version in the root `package.json` is the release. A push to master that
+changes it publishes that version to npm and creates the GitHub release (the
+changelog since the previous tag); a push that does not change it publishes
+nothing. `release-it --only-version` (`pnpm release`) writes the bump, the tag
+is made by the workflow.
+
+- **npm auth is OIDC**: no `NPM_TOKEN`, no `.npmrc` token — `id-token: write`
+  and the Trusted Publisher on npmjs.com (user `WhidRubeld`, repository
+  `react-native-reanimated-modal`, workflow `publish.yml`) do it, and
+  provenance is attached automatically. A token would be ignored while npm's
+  "disallow tokens" setting is on.
+- **One file on purpose**: npm matches the _calling_ workflow when a publish
+  goes through `workflow_call`, so publishing from a reusable workflow needs
+  its caller's filename in the npm settings. Keep `npm publish` in
+  `publish.yml`.
+- **A manual run** (`workflow_dispatch` with a `tag`) only publishes: for a
+  backfill, e.g. `gh workflow run publish.yml -f tag=v1.3.3`.
+- Requires npm CLI ≥ 11.5.1 and Node ≥ 22.14 on the runner (`.nvmrc` has Node
+  24); GitHub-hosted runners only.
 
 ## Core Features
 
