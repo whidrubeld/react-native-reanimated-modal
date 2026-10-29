@@ -40,8 +40,8 @@
     "command": "pnpm dlx expo-doctor@latest",
     "cwd": "$ZED_WORKTREE_ROOT/example"
   },
-  { "label": "docs: dev", "command": "pnpm docs dev", "save": "all" },
-  { "label": "docs: build", "command": "pnpm docs build", "save": "all" },
+  { "label": "docs: dev", "command": "pnpm run docs dev", "save": "all" },
+  { "label": "docs: build", "command": "pnpm run docs build", "save": "all" },
   {
     "label": "lefthook: pre-commit",
     "command": "pnpm exec lefthook run pre-commit --all-files",

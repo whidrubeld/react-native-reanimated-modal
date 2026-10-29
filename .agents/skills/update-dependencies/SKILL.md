@@ -45,8 +45,8 @@ Run local tools through `pnpm exec <bin>` (`pnpm exec prettier`, `pnpm exec esli
 ### 2. Report
 
 ```sh
-node .skills/update-dependencies/scripts/deps-report.mjs           # target: latest Expo SDK
-node .skills/update-dependencies/scripts/deps-report.mjs --sdk 58  # a specific SDK
+node .agents/skills/update-dependencies/scripts/deps-report.mjs           # target: latest Expo SDK
+node .agents/skills/update-dependencies/scripts/deps-report.mjs --sdk 58  # a specific SDK
 ```
 
 The script prints spec, installed, latest and Expo-recommended versions for every dependency. It also prints the Node engines of the target `expo`/`react-native` and flags breaking bumps (`MAJOR`), SDK mismatches (`!expo`) and root/example drift (`root!=example`).

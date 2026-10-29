@@ -12,10 +12,10 @@ It is a package of the repository's pnpm workspace:
 # repository root
 pnpm install
 
-pnpm docs dev         # http://localhost:4321/react-native-reanimated-modal/
-                      # (a fresh content cache; replaces a dev server already running)
-pnpm docs typecheck   # astro check
-pnpm docs build       # astro check + the site in docs/dist/ (validates internal links)
+pnpm run docs dev         # http://localhost:4321/react-native-reanimated-modal/
+                          # (a fresh content cache; replaces a dev server already running)
+pnpm run docs typecheck   # astro check
+pnpm run docs build       # astro check + the site in docs/dist/ (validates internal links)
 ```
 
 In this folder, the same without the `docs` prefix: `pnpm dev`, `pnpm build`.

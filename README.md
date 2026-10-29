@@ -94,10 +94,10 @@ Every page of the docs is also Markdown — [`llms.txt`](https://whidrubeld.gith
 ## Development
 
 ```sh
-pnpm install          # the library, example/ and docs/ (one pnpm workspace)
-pnpm example start    # the Expo example, on the library's source
-pnpm validate         # typecheck, lint, unit tests, build
-pnpm docs dev         # the documentation on http://localhost:4321/react-native-reanimated-modal/
+pnpm install             # the library, example/ and docs/ (one pnpm workspace)
+pnpm example start       # the Expo example, on the library's source
+pnpm validate            # typecheck, lint, unit tests, build
+pnpm run docs dev        # the documentation on http://localhost:4321/react-native-reanimated-modal/
 ```
 
 The workflow, conventions and releases are in [CONTRIBUTING.md](CONTRIBUTING.md); architecture notes for coding agents in [AGENTS.md](AGENTS.md).

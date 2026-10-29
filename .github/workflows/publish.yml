@@ -1,0 +1,156 @@
+name: Publish
+
+# One workflow for a release: a version bump merged into master is published to
+# npm and tagged on GitHub. npm authenticates through OIDC (the Trusted
+# Publisher on npmjs.com), so there is no token; provenance is generated.
+# The release is created after the publish, so a failed publish leaves no
+# release claiming a version that npm does not have.
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - package.json
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to publish, e.g. v1.3.3 (manual or backfill publish)'
+        required: false
+        type: string
+
+permissions:
+  contents: write # the GitHub release and its tag
+  id-token: write # npm OIDC: npm CLI ≥ 11.5.1, Node ≥ 22.14 (.nvmrc)
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # the changelog since the previous tag
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Resolve the version to publish
+        id: version
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          PACKAGE_VERSION=$(jq -r '.version' package.json)
+          PREVIOUS_VERSION=$(git show HEAD~1:package.json 2>/dev/null | jq -r '.version // empty' 2>/dev/null || true)
+
+          if [ -n "$INPUT_TAG" ]; then
+            TAG="$INPUT_TAG"
+            PUBLISH=true
+          elif [ -n "$PREVIOUS_VERSION" ] && [ "$PREVIOUS_VERSION" != "$PACKAGE_VERSION" ]; then
+            TAG="v$PACKAGE_VERSION"
+            PUBLISH=true
+          else
+            TAG="v$PACKAGE_VERSION"
+            PUBLISH=false
+          fi
+
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+          echo "publish=$PUBLISH" >> "$GITHUB_OUTPUT"
+
+          if [ "$PUBLISH" = false ]; then
+            echo "::notice::package.json kept $PACKAGE_VERSION — nothing to publish"
+          fi
+
+      - name: Verify the tag matches package.json
+        if: steps.version.outputs.publish == 'true'
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+          TAG_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          PACKAGE_VERSION=$(jq -r '.version' package.json)
+          if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
+            echo "❌ package.json has $PACKAGE_VERSION but the tag is $TAG"
+            exit 1
+          fi
+          echo "✅ Version match confirmed: $PACKAGE_VERSION"
+
+      - name: Run tests
+        if: steps.version.outputs.publish == 'true'
+        run: |
+          pnpm lint
+          pnpm typecheck
+          pnpm test
+
+      - name: Build package
+        if: steps.version.outputs.publish == 'true'
+        run: pnpm prepare
+
+      - name: Check build output
+        if: steps.version.outputs.publish == 'true'
+        run: |
+          if [ ! -d "lib" ]; then
+            echo "❌ Build failed: lib directory not found"
+            exit 1
+          fi
+          ls -la lib/
+
+      # No NODE_AUTH_TOKEN: the npm CLI detects the OIDC environment and
+      # exchanges the GitHub token for a short-lived publish token.
+      - name: Publish to npm
+        if: steps.version.outputs.publish == 'true'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          if echo "$VERSION" | grep -Eq "(alpha|beta|rc)"; then
+            echo "🚀 Publishing pre-release $VERSION…"
+            npm publish --tag next
+          else
+            echo "🚀 Publishing $VERSION…"
+            npm publish
+          fi
+
+      - name: Create the GitHub release
+        # a manual run only publishes: the release is made by the push that
+        # bumped the version
+        if: steps.version.outputs.publish == 'true' && github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.version.outputs.tag }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            echo "Release $TAG exists, nothing to create."
+            exit 0
+          fi
+
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 2>/dev/null || true)
+          if [ -n "$PREVIOUS_TAG" ]; then
+            CHANGELOG=$(git log --pretty=format:"- %s" "$PREVIOUS_TAG..HEAD")
+          else
+            CHANGELOG=$(git log --pretty=format:"- %s" -n 20)
+          fi
+
+          {
+            echo "## Changes in $TAG"
+            echo
+            echo "$CHANGELOG"
+            echo
+            echo "## Installation"
+            echo '```bash'
+            echo "npm install react-native-reanimated-modal@$VERSION"
+            echo "# or"
+            echo "pnpm add react-native-reanimated-modal@$VERSION"
+            echo '```'
+          } > release-notes.md
+
+          PRERELEASE=""
+          if echo "$VERSION" | grep -Eq "(alpha|beta|rc)"; then
+            PRERELEASE="--prerelease"
+          fi
+
+          gh release create "$TAG" \
+            --target "$GITHUB_SHA" \
+            --title "Release $TAG" \
+            --notes-file release-notes.md \
+            $PRERELEASE

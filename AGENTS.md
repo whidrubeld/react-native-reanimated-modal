@@ -51,17 +51,18 @@ pnpm test             # jest
 pnpm prepare          # bob build into lib/
 pnpm validate         # typecheck + lint + test + prepare
 pnpm example start    # the Expo example (also: ios, android, web)
-pnpm docs dev         # docs on http://localhost:4321/react-native-reanimated-modal/
-pnpm docs build       # astro check + the site in docs/dist/, links validated
+pnpm run docs dev     # docs on http://localhost:4321/react-native-reanimated-modal/
+pnpm run docs build   # astro check + the site in docs/dist/, links validated
 ```
 
 One pnpm workspace, one `pnpm-lock.yaml`; pnpm is pinned by `packageManager`.
 `nodeLinker: hoisted` keeps `node_modules` flat for Metro, Expo autolinking and
-the React Native Jest preset. `pnpm example <cmd>` / `pnpm docs <cmd>` run a
-package's script (`pnpm example exec expo …` for its binaries). Dependencies
-with install scripts need an `allowBuilds` entry in `pnpm-workspace.yaml`;
-version overrides live there too (`overrides`). Run local tools with
-`pnpm exec <bin>`, not `npx`.
+the React Native Jest preset. `pnpm example <cmd>` / `pnpm run docs <cmd>` run a
+package's script (`pnpm example exec expo …` for its binaries); `docs` needs the
+`run` because pnpm 12 has a built-in `pnpm docs <package>` that would shadow it.
+Dependencies with install scripts need an `allowBuilds` entry in
+`pnpm-workspace.yaml`; version overrides live there too (`overrides`). Run local
+tools with `pnpm exec <bin>`, not `npx`.
 
 ## Documentation (`docs/`)
 
@@ -91,9 +92,31 @@ setup follows three-map-terrain's docs (same look, same plugins).
 - **Look**: black and white, square, JetBrains Mono / Geist / Doto, pixel
   corner brackets (`.ticks`), HUD labels (`.hud`) — `src/styles/theme.css`
   over Starlight's cascade layers; fonts preloaded in `src/components/Head.astro`.
-- **Deploy** (`gh-pages.yml`, from master): `pnpm docs build`, `docs/dist`
+- **Deploy** (`gh-pages.yml`, from master): `pnpm run docs build`, `docs/dist`
   to the `gh-pages` branch; `public/.nojekyll` keeps `_astro/`. CI builds
   the docs on every push and pull request.
+
+## Releases (`publish.yml`)
+
+The version in the root `package.json` is the release. A push to master that
+changes it publishes that version to npm and creates the GitHub release (the
+changelog since the previous tag); a push that does not change it publishes
+nothing. `release-it --only-version` (`pnpm release`) writes the bump, the tag
+is made by the workflow.
+
+- **npm auth is OIDC**: no `NPM_TOKEN`, no `.npmrc` token — `id-token: write`
+  and the Trusted Publisher on npmjs.com (user `WhidRubeld`, repository
+  `react-native-reanimated-modal`, workflow `publish.yml`) do it, and
+  provenance is attached automatically. A token would be ignored while npm's
+  "disallow tokens" setting is on.
+- **One file on purpose**: npm matches the _calling_ workflow when a publish
+  goes through `workflow_call`, so publishing from a reusable workflow needs
+  its caller's filename in the npm settings. Keep `npm publish` in
+  `publish.yml`.
+- **A manual run** (`workflow_dispatch` with a `tag`) only publishes: for a
+  backfill, e.g. `gh workflow run publish.yml -f tag=v1.3.3`.
+- Requires npm CLI ≥ 11.5.1 and Node ≥ 22.14 on the runner (`.nvmrc` has Node
+  24); GitHub-hosted runners only.
 
 ## Core Features
 
@@ -322,6 +345,42 @@ For current versions, always check `package.json` and `example/package.json`:
 - Reanimated 4+ requires worklets for optimal performance
 - iOS minimum version considerations for new animation APIs
 - Android edge-to-edge display support requirements
+
+## Agent Tooling
+
+### Instructions
+
+`AGENTS.md` (this file) is the only source of agent instructions: there is no
+`.rules`, `.cursorrules`, `.clinerules` or `CLAUDE.md` next to it, because Zed
+stops at the first instruction file it finds. Nested `AGENTS.md` files in
+subdirectories are still read, so keep rules that apply to everyone here and
+package-specific notes next to the code.
+
+### Skills
+
+Skills live in `.agents/skills/<name>/SKILL.md` — flat, one level, the file name
+in capitals. Zed and DSH read both the worktree copy and `~/.agents/skills`.
+The directory name is the skill's `name` (`[a-z0-9-]`, 1-64 characters, no dash
+at the edges), `description` is at most 1024 characters, the body at most 500
+lines; an invalid name makes the skill unload silently. Existing skills:
+
+- `update-dependencies` — bump the library, the Expo example and the docs site
+  together. The report runs from the repository root:
+  `node .agents/skills/update-dependencies/scripts/deps-report.mjs`.
+
+### MCP
+
+No MCP servers are configured. A new one goes into `context_servers` of
+`.zed/settings.json`, the single source of truth; there is no `.mcp.json`,
+which Zed would not read anyway.
+
+### Editors
+
+Zed is the editor of record: `.zed/settings.json` (formatters, ESLint code
+actions), `.zed/tasks.json` and `.zed/debug.json` are committed. Formatting and
+linting rules live in the repository itself (`.editorconfig`, the `prettier`
+key of the root `package.json`, `eslint.config.mjs`), so every editor picks up
+the same configuration. `.vscode/` is gitignored and not part of the project.
 
 ---
 
