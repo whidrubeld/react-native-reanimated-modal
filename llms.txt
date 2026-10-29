@@ -1,0 +1,25 @@
+# react-native-reanimated-modal
+
+> A lightweight, performant modal for React Native: fade, slide, scale or your own animations on the UI thread, swipe to dismiss in any direction, on top of the native Modal.
+
+## Documentation Sets
+
+- [Complete documentation](https://whidrubeld.github.io/react-native-reanimated-modal/llms-full.txt): every page of the react-native-reanimated-modal documentation as Markdown
+
+## Documentation
+
+- [A performant modal for React Native](https://whidrubeld.github.io/react-native-reanimated-modal/index.md): A lightweight, performant modal for React Native — fade, slide, scale or your own animations on the UI thread, swipe to dismiss in any direction, on top of the native Modal.
+- [Getting started](https://whidrubeld.github.io/react-native-reanimated-modal/getting-started.md): Install react-native-reanimated-modal and its peers, check the version for your Expo SDK or Worklets, and show a first modal.
+- [Animations](https://whidrubeld.github.io/react-native-reanimated-modal/animations.md): The fade, slide and scale presets — as a string or a typed config with its duration, slide direction and scale factor — and layouts built on them, a bottom sheet and a full-screen modal.
+- [Custom animations](https://whidrubeld.github.io/react-native-reanimated-modal/custom-animations.md): Worklets for the content and the backdrop — what they receive (state, progress, swipe offsets, screen size), how their style merges with a preset's, and the custom type that has none.
+- [Swipe to dismiss](https://whidrubeld.github.io/react-native-reanimated-modal/swipe.md): The swipe prop — directions, the distance that dismisses, the spring back after a short swipe — what it needs to be on, and scrolling content inside a swipeable modal.
+- [Backdrop](https://whidrubeld.github.io/react-native-reanimated-modal/backdrop.md): The backdrop prop — a color and an opacity, your own component such as a blur, or none — and onBackdropPress, to close, run your own handler or ignore presses.
+- [Ref API](https://whidrubeld.github.io/react-native-reanimated-modal/ref.md): open() and close() through a ref — for a modal mounted visible that closes itself with its animation — and why close() still needs an onHide that sets visible to false.
+- [Multiple modals](https://whidrubeld.github.io/react-native-reanimated-modal/multiple-modals.md): coverScreen draws the modal in your view tree instead of a native window — for modals stacked on each other, touches through to the app, and modals over React Navigation's native stack in a FullWindowOverlay.
+- [Platforms](https://whidrubeld.github.io/react-native-reanimated-modal/platforms.md): The Android back button and onBackButtonPress, closable, the native Modal props passed through (status and navigation bars, hardware acceleration, iOS orientations), and the web.
+- [Testing](https://whidrubeld.github.io/react-native-reanimated-modal/testing.md): The modal's test IDs, and a Jest setup for React Native Testing Library — Reanimated's test mode, Worklets' mock and Gesture Handler's root view.
+- [Modal](https://whidrubeld.github.io/react-native-reanimated-modal/api/modal.md): Every prop of the Modal component — visibility, layout, animation, swipe, backdrop, events, native Modal props and test IDs — with types and defaults, and its ref.
+- [Types](https://whidrubeld.github.io/react-native-reanimated-modal/api/types.md): The exported TypeScript types — animation presets and their configs, the worklet signature and animation states, swipe and backdrop configs, ModalRef.
+- [Constants and helpers](https://whidrubeld.github.io/react-native-reanimated-modal/api/constants.md): The exported defaults — durations, scale factor, swipe threshold and direction, bounce spring, backdrop — and the functions that fill a partial config with them.
+- [Example app](https://whidrubeld.github.io/react-native-reanimated-modal/example.md): The Expo example app — open it on your phone with Expo Go from its QR code, or run it from the repository — and the use cases it shows, from a bottom sheet to stacked modals.
+- [LLMs](https://whidrubeld.github.io/react-native-reanimated-modal/llms.md): The documentation for AI assistants — every page as Markdown, llms.txt and llms-full.txt, Copy page and Open in Claude or ChatGPT, the type declarations of your version.
