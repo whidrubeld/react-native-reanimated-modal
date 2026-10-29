@@ -118,6 +118,15 @@ is made by the workflow.
 - Requires npm CLI ≥ 11.5.1 and Node ≥ 22.14 on the runner (`.nvmrc` has Node
   24); GitHub-hosted runners only.
 
+## Changelog (`changelog-updater.yml`)
+
+A merged pull request adds a line to the `## [Unreleased]` section of
+`CHANGELOG.md` — under `### Added` / `### Fixed` / … by its title — and the bot
+commits it to master with `[skip ci]`. A manual run
+(`gh workflow run changelog-updater.yml -f title="…"`) writes an entry without a
+pull request. The section is never closed by this workflow: a release renames it
+by hand.
+
 ## Core Features
 
 ### Modal Component Capabilities

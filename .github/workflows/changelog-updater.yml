@@ -1,19 +1,33 @@
 name: Changelog Updater
 
+# A merged pull request adds a line to the [Unreleased] section of CHANGELOG.md,
+# which is written to master by this workflow itself.
+
 on:
-  pull_request:
+  # pull_request_target: a merged pull request from a fork has to be able to
+  # write; nothing from the pull request is checked out or run
+  pull_request_target:
     types: [closed]
     branches: [master]
   workflow_dispatch:
+    inputs:
+      title:
+        description: 'Entry title (a manual run has no pull request)'
+        required: false
+        type: string
+
+permissions:
+  contents: write # the commit with the new entry
 
 jobs:
   update-changelog:
     if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: master
           fetch-depth: 0
 
       - name: Setup Git
@@ -21,45 +35,107 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
 
+      # Pull request fields are passed through the environment: interpolating
+      # them into the script would let a title run commands.
       - name: Update CHANGELOG.md
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title || inputs.title || 'Manual update' }}
+          PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login || github.actor }}
         run: |
-          # Create or update CHANGELOG.md
+          # the file is a header and the sections; new entries go into
+          # [Unreleased], newest under the matching `### Added` / `### Fixed`
           if [ ! -f CHANGELOG.md ]; then
-            echo "# Changelog" > CHANGELOG.md
-            echo "" >> CHANGELOG.md
-            echo "All notable changes to this project will be documented in this file." >> CHANGELOG.md
-            echo "" >> CHANGELOG.md
+            {
+              echo "# Changelog"
+              echo
+              echo "All notable changes to this project will be documented in this file."
+              echo
+              echo "## [Unreleased]"
+            } > CHANGELOG.md
           fi
 
-          # Get information about the latest PR
-          PR_TITLE="${{ github.event.pull_request.title || 'Manual update' }}"
-          PR_NUMBER="${{ github.event.pull_request.number || 'N/A' }}"
-          PR_AUTHOR="${{ github.event.pull_request.user.login || github.actor }}"
-          TODAY=$(date +"%Y-%m-%d")
+          UNRELEASED=$(grep -n '^## \[Unreleased\]' CHANGELOG.md | cut -d: -f1 | head -n 1 || true)
+          if [ -z "$UNRELEASED" ]; then
+            # a hand-written changelog: open the section above its first release
+            FIRST_SECTION=$(grep -n '^## ' CHANGELOG.md | cut -d: -f1 | head -n 1 || true)
+            if [ -n "$FIRST_SECTION" ]; then
+              {
+                head -n "$((FIRST_SECTION - 1))" CHANGELOG.md
+                echo "## [Unreleased]"
+                echo
+                tail -n +"$FIRST_SECTION" CHANGELOG.md
+              } > CHANGELOG.tmp
+            else
+              { cat CHANGELOG.md; echo; echo "## [Unreleased]"; } > CHANGELOG.tmp
+            fi
+            mv CHANGELOG.tmp CHANGELOG.md
+          fi
 
-          # Determine change type by labels or title
           TYPE="Changed"
-          if echo "$PR_TITLE" | grep -i "^feat\|^add\|feature" > /dev/null; then
+          if echo "$PR_TITLE" | grep -Eqi '^feat|^add|feature'; then
             TYPE="Added"
-          elif echo "$PR_TITLE" | grep -i "^fix\|^bug" > /dev/null; then
+          elif echo "$PR_TITLE" | grep -Eqi '^fix|^bug'; then
             TYPE="Fixed"
-          elif echo "$PR_TITLE" | grep -i "^break\|BREAKING" > /dev/null; then
+          elif echo "$PR_TITLE" | grep -Eqi '^break|BREAKING'; then
             TYPE="Changed (Breaking)"
-          elif echo "$PR_TITLE" | grep -i "^docs\|documentation" > /dev/null; then
+          elif echo "$PR_TITLE" | grep -Eqi '^docs|documentation'; then
             TYPE="Documentation"
           fi
 
-          # Create temporary file with new entry
-          {
-            head -n 4 CHANGELOG.md
-            echo "## [Unreleased] - $TODAY"
-            echo ""
-            echo "### $TYPE"
-            echo "- $PR_TITLE (#$PR_NUMBER by @$PR_AUTHOR)"
-            echo ""
-            tail -n +5 CHANGELOG.md
-          } > CHANGELOG.tmp
+          if [ -n "$PR_NUMBER" ]; then
+            ENTRY="- $PR_TITLE (#$PR_NUMBER by @$PR_AUTHOR)"
+          else
+            ENTRY="- $PR_TITLE (by @$PR_AUTHOR)"
+          fi
 
+          if grep -qxF -- "$ENTRY" CHANGELOG.md; then
+            echo "The entry is already there, nothing to add."
+            exit 0
+          fi
+
+          # the entry joins an existing `### TYPE` of the section or opens one
+          # at its end; the text comes from the environment, so awk never
+          # interprets it
+          TYPE="$TYPE" ENTRY="$ENTRY" awk '
+            {
+              if (!section) {
+                print
+                if ($0 ~ /^## \[Unreleased\]/) section = 1
+                prev = $0
+                next
+              }
+              if ($0 ~ /^## \[/) {
+                if (!added) {
+                  if (prev != "") print ""
+                  print "### " ENVIRON["TYPE"]
+                  print ENVIRON["ENTRY"]
+                  print ""
+                  added = 1
+                }
+                print
+                prev = $0
+                next
+              }
+              if ($0 == "### " ENVIRON["TYPE"] && !added) {
+                print
+                print ENVIRON["ENTRY"]
+                added = 1
+                prev = ENVIRON["ENTRY"]
+                next
+              }
+              print
+              prev = $0
+            }
+            END {
+              if (section && !added) {
+                if (prev != "") print ""
+                print "### " ENVIRON["TYPE"]
+                print ENVIRON["ENTRY"]
+                print ""
+              }
+            }
+          ' CHANGELOG.md > CHANGELOG.tmp
           mv CHANGELOG.tmp CHANGELOG.md
 
       - name: Commit changes
@@ -67,6 +143,10 @@ jobs:
           git add CHANGELOG.md
           if git diff --staged --quiet; then
             echo "No changes to commit"
-          else
-            git commit -m "docs: update CHANGELOG.md [skip ci]"
-            git push
+            exit 0
+          fi
+
+          git commit -m "docs: update CHANGELOG.md [skip ci]"
+          # another push may have landed while the job was running
+          git pull --rebase origin master
+          git push
