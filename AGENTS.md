@@ -323,6 +323,42 @@ For current versions, always check `package.json` and `example/package.json`:
 - iOS minimum version considerations for new animation APIs
 - Android edge-to-edge display support requirements
 
+## Agent Tooling
+
+### Instructions
+
+`AGENTS.md` (this file) is the only source of agent instructions: there is no
+`.rules`, `.cursorrules`, `.clinerules` or `CLAUDE.md` next to it, because Zed
+stops at the first instruction file it finds. Nested `AGENTS.md` files in
+subdirectories are still read, so keep rules that apply to everyone here and
+package-specific notes next to the code.
+
+### Skills
+
+Skills live in `.agents/skills/<name>/SKILL.md` — flat, one level, the file name
+in capitals. Zed and DSH read both the worktree copy and `~/.agents/skills`.
+The directory name is the skill's `name` (`[a-z0-9-]`, 1-64 characters, no dash
+at the edges), `description` is at most 1024 characters, the body at most 500
+lines; an invalid name makes the skill unload silently. Existing skills:
+
+- `update-dependencies` — bump the library, the Expo example and the docs site
+  together. The report runs from the repository root:
+  `node .agents/skills/update-dependencies/scripts/deps-report.mjs`.
+
+### MCP
+
+No MCP servers are configured. A new one goes into `context_servers` of
+`.zed/settings.json`, the single source of truth; there is no `.mcp.json`,
+which Zed would not read anyway.
+
+### Editors
+
+Zed is the editor of record: `.zed/settings.json` (formatters, ESLint code
+actions), `.zed/tasks.json` and `.zed/debug.json` are committed. Formatting and
+linting rules live in the repository itself (`.editorconfig`, the `prettier`
+key of the root `package.json`, `eslint.config.mjs`), so every editor picks up
+the same configuration. `.vscode/` is gitignored and not part of the project.
+
 ---
 
 _This configuration is optimized for the react-native-reanimated-modal project. Agents should prioritize performance, type safety, and cross-platform compatibility when working with this codebase._

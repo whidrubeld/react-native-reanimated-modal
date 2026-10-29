@@ -7,7 +7,7 @@
  * version recommended by the target Expo SDK (`expo/bundledNativeModules.json`).
  *
  * Usage:
- *   node .skills/update-dependencies/scripts/deps-report.mjs [--sdk <major>] [--json]
+ *   node .agents/skills/update-dependencies/scripts/deps-report.mjs [--sdk <major>] [--json]
  *
  *   --sdk <major>  target Expo SDK (default: the `latest` dist-tag of `expo`)
  *   --json         machine-readable output
