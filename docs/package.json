@@ -27,7 +27,7 @@
     "sharp": "^0.35.5",
     "starlight-links-validator": "^0.27.0",
     "starlight-llm-actions": "^0.13.0",
-    "typescript": "~6.0.3",
+    "typescript": "~7.0.2",
     "unified": "^11.0.5",
     "unist-util-remove": "^4.0.0"
   }
